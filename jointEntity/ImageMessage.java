@@ -1,3 +1,5 @@
+package jointEntity;
+
 import jointEntity.Message;
 import jointEntity.TextMessage;
 import jointEntity.User;
