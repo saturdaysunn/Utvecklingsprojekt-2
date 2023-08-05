@@ -16,18 +16,16 @@ public class CenterPanel extends JPanel{
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.setLayout(null);
         this.width = width;
         this.height = height;
         this.setSize(width, height);
         this.setVisible(true);
-        this.setBounds(200, 0, 250, 600);
-        this.setBackground(new Color(255, 255, 255));
+        this.setBounds(250, 0, 530, 580);
+        this.setBackground(new Color(238, 95, 95));
         setUp();
     }
 
-    public void setUp(){
-
+    public void setUp() {
         BorderLayout layout = new BorderLayout();
         setLayout(layout);
         border = this.getBorder();
@@ -36,24 +34,17 @@ public class CenterPanel extends JPanel{
         Border margin = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         setBorder(new CompoundBorder(border, margin));
 
-        JPanel messageInputPanel = new JPanel(new BorderLayout());
-        //JPanel messageInputPanel = new JPanel();
+        JPanel messageInputPanel = new JPanel(new FlowLayout());
 
-        // Create a new JTextField for the message input box
-        messageInputField = new JTextField();
-        messageInputPanel.add(messageInputField, BorderLayout.EAST);
-        //messageInputPanel.setLocation(250, 40);
+        //Create a new JTextField for the message input box
+        messageInputField = new JTextField(25); // width
+        messageInputPanel.add(messageInputField);
 
-        // Create a new JButton for the send button
+        //Create a new JButton for the send button
         sendButton = new JButton("Send");
-        messageInputPanel.add(sendButton, BorderLayout.EAST);
-        //messageInputPanel.add(sendButton);
-        //sendButton.setLocation(320, 40);
+        messageInputPanel.add(sendButton);
 
-        // Add the message input panel to the main panel
-        add(messageInputPanel, layout.SOUTH);
-
+        //Add the message input panel to the main panel
+        add(messageInputPanel, BorderLayout.SOUTH);
     }
-
-
 }
