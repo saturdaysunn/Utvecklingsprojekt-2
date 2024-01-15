@@ -50,5 +50,4 @@ public class User implements Serializable {
         contacts.add(user);
     }
 
-
 }
