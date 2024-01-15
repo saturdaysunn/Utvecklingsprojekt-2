@@ -1,4 +1,4 @@
-package klient.view;
+package all.klient.view;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -19,13 +19,11 @@ public class CenterPanel extends JPanel{
         this.width = width;
         this.height = height;
         this.setSize(width, height);
-        this.setVisible(false);
+        this.setVisible(true);
         this.setBounds(250, 0, 530, 580);
         this.setBackground(new Color(238, 95, 95));
         setUp();
     }
-
-    public 
 
     public void setUp() {
         BorderLayout layout = new BorderLayout();

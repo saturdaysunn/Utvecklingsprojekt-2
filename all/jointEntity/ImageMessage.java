@@ -1,4 +1,4 @@
-package jointEntity;
+package all.jointEntity;
 
 import javax.swing.*;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
-package klient.controller;
+package all.klient.controller;
 
-import jointEntity.User;
-import klient.view.MainFrame;
+import all.jointEntity.User;
+import all.klient.view.MainFrame;
 
 import java.util.ArrayList;
 

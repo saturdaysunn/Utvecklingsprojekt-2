@@ -1,6 +1,6 @@
-package klient;
+package all.klient;
 
-import jointEntity.Message;
+import all.jointEntity.Message;
 
 public interface CallBackInterface {
 

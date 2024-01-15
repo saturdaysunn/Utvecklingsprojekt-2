@@ -1,9 +1,9 @@
-package klient.controller;
-import jointEntity.Message;
-import jointEntity.User;
-import klient.CallBackInterface;
-import klient.entity.Client;
-import klient.view.MainFrame;
+package all.klient.controller;
+import all.jointEntity.Message;
+import all.jointEntity.User;
+import all.klient.CallBackInterface;
+import all.klient.entity.Client;
+import all.klient.view.MainFrame;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.HashMap;
  *
  */
 
-public class MessageClient {
+public class MessageClient extends Thread {
 
     private Socket socket;
     private ObjectInputStream ois;

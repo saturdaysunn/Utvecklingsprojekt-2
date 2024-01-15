@@ -1,4 +1,4 @@
-package jointEntity;
+package all.jointEntity;
 
 import javax.swing.*;
 import java.io.Serializable;
@@ -50,5 +50,15 @@ public class User implements Serializable {
         contacts.add(user);
     }
 
+<<<<<<< Updated upstream:jointEntity/User.java
+=======
+    public void setOnline(boolean onlineStatus){
+        isOnline = onlineStatus;
+    }
+
+    public boolean getOnline(){
+        return isOnline;
+    }
+>>>>>>> Stashed changes:all/jointEntity/User.java
 
 }

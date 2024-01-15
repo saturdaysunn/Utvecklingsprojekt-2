@@ -1,8 +1,8 @@
-package klient.view;
+package all.klient.view;
 
-import jointEntity.Message;
-import klient.CallBackInterface;
-import klient.controller.MessageClient;
+import all.jointEntity.Message;
+import all.klient.CallBackInterface;
+import all.klient.controller.MessageClient;
 
 /**
  *
