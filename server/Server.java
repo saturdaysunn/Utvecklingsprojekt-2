@@ -1,6 +1,6 @@
 package server;
 
-import jointEntity.TextMessage;
+import jointEntity.Message;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -69,12 +69,12 @@ public class Server {
 
         public void run(){
 
-            TextMessage message;
+            Message message;
 
             try{
                 while(true){
                     try{
-                        message = (TextMessage) ois.readObject();
+                        message = (Message) ois.readObject();
                         oos.writeObject(message);
                         oos.flush();
                     } catch (ClassNotFoundException e){

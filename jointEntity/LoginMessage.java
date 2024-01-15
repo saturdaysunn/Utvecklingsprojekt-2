@@ -1,6 +1,6 @@
 package jointEntity;
 
-public class LoginMessage extends Message {
+public class LoginMessage {
 
 }
 

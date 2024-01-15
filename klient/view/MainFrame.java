@@ -1,7 +1,6 @@
 package klient.view;
 
-import klient.controller.ClientController;
-
+import klient.controller.*;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {

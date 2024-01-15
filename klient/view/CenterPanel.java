@@ -19,11 +19,13 @@ public class CenterPanel extends JPanel{
         this.width = width;
         this.height = height;
         this.setSize(width, height);
-        this.setVisible(true);
+        this.setVisible(false);
         this.setBounds(250, 0, 530, 580);
         this.setBackground(new Color(238, 95, 95));
         setUp();
     }
+
+    public 
 
     public void setUp() {
         BorderLayout layout = new BorderLayout();
@@ -47,4 +49,7 @@ public class CenterPanel extends JPanel{
         //Add the message input panel to the main panel
         add(messageInputPanel, BorderLayout.SOUTH);
     }
+
+
+
 }
