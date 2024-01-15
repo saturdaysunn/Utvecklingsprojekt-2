@@ -50,8 +50,6 @@ public class User implements Serializable {
         contacts.add(user);
     }
 
-<<<<<<< Updated upstream:jointEntity/User.java
-=======
     public void setOnline(boolean onlineStatus){
         isOnline = onlineStatus;
     }
@@ -59,6 +57,5 @@ public class User implements Serializable {
     public boolean getOnline(){
         return isOnline;
     }
->>>>>>> Stashed changes:all/jointEntity/User.java
 
 }
