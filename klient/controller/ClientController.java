@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import jointEntity.TextMessage;
+import jointEntity.Message;
 import jointEntity.User;
 import klient.view.MainFrame;
 
@@ -13,7 +13,7 @@ public class ClientController {
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private HashMap<User, ArrayList<TextMessage>> userArrayListHashMap;
+    private HashMap<User, ArrayList<Message>> userArrayListHashMap;
 
     private MainFrame view; //???
     private OnlineUser onlineUser; //???
@@ -28,7 +28,7 @@ public class ClientController {
 
     }
 
-    public void sendMessage(TextMessage message) throws IOException {
+    public void sendMessage(Message message) throws IOException {
 
         oos.writeObject(message);
         oos.flush();
@@ -39,11 +39,11 @@ public class ClientController {
 
         public void run() {
 
-            TextMessage message;
+            Message message;
 
             try {
                 while (true) {
-                    message = (TextMessage) ois.readObject();
+                    message = (Message) ois.readObject();
                     // TODO
                     // fixa callback/pcl för att skicka meddelande till GUI
                 }

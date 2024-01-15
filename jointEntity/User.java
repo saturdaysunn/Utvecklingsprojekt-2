@@ -9,11 +9,13 @@ public class User implements Serializable {
     private String username;
     private ImageIcon icon;
     private ArrayList<User> contacts;
+    private boolean isOnline;
 
-    public User(String username, ImageIcon icon){
+    public User(String username, ImageIcon icon, boolean isOnline){
 
         this.username = username;
         this.icon = icon;
+        this.isOnline = isOnline;
 
     }
 
@@ -44,7 +46,8 @@ public class User implements Serializable {
 
     }
 
-    public void setContacts()
-
+    public void addContact(User user){
+        contacts.add(user);
+    }
 
 }

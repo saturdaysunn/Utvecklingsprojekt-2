@@ -1,14 +1,10 @@
 package jointEntity;
 
-import jointEntity.Message;
-import jointEntity.TextMessage;
-import jointEntity.User;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ImageMessage extends TextMessage {
+public class ImageMessage extends Message {
 
     private ImageIcon image;
 

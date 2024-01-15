@@ -2,6 +2,7 @@ package klient.view;
 
 import javax.swing.*;
 import java.awt.*;
+import klient.view.*;
 
 public class MainPanel extends JPanel {
 
