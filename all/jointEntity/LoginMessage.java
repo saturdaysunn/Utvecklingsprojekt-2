@@ -1,4 +1,4 @@
-package jointEntity;
+package all.jointEntity;
 
 public class LoginMessage {
 

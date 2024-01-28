@@ -1,6 +1,6 @@
-package server;
+package all.server;
 
-import jointEntity.Message;
+import all.jointEntity.Message;
 
 import java.io.*;
 import java.net.ServerSocket;

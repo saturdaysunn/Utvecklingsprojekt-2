@@ -1,4 +1,4 @@
-package jointEntity;
+package all.jointEntity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

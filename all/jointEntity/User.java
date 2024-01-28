@@ -1,4 +1,4 @@
-package jointEntity;
+package all.jointEntity;
 
 import javax.swing.*;
 import java.io.Serializable;
@@ -48,6 +48,14 @@ public class User implements Serializable {
 
     public void addContact(User user){
         contacts.add(user);
+    }
+
+    public void setOnline(boolean onlineStatus){
+        isOnline = onlineStatus;
+    }
+
+    public boolean getOnline(){
+        return isOnline;
     }
 
 }
