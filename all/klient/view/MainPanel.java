@@ -15,7 +15,7 @@ public class MainPanel extends JPanel {
 
         super(null);
         this.setSize(width, height);
-        logPanel = new LoginPanel(1500, 1100, mainFrame);
+        logPanel = new LoginPanel(width, height, mainFrame);
         this.add(logPanel);
 
         lPanel = new LPanel(-800, height, mainFrame);

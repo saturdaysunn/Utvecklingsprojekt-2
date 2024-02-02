@@ -14,10 +14,10 @@ public class LoginPanel extends JPanel {
     private MainFrame mainFrame;
     private JTextField panelText;
     private JButton button;
-    private JList<Object> loginPanelList;
+    private JButton [][] buttonArray = new JButton[2][2];
 
 
-    public LoginPanel(int width, int height, MainFrame mainFrame){
+    public LoginPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.width = width;
         this.height = height;
@@ -27,15 +27,16 @@ public class LoginPanel extends JPanel {
         //setUpWindow();
     }
 
-    public void setUpWindow(ArrayList<User> users) {
+    public void setUpWindow(String username, Icon icon) {
 
-
-        for (User user : users) {
-            button = new JButton(user.getUsername(), user.getIcon());
-            button.addActionListener(L -> mainFrame.userLoggedIn(button.getText()));
-            this.add(button);
+        button = new JButton(username, icon);
+        for (int i = 0; i < buttonArray.length; i++) {
+            for (int j = 0; j < buttonArray[i].length; j++) {
+                if(buttonArray[i][j] == null){
+                    buttonArray[i][j] = button;
+                }
+            }
         }
 
     }
-
 }
