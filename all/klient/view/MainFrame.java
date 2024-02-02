@@ -4,6 +4,8 @@ import all.klient.controller.*;
 import javax.swing.*;
 import all.Controller;
 
+import java.util.ArrayList;
+
 public class MainFrame extends JFrame {
 
     private JFrame frame;
@@ -39,6 +41,11 @@ public class MainFrame extends JFrame {
         controller.userLoggedIn(userName);
     }
 
+    public void setUpWindow(String username, Icon icon){
+
+        panel.getLogPanel().setUpWindow(username, icon);
+
+    }
 
 }
 

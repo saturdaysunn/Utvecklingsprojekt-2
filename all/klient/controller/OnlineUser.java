@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class OnlineUser {
     //stores users which are online
     private ArrayList<User> onlineUsers;
-    private ClientController controller;
+    //private ClientController controller;
     private MainFrame view;
 
 

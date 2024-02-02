@@ -16,7 +16,7 @@ public class Controller {
 
     public Controller(){
 
-
+        sendUserInfo();
 
     }
 
@@ -24,19 +24,17 @@ public class Controller {
         view.populateRPanel(contactsString);
 
     }
-    public ArrayList<User> displayAvailableUsers(){
+    public void sendUserInfo(){
 
         User bruna = new User("brunabrub", new ImageIcon("files/list-pochacco.png"), false);
         User mihail = new User("mihail", new ImageIcon("/"), false);
         User tiffany = new User("tiffany", new ImageIcon("/"), false);
         User oliver = new User("oliver", new ImageIcon("/"), false);
 
-        userList.add(bruna);
-        userList.add(mihail);
-        userList.add(tiffany);
-        userList.add(oliver);
-
-        return userList;
+        view.setUpWindow(bruna.getUsername(), bruna.getIcon());
+        view.setUpWindow(mihail.getUsername(), mihail.getIcon());
+        view.setUpWindow(tiffany.getUsername(), tiffany.getIcon());
+        view.setUpWindow(oliver.getUsername(), oliver.getIcon());
 
     }
 
