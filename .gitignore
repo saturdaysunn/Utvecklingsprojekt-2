@@ -4,7 +4,7 @@
 # Log file
 *.log
 
-# BlueJ files
+# BlueJ all.files
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
@@ -40,10 +40,10 @@ replay_pid*
 # AWS User-specific
 .idea/**/aws.xml
 
-# Generated files
+# Generated all.files
 .idea/**/contentModel.xml
 
-# Sensitive or high-churn files
+# Sensitive or high-churn all.files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
 .idea/**/dataSources.local.xml
@@ -57,7 +57,7 @@ replay_pid*
 .idea/**/libraries
 
 # Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
+# When using Gradle or Maven with auto-import, you should exclude module all.files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 # .idea/artifacts
@@ -146,7 +146,7 @@ fabric.properties
 # Log file
 *.log
 
-# BlueJ files
+# BlueJ all.files
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
@@ -173,14 +173,14 @@ replay_pid*
 
 # AWS User-specific
 
-# Generated files
+# Generated all.files
 
-# Sensitive or high-churn files
+# Sensitive or high-churn all.files
 
 # Gradle
 
 # Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
+# When using Gradle or Maven with auto-import, you should exclude module all.files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 # .idea/artifacts
@@ -270,11 +270,11 @@ Temporary Items
 .apdisk
 
 ### macOS Patch ###
-# iCloud generated files
+# iCloud generated all.files
 *.icloud
 
 ### Windows ###
-# Windows thumbnail cache files
+# Windows thumbnail cache all.files
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
@@ -289,7 +289,7 @@ ehthumbs_vista.db
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-# Windows Installer files
+# Windows Installer all.files
 *.cab
 *.msi
 *.msix

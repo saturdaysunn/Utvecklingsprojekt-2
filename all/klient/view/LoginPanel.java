@@ -23,17 +23,23 @@ public class LoginPanel extends JPanel {
         this.height = height;
         this.setSize(width, height);
         this.setVisible(true);
-        this.setBackground(new Color(0, 0, 0));
-        //setUpWindow();
+        GridLayout layout = new GridLayout(2,2);
+        setLayout(layout);
     }
 
     public void setUpWindow(String username, Icon icon) {
 
-        button = new JButton(username, icon);
-        for (int i = 0; i < buttonArray.length; i++) {
-            for (int j = 0; j < buttonArray[i].length; j++) {
+        //button = new JButton(username, icon);
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
                 if(buttonArray[i][j] == null){
-                    buttonArray[i][j] = button;
+                    buttonArray[i][j] = new JButton(username, icon);
+                    buttonArray[i][j].setBackground(new Color(252, 196, 222));
+                    buttonArray[i][j].setVisible(true);
+                    buttonArray[i][j].setOpaque(true);
+                    buttonArray[i][j].setSize(new Dimension(50, 50));
+                    add(buttonArray[i][j]);
+                    break;
                 }
             }
         }

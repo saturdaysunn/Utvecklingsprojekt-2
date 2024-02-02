@@ -2,7 +2,6 @@ package all;
 
 import all.jointEntity.User;
 import all.klient.controller.MessageClient;
-import all.klient.entity.Client;
 import all.klient.view.MainFrame;
 
 import javax.swing.*;
@@ -16,6 +15,7 @@ public class Controller {
 
     public Controller(){
 
+        view = new MainFrame(1000, 600, this);
         sendUserInfo();
 
     }
@@ -26,10 +26,10 @@ public class Controller {
     }
     public void sendUserInfo(){
 
-        User bruna = new User("brunabrub", new ImageIcon("files/list-pochacco.png"), false);
-        User mihail = new User("mihail", new ImageIcon("/"), false);
-        User tiffany = new User("tiffany", new ImageIcon("/"), false);
-        User oliver = new User("oliver", new ImageIcon("/"), false);
+        User bruna = new User("bruna", new ImageIcon("all/files/bruna.png"), false);
+        User mihail = new User("mihail", new ImageIcon("all/files/mihail.png"), false);
+        User tiffany = new User("tiffany", new ImageIcon("all/files/tiffany.png"), false);
+        User oliver = new User("oliver", new ImageIcon("all/files/oliver.png"), false);
 
         view.setUpWindow(bruna.getUsername(), bruna.getIcon());
         view.setUpWindow(mihail.getUsername(), mihail.getIcon());
