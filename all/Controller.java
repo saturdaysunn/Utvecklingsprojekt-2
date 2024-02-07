@@ -14,9 +14,8 @@ public class Controller {
     private ArrayList<User> userList = new ArrayList<>();
 
     public Controller(){
-
         view = new MainFrame(1000, 600, this);
-        sendUserInfo();
+        //sendUserInfo();
 
     }
 
@@ -24,6 +23,8 @@ public class Controller {
         view.populateRPanel(contactsString);
 
     }
+
+    /*
     public void sendUserInfo(){
 
         User bruna = new User("bruna", new ImageIcon("all/files/bruna.png"), false);
@@ -35,8 +36,9 @@ public class Controller {
         view.setUpWindow(mihail.getUsername(), mihail.getIcon());
         view.setUpWindow(tiffany.getUsername(), tiffany.getIcon());
         view.setUpWindow(oliver.getUsername(), oliver.getIcon());
-
     }
+
+     */
 
     public void userLoggedIn(String userName){
 

@@ -11,11 +11,10 @@ public class MainFrame extends JFrame {
     private JFrame frame;
     private MainPanel panel;
     private Controller controller; //do we need??
-    private int width = 1500;
-    private int height = 1100;
+    private int width = 1000;
+    private int height = 600;
 
     public MainFrame(int width, int height, Controller controller){
-
         super("Chatt");
         this.setResizable(false);
         this.setSize(width, height);
@@ -24,11 +23,16 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.setBounds(100, 100, width, height);
         this.setDefaultCloseOperation(3);
+        setupLogin(); //start login window
+    }
 
+    public void setupLogin() {
+        LoginPanel loginPanel = new LoginPanel(width, height, this); //create new login frame
+        loginPanel.setUpWindow(); //call to set up
+        System.out.println("login panel started");
     }
 
     public void populateRPanel(String[] contactsArray) {
-
         panel.getrPanel().populateRPanel(contactsArray);
 
     }
@@ -39,12 +43,6 @@ public class MainFrame extends JFrame {
 
     public void userLoggedIn(String userName){
         controller.userLoggedIn(userName);
-    }
-
-    public void setUpWindow(String username, Icon icon){
-
-        panel.getLogPanel().setUpWindow(username, icon);
-
     }
 
 }
