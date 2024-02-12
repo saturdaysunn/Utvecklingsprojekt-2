@@ -23,24 +23,38 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.setBounds(100, 100, width, height);
         this.setDefaultCloseOperation(3);
-        setupLogin(); //start login window
+        setupLogin();
     }
 
+    /**
+     * Initiates and calls to set up login window
+     */
     public void setupLogin() {
-        LoginPanel loginPanel = new LoginPanel(width, height, this); //create new login frame
+        LoginPanel loginPanel = new LoginPanel(this); //create new login window
         loginPanel.setUpWindow(); //call to set up
         System.out.println("login panel started");
     }
 
+    /**
+     * displays users added to contacts (do not have to be online)
+     * @param contactsArray array of contacts
+     */
     public void populateRPanel(String[] contactsArray) {
         panel.getrPanel().populateRPanel(contactsArray);
-
     }
 
+    /**
+     * displays online users
+     * @param onlineArray array containing online users
+     */
     public void populateLPanel (String[] onlineArray) {
         panel.getlPanel().populateLPanel(onlineArray);
     }
 
+    /**
+     * informs controller that user has logged in
+     * @param userName name of user
+     */
     public void userLoggedIn(String userName){
         controller.userLoggedIn(userName);
     }

@@ -16,16 +16,17 @@ public class LoginPanel extends JFrame {
     private JButton choosePicture;
     private JLabel userPicture;
 
-
-    public LoginPanel(int width, int height, MainFrame mainFrame) {
+    public LoginPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.setSize(width, height);
+        this.setSize(500, 300);
         this.setVisible(true);
     }
 
     public void setUpWindow() {
         setLayout(new BorderLayout());
         this.setBackground(new Color(23, 95, 95));
+        setTitle("Login");
+
         //username panel
         JPanel usernamePanel = new JPanel();
         usernamePanel.setLayout(new FlowLayout());
@@ -39,7 +40,9 @@ public class LoginPanel extends JFrame {
         picturePanel.setLayout(new FlowLayout());
         choosePicture = new JButton("Choose Picture");
         userPicture = new JLabel();
-        userPicture.setPreferredSize(new Dimension(100, 100));
+        userPicture.setPreferredSize(new Dimension(150, 150));
+        userPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
         picturePanel.add(choosePicture);
         picturePanel.add(userPicture);
 
@@ -55,6 +58,7 @@ public class LoginPanel extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
 
+        //action listener for when choose picture button is clicked
         choosePicture.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -71,8 +75,19 @@ public class LoginPanel extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
-                // You can add your login logic here
-                System.out.println("Username: " + username);
+
+                //check if image and username have been set
+                if (!username.isEmpty() && userPicture.getIcon() != null) {
+                    System.out.println("Username: " + username); //test print
+                    dispose(); //close window
+                } else if (username.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
+                } else if (userPicture.getIcon() == null) {
+                    JOptionPane.showMessageDialog(null, "No picture chosen. Please try again.");
+                }
+
+                //TODO: save username & picture (in file?)
+                //TODO: how to get info to main panel after this. send it to server from client?
             }
         });
 
