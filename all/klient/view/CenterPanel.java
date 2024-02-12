@@ -20,11 +20,14 @@ public class CenterPanel extends JPanel{
         this.height = height;
         this.setSize(width, height);
         this.setVisible(true);
-        this.setBounds(250, 0, 530, 580);
+        this.setBounds(250, 0, 500, 580);
         this.setBackground(new Color(238, 95, 95));
         setUp();
     }
 
+    /**
+     * sets up center panel containing messages and message input box
+     */
     public void setUp() {
         BorderLayout layout = new BorderLayout();
         setLayout(layout);
@@ -34,20 +37,23 @@ public class CenterPanel extends JPanel{
         Border margin = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         setBorder(new CompoundBorder(border, margin));
 
-        JPanel messageInputPanel = new JPanel(new FlowLayout());
+        JPanel messageInputPanel = new JPanel(new FlowLayout()); //message input box
 
         //Create a new JTextField for the message input box
         messageInputField = new JTextField(25); // width
         messageInputPanel.add(messageInputField);
 
-        //Create a new JButton for the send button
+        //Create send button
         sendButton = new JButton("Send");
         messageInputPanel.add(sendButton);
 
-        //Add the message input panel to the main panel
+        //Add message input panel to main panel
         add(messageInputPanel, BorderLayout.SOUTH);
     }
 
+    //TODO: Add action listener to send button
+    //TODO: send to server to save messages to message array in hashmap??
+    //TODO: then save to file if offline??
 
 
 }

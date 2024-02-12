@@ -3,6 +3,9 @@ package all.klient.view;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * displays contacts. Populated from server by reading from file on harddisk
+ */
 public class RPanel extends JPanel {
 
     private int width;
@@ -13,33 +16,37 @@ public class RPanel extends JPanel {
 
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.setLayout(null);
+        this.setLayout(new BorderLayout());
         this.width = width;
         this.height = height;
         this.setSize(width, height);
-        this.setBounds(750, 0, 250, 600);
-        this.setBackground(new Color(252, 196, 222));
+        this.setBounds(750, 0, 250, 600); //set to the right on the main panel
+        this.setBackground(new Color(227, 195, 255)); //colour
         setUp();
     }
 
     public void setUp(){
-
-        contactsTitle = new JLabel("Contact list:");
-        contactsTitle.setLocation(50, -70);
-        contactsTitle.setSize(width, height - 100);
-        contactsTitle.setFont(new Font("Helvetica", Font.BOLD, 19));
-        add(contactsTitle);
+        JLabel contactsLabel = new JLabel("Contacts");
+        contactsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(contactsLabel, BorderLayout.NORTH);
 
         rightPanelList = new JList<>();
         rightPanelList.setLocation(105, 200);
         rightPanelList.setSize(width, height - 100);
-        rightPanelList.setBackground(new Color(252, 196, 222));
+        rightPanelList.setBackground(new Color(218, 218, 218));
         rightPanelList.setFont(new Font("Helvetica", Font.PLAIN, 16));
         rightPanelList.setEnabled(false);
-        add(rightPanelList);
+        JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
+        add(scrollPane, BorderLayout.CENTER);
 
+        String[] contactsArray = {"user1", "user2", "user3"}; //TODO: test values
+        populateRPanel(contactsArray);
     }
 
+    /**
+     * populates right panel with contacts
+     * @param contactsArray
+     */
     protected void populateRPanel(String[] contactsArray){
         //there should be a toString method which makes user array to string array
         rightPanelList.setListData(contactsArray);
