@@ -6,6 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+//TODO: change so that the panel is called only users
+//TODO: online users have green circle
+//TODO: offline users have grey circle
+//TODO: such that any can receive a message
+
+
 /**
  * diaplays online users. Updated every time a user logs in or out
  */
@@ -15,6 +21,7 @@ public class LPanel extends JPanel{
     private MainFrame mainFrame;
     private JList<Object> leftPanelList;
     private JButton addToContactsButton;
+    private ArrayList<String> selectedUsers = new ArrayList<>();
 
     public LPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -71,6 +78,20 @@ public class LPanel extends JPanel{
     protected void populateLPanel(String[] onlineArray){
         //there should be a toString method which makes user array to string array
         leftPanelList.setListData(onlineArray);
+    }
+
+    //TODO: implement method which reads which users have been selected
+    //TODO: call method to reset buttons (should have a check mark next to them) and empty arraylist of selectedUsers
+    //TODO: the latter is to be called from mainFrame.
+
+    public String getUsername() {
+        //TODO: returns username from JLabel above users list
+        return null; //TODO: temp
+    }
+
+    public ArrayList<String> getReceivers() {
+        //TODO: returns users which have been selected
+        return null; //TODO: temp
     }
 
 }

@@ -5,7 +5,6 @@ import java.awt.*;
 import all.klient.view.*;
 
 public class MainPanel extends JPanel {
-
     private LPanel lPanel;
     private RPanel rPanel;
     private CenterPanel cPanel;

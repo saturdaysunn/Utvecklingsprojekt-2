@@ -2,6 +2,7 @@ package all.klient.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * displays contacts. Populated from server by reading from file on harddisk
@@ -39,7 +40,7 @@ public class RPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        String[] contactsArray = {"user1", "user2", "user3"}; //TODO: test values
+        String[] contactsArray = {"user1", "user2", "user3"}; //TODO: test values, to be replaced with reading from file
         populateRPanel(contactsArray);
     }
 
@@ -51,5 +52,6 @@ public class RPanel extends JPanel {
         //there should be a toString method which makes user array to string array
         rightPanelList.setListData(contactsArray);
     }
+
 
 }
