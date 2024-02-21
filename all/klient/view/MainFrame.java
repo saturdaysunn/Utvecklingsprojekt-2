@@ -7,14 +7,13 @@ import all.Controller;
 import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
-
     private JFrame frame;
     private MainPanel panel;
-    private Controller controller; //do we need??
+    private UserController controller;
     private int width = 1000;
     private int height = 600;
 
-    public MainFrame(int width, int height, Controller controller){
+    public MainFrame(int width, int height, UserController controller){
         super("Chatt");
         this.setResizable(false);
         this.setSize(width, height);
@@ -51,13 +50,26 @@ public class MainFrame extends JFrame {
         panel.getlPanel().populateLPanel(onlineArray);
     }
 
+
+    /*
     /**
      * informs controller that user has logged in
      * @param userName name of user
-     */
+     */ /*
     public void userLoggedIn(String userName){
         controller.userLoggedIn(userName);
+    } */
+
+    //TODO: read sender from label on left panel (above contacts list in left panel) Maybe show picture too.
+    //TODO: read receivers from checked boxes/users in right panel
+
+    public void sendMessage(String message, ImageIcon image) {
+        String stringUser = panel.getlPanel().getUsername();
+        ArrayList<String> receivers = panel.getlPanel().getReceivers();
+        controller.sendMessage(message, image, stringUser, receivers);
+
     }
+
 
 }
 

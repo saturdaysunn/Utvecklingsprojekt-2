@@ -26,11 +26,9 @@ public class MessageClient extends Thread {
     private HashMap<User, ArrayList<Message>> userArrayListHashMap;
     private MainFrame view; //???
     private OnlineUser onlineUser; //???
-    private HashMap<User, Client> clients = new HashMap<User, Client>();
     private ArrayList<CallBackInterface> listeners = new ArrayList<>();
 
     public MessageClient(String ip, int port){
-
         try{
             socket = new Socket(ip, port);
             new Listener().start();
@@ -44,24 +42,14 @@ public class MessageClient extends Thread {
         listeners.add(listener);
     }
 
-
-    public void put(User user, Client client){
-        synchronized (this){
-            clients.put(user, client);
-        }
-    }
-
     public synchronized Client get(User user){
-
         return get(user);
-
     }
 
     private class Listener extends Thread {
 
         @Override
         public void run() {
-
             Message message;
 
             try {

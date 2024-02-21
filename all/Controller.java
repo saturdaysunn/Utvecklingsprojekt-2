@@ -23,7 +23,6 @@ public class Controller {
     }
 
     public void userLoggedIn(String userName){
-
         for(User user : userList){
             if(user.getUsername().equals(userName)){
                 user.setOnline(true);
@@ -31,7 +30,6 @@ public class Controller {
                 // starta klienten
             }
         }
-
     }
 
 

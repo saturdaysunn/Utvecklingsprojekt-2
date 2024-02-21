@@ -1,12 +1,20 @@
 package all.klient.view;
 
+import all.jointEntity.ImageMessage;
+import all.jointEntity.Message;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 
 public class CenterPanel extends JPanel{
-
     private int width;
     private int height;
     private MainFrame mainFrame;
@@ -40,20 +48,30 @@ public class CenterPanel extends JPanel{
         JPanel messageInputPanel = new JPanel(new FlowLayout()); //message input box
 
         //Create a new JTextField for the message input box
-        messageInputField = new JTextField(25); // width
+        messageInputField = new JTextField(25); //width
         messageInputPanel.add(messageInputField);
 
         //Create send button
         sendButton = new JButton("Send");
         messageInputPanel.add(sendButton);
-
         //Add message input panel to main panel
         add(messageInputPanel, BorderLayout.SOUTH);
+        /**
+         * listens to send button to register input message
+         */
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendMessage(messageInputField.getText(), new ImageIcon()); //sends contents of message input field (temp image icon)
+                //TODO: either parameter can be null
+            }
+        });
     }
 
-    //TODO: Add action listener to send button
-    //TODO: send to server to save messages to message array in hashmap??
-    //TODO: then save to file if offline??
+    public void sendMessage(String message, ImageIcon image) {
+        mainFrame.sendMessage(message, image);
+    }
+
 
 
 }
