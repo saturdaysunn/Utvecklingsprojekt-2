@@ -9,11 +9,12 @@ import java.util.ArrayList;
 public class MainFrame extends JFrame {
     private JFrame frame;
     private MainPanel panel;
-    private UserController controller;
+    private UserController userController;
+    private Controller controller;
     private int width = 1000;
     private int height = 600;
 
-    public MainFrame(int width, int height, UserController controller){
+    public MainFrame(int width, int height, Controller c){
         super("Chatt");
         this.setResizable(false);
         this.setSize(width, height);
@@ -22,6 +23,7 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.setBounds(100, 100, width, height);
         this.setDefaultCloseOperation(3);
+        controller = c;
         setupLogin();
     }
 
@@ -66,11 +68,11 @@ public class MainFrame extends JFrame {
     public void sendMessage(String message, ImageIcon image) {
         String stringUser = panel.getlPanel().getUsername();
         ArrayList<String> receivers = panel.getlPanel().getReceivers();
-        controller.sendMessage(message, image, stringUser, receivers);
+        userController.sendMessage(message, image, stringUser, receivers);
 
     }
 
-
+    public MainPanel getMainPanel() {
+        return panel;
+    }
 }
-
-

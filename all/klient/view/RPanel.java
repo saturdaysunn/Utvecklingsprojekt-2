@@ -14,6 +14,7 @@ public class RPanel extends JPanel {
     private MainFrame mainFrame;
     private JList<Object> rightPanelList;
     private JLabel contactsTitle;
+    private JLabel currentUserLabel;
 
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -42,6 +43,20 @@ public class RPanel extends JPanel {
 
         String[] contactsArray = {"user1", "user2", "user3"}; //TODO: test values, to be replaced with reading from file
         populateRPanel(contactsArray);
+
+
+        JPanel currentUserPanel = new JPanel();
+        currentUserLabel = new JLabel();
+        currentUserPanel.setPreferredSize(new Dimension(20, 70));
+        currentUserPanel.add(currentUserLabel); //add button to panel
+        add(currentUserPanel, BorderLayout.SOUTH);
+
+    }
+
+    public void setCurrentUsername(String username){
+
+        this.currentUserLabel.setText(username);
+
     }
 
     /**

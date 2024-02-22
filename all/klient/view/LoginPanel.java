@@ -86,6 +86,8 @@ public class LoginPanel extends JFrame {
                     JOptionPane.showMessageDialog(null, "No picture chosen. Please try again.");
                 }
 
+
+                mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
                 //TODO: save username & picture (in file?)
                 //TODO: how to get info to main panel after this. send it to server from client?
             }
