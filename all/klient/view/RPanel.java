@@ -2,7 +2,12 @@ package all.klient.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * displays contacts. Populated from server by reading from file on harddisk
@@ -44,9 +49,6 @@ public class RPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        String[] contactsArray = {"user1", "user2", "user3"}; //TODO: test values, to be replaced with reading from file
-        populateRPanel(contactsArray);
-
 
         JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         currentUserLabel = new JLabel();
@@ -78,8 +80,10 @@ public class RPanel extends JPanel {
      * populates right panel with contacts
      * @param contactsArray
      */
-    protected void populateRPanel(String[] contactsArray){
-        //there should be a toString method which makes user array to string array
+    protected void populateRPanel(List<String> contactsList){
+
+        String[] contactsArray = contactsList.toArray(String[]::new);
+
         rightPanelList.setListData(contactsArray);
     }
 
@@ -90,7 +94,5 @@ public class RPanel extends JPanel {
         Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-
-
 
 }

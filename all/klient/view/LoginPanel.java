@@ -95,6 +95,8 @@ public class LoginPanel extends JFrame {
 
                 mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
                 mainFrame.getMainPanel().getrPanel().setImage(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
+
+                mainFrame.appendUserToFile(username);
                 //TODO: save username & picture (in file?)
                 //TODO: how to get info to main panel after this. send it to server from client?
             }

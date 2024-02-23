@@ -17,10 +17,6 @@ public class Controller {
         view = new MainFrame(1000, 600, this);
     }
 
-    public void populateRightPanel(String[] contactsString) {
-        view.populateRPanel(contactsString);
-
-    }
 
     public void userLoggedIn(String userName){
         for(User user : userList){

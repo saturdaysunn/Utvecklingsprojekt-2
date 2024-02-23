@@ -6,12 +6,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
 
 //TODO: change so that the panel is called only users
 //TODO: online users have green circle
@@ -55,8 +54,8 @@ public class LPanel extends JPanel{
         JScrollPane scrollPane = new JScrollPane(leftPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        String[] onlineArray = {"user1", "user2", "user3"}; //TODO: test values
-        populateLPanel(onlineArray);
+        List<String> contactsList = readFromFile("all/files/users.txt");
+        populateLPanel(contactsList);
 
         JPanel addContactPanel = new JPanel(new FlowLayout());
         addToContactsButton = new JButton("Add to Contacts");
@@ -76,15 +75,20 @@ public class LPanel extends JPanel{
             }
         });
         add(addContactPanel, BorderLayout.SOUTH); //add to south of panel
+
+
+
     }
 
     /**
      * populates left panel with online users
      * @param onlineArray
      */
-    protected void populateLPanel(String[] onlineArray){
-        //there should be a toString method which makes user array to string array
-        leftPanelList.setListData(onlineArray);
+    protected void populateLPanel(List<String> contactsList){
+
+        String[] contactsArray = contactsList.toArray(String[]::new);
+
+        leftPanelList.setListData(contactsArray);
     }
 
     //TODO: implement method which reads which users have been selected
@@ -99,5 +103,20 @@ public class LPanel extends JPanel{
     public ArrayList<String> getReceivers() {
         //TODO: returns users which have been selected
         return null; //TODO: temp
+    }
+
+    public static LinkedList<String> readFromFile(String filePath) {
+        LinkedList<String> lines = new LinkedList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return lines;
     }
 }

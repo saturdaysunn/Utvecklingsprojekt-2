@@ -5,11 +5,12 @@ import javax.swing.*;
 import all.Controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainFrame extends JFrame {
     private JFrame frame;
     private MainPanel panel;
-    private UserController userController;
+    private UserController userController = new UserController();
     private Controller controller;
     private int width = 1000;
     private int height = 600;
@@ -41,7 +42,7 @@ public class MainFrame extends JFrame {
      * displays users added to contacts (do not have to be online)
      * @param contactsArray array of contacts
      */
-    public void populateRPanel(String[] contactsArray) {
+    public void populateRPanel(List<String> contactsArray) {
         panel.getrPanel().populateRPanel(contactsArray);
     }
 
@@ -49,8 +50,12 @@ public class MainFrame extends JFrame {
      * displays online users
      * @param onlineArray array containing online users
      */
-    public void populateLPanel (String[] onlineArray) {
+    public void populateLPanel (List<String> onlineArray) {
         panel.getlPanel().populateLPanel(onlineArray);
+    }
+
+    public void appendUserToFile(String username){
+        userController.appendUserToFile(username, "all/files/users.txt");
     }
 
 
