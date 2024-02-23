@@ -15,6 +15,9 @@ public class RPanel extends JPanel {
     private JList<Object> rightPanelList;
     private JLabel contactsTitle;
     private JLabel currentUserLabel;
+    private JLabel currentUserPictureLabel;
+    private ImageIcon image = new ImageIcon("all/files/default-image.png");
+
 
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -45,10 +48,17 @@ public class RPanel extends JPanel {
         populateRPanel(contactsArray);
 
 
-        JPanel currentUserPanel = new JPanel();
+        JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         currentUserLabel = new JLabel();
-        currentUserPanel.setPreferredSize(new Dimension(20, 70));
-        currentUserPanel.add(currentUserLabel); //add button to panel
+        currentUserPictureLabel = new JLabel();
+
+        currentUserPictureLabel.setIcon(resizeImage(image));
+
+        currentUserPanel.setPreferredSize(new Dimension(20, 90));
+
+        currentUserPanel.add(currentUserLabel, BorderLayout.WEST);
+        currentUserPanel.add(currentUserPictureLabel, BorderLayout.EAST);
+
         add(currentUserPanel, BorderLayout.SOUTH);
 
     }
@@ -59,6 +69,11 @@ public class RPanel extends JPanel {
 
     }
 
+    public void setImage(ImageIcon image) {
+        currentUserPictureLabel.setIcon(resizeImage(image));
+    }
+
+
     /**
      * populates right panel with contacts
      * @param contactsArray
@@ -67,6 +82,15 @@ public class RPanel extends JPanel {
         //there should be a toString method which makes user array to string array
         rightPanelList.setListData(contactsArray);
     }
+
+    public static ImageIcon resizeImage(ImageIcon originalIcon) {
+        Image originalImage = originalIcon.getImage();
+        int width = 40; // specify the desired width and height
+        int height = 40;
+        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
+    }
+
 
 
 }
