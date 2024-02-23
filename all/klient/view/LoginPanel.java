@@ -3,12 +3,18 @@ package all.klient.view;
 import com.sun.tools.javac.Main;
 import all.jointEntity.User;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class LoginPanel extends JFrame {
     private MainFrame mainFrame;
@@ -57,7 +63,6 @@ public class LoginPanel extends JFrame {
         add(picturePanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-
         //action listener for when choose picture button is clicked
         choosePicture.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -66,6 +71,8 @@ public class LoginPanel extends JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     ImageIcon icon = new ImageIcon(selectedFile.getPath());
+
+                    loadImage(selectedFile);
                     userPicture.setIcon(icon);
                 }
             }
@@ -86,13 +93,30 @@ public class LoginPanel extends JFrame {
                     JOptionPane.showMessageDialog(null, "No picture chosen. Please try again.");
                 }
 
-
                 mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
+                mainFrame.getMainPanel().getrPanel().setImage(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
                 //TODO: save username & picture (in file?)
                 //TODO: how to get info to main panel after this. send it to server from client?
             }
         });
+    }
 
+    private void loadImage(File file) {
+        try {
+            BufferedImage image = ImageIO.read(file);
+            saveImageToFile(image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void saveImageToFile(BufferedImage image) {
+        try {
+            String path = "all/user_images/" + usernameField.getText() + ".png";
+            File outputfile = new File(path);
+            ImageIO.write(image, "png", outputfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

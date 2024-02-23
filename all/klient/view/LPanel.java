@@ -1,10 +1,17 @@
 package all.klient.view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 //TODO: change so that the panel is called only users
 //TODO: online users have green circle
@@ -54,7 +61,7 @@ public class LPanel extends JPanel{
         JPanel addContactPanel = new JPanel(new FlowLayout());
         addToContactsButton = new JButton("Add to Contacts");
         addContactPanel.add(addToContactsButton); //add button to panel
-        addContactPanel.setPreferredSize(new Dimension(20, 70));
+        addContactPanel.setPreferredSize(new Dimension(20, 90));
         addToContactsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,5 +100,4 @@ public class LPanel extends JPanel{
         //TODO: returns users which have been selected
         return null; //TODO: temp
     }
-
 }

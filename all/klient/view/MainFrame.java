@@ -13,6 +13,7 @@ public class MainFrame extends JFrame {
     private Controller controller;
     private int width = 1000;
     private int height = 600;
+    private LoginPanel loginPanel;
 
     public MainFrame(int width, int height, Controller c){
         super("Chatt");
@@ -31,7 +32,7 @@ public class MainFrame extends JFrame {
      * Initiates and calls to set up login window
      */
     public void setupLogin() {
-        LoginPanel loginPanel = new LoginPanel(this); //create new login window
+        loginPanel = new LoginPanel(this); //create new login window
         loginPanel.setUpWindow(); //call to set up
         System.out.println("login panel started");
     }
@@ -74,5 +75,9 @@ public class MainFrame extends JFrame {
 
     public MainPanel getMainPanel() {
         return panel;
+    }
+
+    public LoginPanel getLoginPanel(){
+        return loginPanel;
     }
 }
