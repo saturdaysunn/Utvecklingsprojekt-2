@@ -5,6 +5,7 @@ import javax.swing.*;
 import all.Controller;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -84,5 +85,15 @@ public class MainFrame extends JFrame {
 
     public LoginPanel getLoginPanel(){
         return loginPanel;
+    }
+
+    public LinkedList<String> readFromFile(String filePath) {
+        return panel.getlPanel().readFromFile(filePath);
+    }
+
+    public boolean checkIfUserAlreadyExists(String username) {
+
+        return controller.checkIfUserAlreadyExists(username, "all/files/users.txt");
+
     }
 }

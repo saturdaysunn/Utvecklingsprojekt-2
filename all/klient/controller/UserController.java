@@ -1,8 +1,11 @@
 package all.klient.controller;
 
+import all.klient.view.MainFrame;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,6 +18,7 @@ public class UserController {
     }
 
     public void appendUserToFile(String text, String filePath) {
+
         try (FileWriter fw = new FileWriter(filePath, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
             bw.write(text);
@@ -23,6 +27,7 @@ public class UserController {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+
 
     //TODO: ask how this is supposed to send messages to the MessageClients (how to use callback for this?)
     public void sendMessage(String message, ImageIcon image, String senderName, ArrayList<String> receivers) {

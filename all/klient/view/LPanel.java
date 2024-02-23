@@ -105,7 +105,7 @@ public class LPanel extends JPanel{
         return null; //TODO: temp
     }
 
-    public static LinkedList<String> readFromFile(String filePath) {
+    public LinkedList<String> readFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
