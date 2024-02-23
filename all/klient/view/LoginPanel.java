@@ -73,7 +73,7 @@ public class LoginPanel extends JFrame {
                     ImageIcon icon = new ImageIcon(selectedFile.getPath());
 
                     loadImage(selectedFile);
-                    userPicture.setIcon(icon);
+                    userPicture.setIcon(resizePreviewImage(icon));
                 }
             }
         });
@@ -118,5 +118,13 @@ public class LoginPanel extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ImageIcon resizePreviewImage(ImageIcon originalIcon) {
+        Image originalImage = originalIcon.getImage();
+        int width = 140; // specify the desired width and height
+        int height = 140;
+        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 }
