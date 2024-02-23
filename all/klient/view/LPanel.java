@@ -1,15 +1,11 @@
 package all.klient.view;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 //TODO: change so that the panel is called only users
@@ -25,9 +21,11 @@ public class LPanel extends JPanel{
     private int width;
     private int height;
     private MainFrame mainFrame;
-    private JList<Object> leftPanelList;
+    private JList<String> leftPanelList;
     private JButton addToContactsButton;
-    private ArrayList<String> selectedUsers = new ArrayList<>();
+    private List<String> selectedUsers;
+    private ArrayList<String> currentUserContacts = new ArrayList<>();
+    private HashMap<String, ArrayList<String>> userContacts = new HashMap<>();
 
     public LPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -45,17 +43,20 @@ public class LPanel extends JPanel{
         onlineUsersLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(onlineUsersLabel, BorderLayout.NORTH);
 
-        leftPanelList = new JList<>();
+        leftPanelList = new JList<String>();
+        leftPanelList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         leftPanelList.setLocation(0, 200);
         leftPanelList.setSize(width, height - 100);
         leftPanelList.setBackground(new Color(215, 215, 215));
         leftPanelList.setFont(new Font("Helvetica", Font.PLAIN, 16));
         leftPanelList.setEnabled(true); //controls if you can select items in the list
+
+        leftPanelList.setCellRenderer(new CheckboxListCellRenderer());
+
         JScrollPane scrollPane = new JScrollPane(leftPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        List<String> contactsList = readFromFile("all/files/users.txt");
-        populateLPanel(contactsList);
+        populateLPanel(readFromFile("all/files/users.txt"));
 
         JPanel addContactPanel = new JPanel(new FlowLayout());
         addToContactsButton = new JButton("Add to Contacts");
@@ -65,24 +66,35 @@ public class LPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object selectedObject = leftPanelList.getSelectedValue();
+
                 if (selectedObject != null) {
                     //TODO: check if already in contacts
                     //TODO: logic to add to contacts file
-                    JOptionPane.showMessageDialog(LPanel.this, "Added " + selectedObject.toString() + " to contacts.");
+
+                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUserLabel(); //current user
+                    selectedUsers = leftPanelList.getSelectedValuesList(); //selected users on LPanel
+
+                    for(String selectedUser : selectedUsers) {
+                        if (!currentUserContacts.contains(selectedUser)) {
+                            currentUserContacts.add(selectedUser);
+                        }
+                    }
+
+                    userContacts.put(currentUser, currentUserContacts);
+                    writeHashMapToFile(userContacts, "all/files/contacts.txt");
+
+
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select a user.");
                 }
             }
         });
         add(addContactPanel, BorderLayout.SOUTH); //add to south of panel
-
-
-
     }
 
     /**
      * populates left panel with online users
-     * @param onlineArray
+     * @param contactsList
      */
     protected void populateLPanel(List<String> contactsList){
 
@@ -105,6 +117,29 @@ public class LPanel extends JPanel{
         return null; //TODO: temp
     }
 
+    public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filename) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            for (Map.Entry<String, ArrayList<String>> entry : hashMap.entrySet()) {
+                String key = entry.getKey();
+                ArrayList<String> values = entry.getValue();
+
+                writer.write(key);
+                writer.newLine();
+
+                for (String value : values) {
+                    writer.write(value);
+                    writer.newLine();
+                }
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public LinkedList<String> readFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
 
@@ -118,5 +153,26 @@ public class LPanel extends JPanel{
         }
 
         return lines;
+    }
+
+    private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
+        private static final long serialVersionUID = 1L;
+
+        public CheckboxListCellRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends String> list,
+                                                      String value,
+                                                      int index,
+                                                      boolean isSelected,
+                                                      boolean cellHasFocus) {
+            setText(value);
+            setSelected(isSelected);
+            setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+            setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+            return this;
+        }
     }
 }

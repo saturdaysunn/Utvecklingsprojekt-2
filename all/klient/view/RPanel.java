@@ -71,6 +71,10 @@ public class RPanel extends JPanel {
 
     }
 
+    public String getCurrentUserLabel() {
+        return currentUserLabel.getText();
+    }
+
     public void setImage(ImageIcon image) {
         currentUserPictureLabel.setIcon(resizeImage(image));
     }
