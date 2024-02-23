@@ -12,11 +12,4 @@ public class OnlineUser { //TODO: poor naming choice, sounds like entity
     private MainFrame view;
 
 
-    public void contactsToString(ArrayList<User> onlineUsers) {
-
-        String[] stringContactList = new String[onlineUsers.size()];
-
-        view.populateRPanel(stringContactList);
-    }
-
 }
