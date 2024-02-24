@@ -141,7 +141,7 @@ public class UserController {
 
 
     //TODO: ask how this is supposed to send messages to the MessageClients (how to use callback for this?)
-    public void sendMessage(String message, ImageIcon image, String senderName, ArrayList<String> receivers) {
+    public void sendMessage(String message, String senderName, ArrayList<String> receivers) {
         //TODO: send message to online client
         //TODO: or store message in files for offline client
 

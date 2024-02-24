@@ -9,6 +9,7 @@ import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,6 +22,9 @@ public class CenterPanel extends JPanel{
     private Border border;
     private JTextField messageInputField;
     private JButton sendButton;
+    private JButton uploadImageButton;
+    private JLabel userChatLabel;
+    private JPanel chatNamePanel;
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -40,38 +44,118 @@ public class CenterPanel extends JPanel{
         BorderLayout layout = new BorderLayout();
         setLayout(layout);
         border = this.getBorder();
-
-        //Let the panel have a border, 10 pixels on all sides
         Border margin = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         setBorder(new CompoundBorder(border, margin));
 
-        JPanel messageInputPanel = new JPanel(new FlowLayout()); //message input box
+        chatNamePanel = new JPanel(new BorderLayout()); //initialize
+        userChatLabel = new JLabel(); //initialize
+        chatNamePanel.add(userChatLabel, BorderLayout.CENTER);
+        chatNamePanel.setPreferredSize(new Dimension(500, 25));
+        add(chatNamePanel, BorderLayout.NORTH); //add to center panel
+        setChatName(null);
 
-        //Create a new JTextField for the message input box
-        messageInputField = new JTextField(25); //width
-        messageInputPanel.add(messageInputField);
+        //chat area to display messages
+        JTextArea chatArea = new JTextArea();
+        chatArea.setEditable(false); //non-editable
+        JScrollPane scrollableChatPane = new JScrollPane(chatArea); //scroll bar for many messages
+        add(scrollableChatPane, BorderLayout.CENTER); //add chat window to the center
 
-        //Create send button
-        sendButton = new JButton("Send");
-        messageInputPanel.add(sendButton);
-        //Add message input panel to main panel
+        JPanel messageInputPanel = new JPanel(); //panel for input box
+        messageInputPanel.setLayout(new BoxLayout(messageInputPanel, BoxLayout.X_AXIS));
+        messageInputField = new JTextField(25);
+
+        JScrollPane scrollableInputField = new JScrollPane(messageInputField); //TODO: scroll doesn't work right now. FIX
+        messageInputPanel.add(scrollableInputField);
+
+        sendButton = new JButton("Send"); //button to send message
+        uploadImageButton = new JButton("Upload Image"); //button to upload image
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.add(sendButton);
+        buttonPanel.add(uploadImageButton);
+        messageInputPanel.add(buttonPanel);
         add(messageInputPanel, BorderLayout.SOUTH);
+
         /**
-         * listens to send button to register input message
+         * listens to send button to register message to be sent
          */
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendMessage(messageInputField.getText(), new ImageIcon()); //sends contents of message input field (temp image icon)
+                System.out.println("send button pressed"); //test
+                sendMessage(messageInputField.getText()); //send contents of input field as message
                 //TODO: either parameter can be null
+                messageInputField.setText(""); //clear input field after sending message
             }
         });
+
+        /**
+         * listens to upload image button to register image to be sent
+         */
+        uploadImageButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("upload image button pressed"); //test
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile(); //retrieves path in computer
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+
+                    String existingText = messageInputField.getText();
+                    if (!existingText.isEmpty()) { //if already text in message input box
+                        existingText += " ";
+                    }
+                    existingText += selectedFile.getAbsolutePath();
+                    messageInputField.setText(existingText); //update text in input field with image
+
+                    //TODO: fix how to make sure image gets sent/saved to server
+                } else {
+                    System.out.println("No file chosen");
+                }
+            }
+        });
+
     }
 
-    public void sendMessage(String message, ImageIcon image) {
-        mainFrame.sendMessage(message, image);
+    public void sendMessage(String message) {
+        mainFrame.sendMessage(message);
     }
 
 
+    /**
+     * displays chat with a given user
+     * @param userName name of selected user
+     */
+    public void viewChat(String userName) {
+        System.out.println("i have been called to view chat");
+        //TODO: communicate to mainframe and then to controller to retrieve messages for chat with given user.
+        //TODO: send messages to populate chat window
+        setChatName(userName);
+        populateChatWindow();
+    }
+
+    /**
+     * populates chat window with messages from selected user
+     */
+    public void populateChatWindow() {
+        //populate chat window with messages (text and images, somehow).
+    }
+
+    /**
+     * displays who user is chatting with in panel above chat window
+     */
+    public void setChatName(String userName) {
+        if (userName == null) {
+            userChatLabel.setText("No Chat Selected");
+            System.out.println("no chat selected");
+        } else {
+            userChatLabel.setText("Showing Chat With " + userName);
+            System.out.println("chat with " + userName);
+        }
+    }
 
 }
