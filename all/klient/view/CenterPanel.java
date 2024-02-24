@@ -23,6 +23,8 @@ public class CenterPanel extends JPanel{
     private JTextField messageInputField;
     private JButton sendButton;
     private JButton uploadImageButton;
+    private JLabel userChatLabel;
+    private JPanel chatNamePanel;
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -44,6 +46,13 @@ public class CenterPanel extends JPanel{
         border = this.getBorder();
         Border margin = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         setBorder(new CompoundBorder(border, margin));
+
+        chatNamePanel = new JPanel(new BorderLayout()); //initialize
+        userChatLabel = new JLabel(); //initialize
+        chatNamePanel.add(userChatLabel, BorderLayout.CENTER);
+        chatNamePanel.setPreferredSize(new Dimension(500, 25));
+        add(chatNamePanel, BorderLayout.NORTH); //add to center panel
+        setChatName(null);
 
         //chat area to display messages
         JTextArea chatArea = new JTextArea();
@@ -125,6 +134,7 @@ public class CenterPanel extends JPanel{
         System.out.println("i have been called to view chat");
         //TODO: communicate to mainframe and then to controller to retrieve messages for chat with given user.
         //TODO: send messages to populate chat window
+        setChatName(userName);
         populateChatWindow();
     }
 
@@ -133,6 +143,19 @@ public class CenterPanel extends JPanel{
      */
     public void populateChatWindow() {
         //populate chat window with messages (text and images, somehow).
+    }
+
+    /**
+     * displays who user is chatting with in panel above chat window
+     */
+    public void setChatName(String userName) {
+        if (userName == null) {
+            userChatLabel.setText("No Chat Selected");
+            System.out.println("no chat selected");
+        } else {
+            userChatLabel.setText("Showing Chat With " + userName);
+            System.out.println("chat with " + userName);
+        }
     }
 
 }
