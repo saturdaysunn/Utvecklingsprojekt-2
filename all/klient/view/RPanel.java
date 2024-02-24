@@ -62,7 +62,6 @@ public class RPanel extends JPanel {
         currentUserPanel.add(currentUserPictureLabel, BorderLayout.EAST);
 
         add(currentUserPanel, BorderLayout.SOUTH);
-
     }
 
     public void setCurrentUsername(String username){
@@ -82,9 +81,14 @@ public class RPanel extends JPanel {
 
     /**
      * populates right panel with contacts
-     * @param contactsArray
+     * @param contactsList
      */
     protected void populateRPanel(List<String> contactsList){
+        for(String contact : contactsList){
+
+            System.out.println(contact);
+
+        }
 
         String[] contactsArray = contactsList.toArray(String[]::new);
 
@@ -98,5 +102,4 @@ public class RPanel extends JPanel {
         Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-
 }

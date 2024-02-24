@@ -5,6 +5,7 @@ import javax.swing.*;
 import all.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -87,12 +88,24 @@ public class MainFrame extends JFrame {
     }
 
     public LinkedList<String> readFromFile(String filePath) {
-        return panel.getlPanel().readFromFile(filePath);
+        return userController.readFromFile(filePath);
     }
 
     public boolean checkIfUserAlreadyExists(String username) {
 
         return controller.checkIfUserAlreadyExists(username, "all/files/users.txt");
 
+    }
+
+    public List<String> getDataAfterEmptyRow(String filePath, String searchString) {
+        return userController.getDataAfterEmptyRow(filePath, searchString);
+    }
+
+    public HashMap<String, ArrayList<String>> getContactsOfUser(String filepath, String user){
+        return userController.getContactsOfUser(filepath, user);
+    }
+
+    public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
+        userController.writeHashMapToFile(hashMap, filePath);
     }
 }
