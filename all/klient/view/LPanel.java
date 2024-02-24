@@ -56,7 +56,7 @@ public class LPanel extends JPanel{
         JScrollPane scrollPane = new JScrollPane(leftPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        populateLPanel(readFromFile("all/files/users.txt"));
+        populateLPanel(mainFrame.readFromFile("all/files/users.txt"));
 
         JPanel addContactPanel = new JPanel(new FlowLayout());
         addToContactsButton = new JButton("Add to Contacts");
@@ -75,26 +75,29 @@ public class LPanel extends JPanel{
                     selectedUsers = leftPanelList.getSelectedValuesList(); //selected users on LPanel
 
                     for(String selectedUser : selectedUsers) {
-                        if (!currentUserContacts.contains(selectedUser)) {
+                        if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
+                            //if the user isn't already in contact, then the user is added.
                             currentUserContacts.add(selectedUser);
                         }
                     }
 
-                    userContacts.put(currentUser, currentUserContacts);
-                    writeHashMapToFile(userContacts, "all/files/contacts.txt");
+                    userContacts.put(currentUser, currentUserContacts); //before writing to file, the user's contacts are stored a HashMap
 
+                    mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
+                    mainFrame.populateRPanel(mainFrame.getDataAfterEmptyRow("all/files/contacts.txt", currentUser));
 
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select a user.");
                 }
             }
         });
+
         add(addContactPanel, BorderLayout.SOUTH); //add to south of panel
     }
 
     /**
      * populates left panel with online users
-     * @param contactsList
+     * @param contactsList list
      */
     protected void populateLPanel(List<String> contactsList){
 
@@ -117,9 +120,40 @@ public class LPanel extends JPanel{
         return null; //TODO: temp
     }
 
+    /*
     public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename));
+             BufferedWriter writer = new BufferedWriter(new FileWriter("temp.txt"))) {
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            boolean foundKey = false;
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (foundKey) {
+                        //found an empty row after the key, break loop
+                        break;
+                    }
+                    continue;
+                }
+
+                if (!foundKey) {
+                    if (hashMap.containsKey(line)) {
+                        foundKey = true;
+                    }
+                }
+
+                //if key found, ignore lines until an empty row is found
+                if (foundKey) {
+                    continue;
+                }
+
+                //copy the line to the new file
+                writer.write(line);
+                writer.newLine();
+            }
+
+            //write the HashMap to the new file
             for (Map.Entry<String, ArrayList<String>> entry : hashMap.entrySet()) {
                 String key = entry.getKey();
                 ArrayList<String> values = entry.getValue();
@@ -133,27 +167,27 @@ public class LPanel extends JPanel{
                 }
                 writer.newLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-
-
-    public LinkedList<String> readFromFile(String filePath) {
-        LinkedList<String> lines = new LinkedList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
+            //copy the remaining content of the file
+            while ((line = reader.readLine()) != null) {
+                writer.write(line);
+                writer.newLine();
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return lines;
-    }
+        //rename the temporary file to the original filename
+        File tempFile = new File("temp.txt");
+        File originalFile = new File(filename);
+        if (tempFile.exists()) {
+            if (originalFile.exists())
+                originalFile.delete();
+            tempFile.renameTo(originalFile);
+        }
+    }*/
+
 
     private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
         private static final long serialVersionUID = 1L;
