@@ -5,6 +5,8 @@ import javax.swing.*;
 import all.Controller;
 
 import java.io.File;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -121,11 +123,17 @@ public class MainFrame extends JFrame {
         }
     }
 
+
     /**
      * @return instance of mainPanel
      */
     public MainPanel getMainPanel() {
         return panel;
+    }
+
+    public LinkedList<String> readFromFile(String filePath) {
+        return userController.retrieveAllUsersFromFile(filePath);
+      
     }
 
     //TODO: change to userController instead of controller
@@ -147,17 +155,23 @@ public class MainFrame extends JFrame {
         return userController.readFromFile(filePath);
     }
 
+
     //TODO: vague name
     public List<String> getDataAfterEmptyRow(String filePath, String searchString) {
         return userController.getDataAfterEmptyRow(filePath, searchString);
     }
 
-    public HashMap<String, ArrayList<String>> getContactsOfUser(String filepath, String user){
+    public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
+        userController.removeDataBlock(filePath, targetString, outputFilePath);
+
+    }
+
+    public List<String> getContactsOfUser(String filepath, String user){
         return userController.getContactsOfUser(filepath, user);
     }
 
     //TODO: vague name
     public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
-        userController.writeHashMapToFile(hashMap, filePath);
+        userController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
     }
 }
