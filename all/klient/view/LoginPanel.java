@@ -1,7 +1,6 @@
 package all.klient.view;
 
-import com.sun.tools.javac.Main;
-import all.jointEntity.User;
+import all.klient.controller.MessageClient;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,21 +8,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
 
 public class LoginPanel extends JFrame {
     private MainFrame mainFrame;
     private JTextField usernameField;
     private JButton choosePicture;
     private JLabel userPicture;
+    private MessageClient messageClient;
 
-    public LoginPanel(MainFrame mainFrame) {
+    //TODO: possibly change so login panel opens before mainframe
+    public LoginPanel(MainFrame mainFrame, MessageClient messageClient) { //TODO: parameters would change if logic changes
         this.mainFrame = mainFrame;
+        this.messageClient = messageClient;
         this.setSize(500, 300);
         this.setVisible(true);
     }
@@ -93,18 +91,31 @@ public class LoginPanel extends JFrame {
                     JOptionPane.showMessageDialog(null, "No picture chosen. Please try again.");
                 }*/
 
+                //display user's name and icon on GUI
                 mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
                 mainFrame.getMainPanel().getrPanel().setImage(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
 
-                if (!mainFrame.checkIfUserAlreadyExists(username)){
-                    mainFrame.appendUserToFile(username);
-                }else {
-                    //TODO: log in the user and load their contacts, chats, etc.
-                }
-                //TODO: save username & picture (in file?)
-                //TODO: how to get info to main panel after this. send it to server from client?
+                loginUser(username);
             }
         });
+    }
+
+
+    //TODO: here it would be beneficial to use the online message Johan was talking about.
+    /**
+     * in charge of forwarding message to client to inform sender a user has logged in
+     */
+    public void loginUser(String username) { //TODO: unsure about parameters
+        //TODO: send message to server from client that user is online
+        //TODO: e.g. className.loginUser(username, messageClient);
+        //observe sending of instance of messageClient. ask about this.
+
+        //TODO: this should be done in messageClient instead and call to userController to save to file
+        /*
+        if (!mainFrame.checkIfUserAlreadyExists(username)) {
+            mainFrame.saveUserToFile(username);
+        }else {
+        } */
     }
 
     private void loadImage(File file) {
@@ -116,6 +127,10 @@ public class LoginPanel extends JFrame {
         }
     }
 
+    /**
+     * saves user's image to file for later retrieval
+     * @param image
+     */
     private void saveImageToFile(BufferedImage image) {
         try {
             String path = "all/user_images/" + usernameField.getText() + ".png";
@@ -126,9 +141,14 @@ public class LoginPanel extends JFrame {
         }
     }
 
+    /**
+     * resizes image to fit in window
+     * @param originalIcon image icon to be resized
+     * @return resized image icon
+     */
     public static ImageIcon resizePreviewImage(ImageIcon originalIcon) {
         Image originalImage = originalIcon.getImage();
-        int width = 140; // specify the desired width and height
+        int width = 140; //specify the desired width and height
         int height = 140;
         Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);

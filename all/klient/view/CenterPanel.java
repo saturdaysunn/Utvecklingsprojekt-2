@@ -83,9 +83,8 @@ public class CenterPanel extends JPanel{
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("send button pressed"); //test
+                System.out.println("send button pressed");
                 sendMessage(messageInputField.getText()); //send contents of input field as message
-                //TODO: either parameter can be null
                 messageInputField.setText(""); //clear input field after sending message
             }
         });
@@ -111,8 +110,6 @@ public class CenterPanel extends JPanel{
                     }
                     existingText += selectedFile.getAbsolutePath();
                     messageInputField.setText(existingText); //update text in input field with image
-
-                    //TODO: fix how to make sure image gets sent/saved to server
                 } else {
                     System.out.println("No file chosen");
                 }
@@ -121,6 +118,10 @@ public class CenterPanel extends JPanel{
 
     }
 
+    /**
+     * forwards message to be processed in controller class
+     * @param message message in string format
+     */
     public void sendMessage(String message) {
         mainFrame.sendMessage(message);
     }
@@ -134,8 +135,8 @@ public class CenterPanel extends JPanel{
         System.out.println("i have been called to view chat");
         //TODO: communicate to mainframe and then to controller to retrieve messages for chat with given user.
         //TODO: send messages to populate chat window
-        setChatName(userName);
-        populateChatWindow();
+        setChatName(userName); //sets name of user chatting with
+        populateChatWindow(); //TODO: currently not functional, should show all message history
     }
 
     /**
