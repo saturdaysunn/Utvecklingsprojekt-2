@@ -6,6 +6,7 @@ import all.klient.controller.MessageClient;
 import java.util.HashMap;
 
 public class Client {
+    //TODO: don't think we need this class
     private HashMap<User, MessageClient> clients = new HashMap<User, MessageClient>();
 
     /**

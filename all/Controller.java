@@ -2,6 +2,7 @@ package all;
 
 import all.jointEntity.User;
 import all.klient.controller.MessageClient;
+import all.klient.view.LoginPanel;
 import all.klient.view.MainFrame;
 
 import javax.swing.*;
@@ -12,14 +13,15 @@ public class Controller {
 
     private User user;
     private MainFrame view;
+    private LoginPanel loginPanel;
     private ArrayList<User> userList = new ArrayList<>();
 
     public Controller(){
-        view = new MainFrame(1000, 600, this);
+        //view = new MainFrame(1000, 600, this);
+        //loginPanel = new LoginPanel();
     }
 
     public boolean checkIfUserAlreadyExists(String username, String filePath) {
-
         LinkedList<String> users = view.readFromFile(filePath);
         boolean outcome = false;
 
@@ -39,7 +41,7 @@ public class Controller {
         for(User user : userList){
             if(user.getUsername().equals(userName)){
                 user.setOnline(true);
-                new MessageClient("bla bla", 200).start();
+                //new MessageClient("bla bla", 200).start();
                 // starta klienten
             }
         }

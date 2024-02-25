@@ -1,47 +1,48 @@
 package all.server;
 
 import all.jointEntity.Message;
+import all.jointEntity.User;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Server {
-
     private Connection connection;
+    private HashMap<String, ClientHandler> clients = new HashMap<>(); //stores clients and their connections
+    private HashMap<User, ArrayList<Message>> userArrayListHashMap; //TODO: ??
+
 
     public Server(int port){
-
         connection = new Connection(port);
         connection.start();
-
     }
 
     private class Connection extends Thread {
-
         private int port;
         private ClientHandler clientHandler;
 
         public Connection(int port){
-
             this.port = port;
-
         }
 
         public void run(){
-
-            Socket socket = null;
+            //Socket socket = null;
             System.out.println("Server startad");
 
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     try {
-                        socket = serverSocket.accept();
+                        Socket socket = serverSocket.accept();
+                        System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
                         clientHandler = new ClientHandler(socket);
                     } catch (IOException e) {
                         System.err.println(e);
+                        /*
                         if (socket != null)
-                            socket.close();
+                            socket.close(); */
                     }
                 }
             } catch (IOException e) {
@@ -59,24 +60,26 @@ public class Server {
         private ObjectOutputStream oos;
 
         public ClientHandler(Socket socket) throws IOException {
-
             this.socket = socket;
             ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             start();
-
         }
 
         public void run(){
-
-            Message message;
-
+            //Message message;
             try{
                 while(true){
                     try{
-                        message = (Message) ois.readObject();
-                        oos.writeObject(message);
-                        oos.flush();
+                        Object receivedObj = ois.readObject();
+                        if (receivedObj instanceof Message) {
+                            Message message = (Message) receivedObj;
+                            System.out.println("read from client: " + message.getText()); //test
+                            forwardMessage(message);
+                        } else if (receivedObj instanceof User) { //when someone logs in
+                            System.out.println("user has logged in");
+                            //TODO: register in online users etc
+                        }
                     } catch (ClassNotFoundException e){
                         throw new RuntimeException(e);
                     }
@@ -91,26 +94,21 @@ public class Server {
 
         }
 
-    }
-
-    private class Connected extends Thread {
-
-        public void run(){
-
-            /*
-                kolla efter uppkopplade klienter
-             */
+        /**
+         * forwards message from server to receiving client
+         * @param message message to send
+         */
+        public void forwardMessage(Message message) {
+            //TODO: do this through streams or callback?
+            System.out.println("here to forward message");
 
         }
 
     }
 
-    // kan hända att man behöver en tredje inre klass
 
     public static void main(String[] args){
-
         new Server(724);
-
     }
 
 }
