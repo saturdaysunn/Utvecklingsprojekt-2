@@ -74,11 +74,10 @@ public class MainFrame extends JFrame {
     //TODO: read sender from label on left panel (above contacts list in left panel) Maybe show picture too.
     //TODO: read receivers from checked boxes/users in right panel
 
-    public void sendMessage(String message, ImageIcon image) {
+    public void sendMessage(String message) {
         String stringUser = panel.getlPanel().getUsername();
         ArrayList<String> receivers = panel.getlPanel().getReceivers();
-        userController.sendMessage(message, image, stringUser, receivers);
-
+        userController.sendMessage(message, stringUser, receivers);
     }
 
     public MainPanel getMainPanel() {
