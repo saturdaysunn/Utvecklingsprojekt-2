@@ -57,7 +57,7 @@ public class LPanel extends JPanel{
         JScrollPane scrollPane = new JScrollPane(leftPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        populateLPanel(mainFrame.readFromFile("all/files/users.txt"));
+        populateLPanel(mainFrame.retrieveAllUsersFromFile("all/files/users.txt"));
 
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -78,7 +78,7 @@ public class LPanel extends JPanel{
                     //TODO: check if already in contacts
                     //TODO: logic to add to contacts file
 
-                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUserLabel(); //current user
+                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //current user
                     selectedUsers = leftPanelList.getSelectedValuesList(); //selected users on LPanel
                     currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts'
 

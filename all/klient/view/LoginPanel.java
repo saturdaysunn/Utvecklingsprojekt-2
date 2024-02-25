@@ -18,12 +18,11 @@ public class LoginPanel extends JFrame {
     private JLabel userPicture;
     private MessageClient messageClient;
 
-    //TODO: possibly change so login panel opens before mainframe
-    public LoginPanel(MainFrame mainFrame, MessageClient messageClient) { //TODO: parameters would change if logic changes
-        this.mainFrame = mainFrame;
-        this.messageClient = messageClient;
+    public LoginPanel() {
         this.setSize(500, 300);
+        this.setUpWindow();
         this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void setUpWindow() {
@@ -84,18 +83,13 @@ public class LoginPanel extends JFrame {
                 //check if image and username have been set
                 if (!username.isEmpty() && userPicture.getIcon() != null) {
                     System.out.println("Username: " + username); //test print
+                    loginUser(username);
                     dispose(); //close window
                 } else if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
-                } /*else if (userPicture.getIcon() == null) {
+                } else if (userPicture.getIcon() == null) {
                     JOptionPane.showMessageDialog(null, "No picture chosen. Please try again.");
-                }*/
-
-                //display user's name and icon on GUI
-                mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
-                mainFrame.getMainPanel().getrPanel().setImage(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
-
-                loginUser(username);
+                }
             }
         });
     }
@@ -106,16 +100,12 @@ public class LoginPanel extends JFrame {
      * in charge of forwarding message to client to inform sender a user has logged in
      */
     public void loginUser(String username) { //TODO: unsure about parameters
-        //TODO: send message to server from client that user is online
-        //TODO: e.g. className.loginUser(username, messageClient);
-        //observe sending of instance of messageClient. ask about this.
+        messageClient = new MessageClient("127.0.0.1", 724);
+        mainFrame = messageClient.getMainFrame(); //get main client's mainFrame instance
 
-        //TODO: this should be done in messageClient instead and call to userController to save to file
-        /*
-        if (!mainFrame.checkIfUserAlreadyExists(username)) {
-            mainFrame.saveUserToFile(username);
-        }else {
-        } */
+        //display user's name and icon on GUI
+        mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
+        mainFrame.getMainPanel().getrPanel().setUserIcon(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
     }
 
     private void loadImage(File file) {

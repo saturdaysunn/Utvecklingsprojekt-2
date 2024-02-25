@@ -2,6 +2,7 @@ package all.server;
 
 import all.jointEntity.Message;
 import all.jointEntity.User;
+import all.klient.controller.UserController;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -30,14 +31,13 @@ public class Server {
 
         public void run(){
             //Socket socket = null;
-            System.out.println("Server startad");
-
+            System.out.println("Server started");
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     try {
                         Socket socket = serverSocket.accept();
                         System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
-                        clientHandler = new ClientHandler(socket);
+                        clientHandler = new ClientHandler(socket); //create clientHandler for individual client
                     } catch (IOException e) {
                         System.err.println(e);
                         /*
@@ -48,26 +48,25 @@ public class Server {
             } catch (IOException e) {
                 System.err.println(e);
             }
-
         }
 
     }
 
     private class ClientHandler extends Thread {
-
         private Socket socket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
+        private UserController userController;
 
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
             ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            this.userController = new UserController(); //TODO: correct?
             start();
         }
 
         public void run(){
-            //Message message;
             try{
                 while(true){
                     try{
@@ -77,8 +76,21 @@ public class Server {
                             System.out.println("read from client: " + message.getText()); //test
                             forwardMessage(message);
                         } else if (receivedObj instanceof User) { //when someone logs in
-                            System.out.println("user has logged in");
-                            //TODO: register in online users etc
+                            User onlineUser = (User) receivedObj;
+
+                            //TODO: issue where message is received before name has been set in gui?
+                            System.out.println(onlineUser.getUsername() + " has logged in");
+                            //TODO: register in online users array
+
+                            //check if user already exists
+                            if (!userController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt")) {
+                                //if no, save to users.txt file
+                                userController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
+                            }else {
+                                //TODO: if yes, load contents for user from files (messages, contacts)
+                                //TODO: how?
+                            }
+
                         }
                     } catch (ClassNotFoundException e){
                         throw new RuntimeException(e);
@@ -95,18 +107,30 @@ public class Server {
         }
 
         /**
-         * forwards message from server to receiving client
+         * forwards message from server to receiving client(s)
          * @param message message to send
          */
         public void forwardMessage(Message message) {
-            //TODO: do this through streams or callback?
             System.out.println("here to forward message");
+            //TODO: inform client that they have a message
+
+            //TODO: check if message is private or group chat
+
+            //TODO: groupchat
+            // loop through all online users and send message
+
+            //TODO: individual
+            // check if user online, if yes, send message to their clientHandler
+            // if no, store message in SOMETHING (unusure, hashmap & file etc?)
 
         }
-
     }
 
 
+    /**
+     * starts instance of server on port 724
+     * @param args
+     */
     public static void main(String[] args){
         new Server(724);
     }

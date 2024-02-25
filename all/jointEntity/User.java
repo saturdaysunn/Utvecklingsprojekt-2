@@ -11,12 +11,9 @@ public class User implements Serializable {
     private ArrayList<User> contacts;
     private boolean isOnline;
 
-    public User(String username, ImageIcon icon, boolean isOnline){
-
+    public User(String username, ImageIcon icon){
         this.username = username;
         this.icon = icon;
-        this.isOnline = isOnline;
-
     }
 
     public String getUsername() {
@@ -43,7 +40,6 @@ public class User implements Serializable {
         if(obj instanceof User) {
             return username.equals(((User) obj).getUsername());
         } return false;
-
     }
 
     public void addContact(User user){

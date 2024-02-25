@@ -24,15 +24,15 @@ public class MainPanel extends JPanel {
 
     }
 
-    protected LPanel getlPanel(){
+    public LPanel getlPanel(){
         return lPanel;
     }
 
-    protected RPanel getrPanel(){
+    public RPanel getrPanel(){
         return rPanel;
     }
 
-    protected CenterPanel getcPanel() {
+    public CenterPanel getcPanel() {
         return cPanel;
     }
 

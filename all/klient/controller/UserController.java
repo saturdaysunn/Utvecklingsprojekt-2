@@ -1,21 +1,49 @@
 package all.klient.controller;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
 /**
- * takes care of reading and writing to files (contacts, messages, etc)
+ * takes care of reading from and writing to files (contacts, messages, users)
  */
 public class UserController { //TODO: change name to FileController?
 
     public UserController() {
-
     }
 
-    public void saveUserToFile(String text, String filePath) {
+    /**
+     * checks if user has already been registered previously
+     * @param username name of user
+     * @param filePath path of file to check
+     * @return true if user exists, false if not
+     */
+    public boolean checkIfUserAlreadyExists(String username, String filePath) {
+        LinkedList<String> users = retrieveAllUsersFromFile(filePath);
+        boolean outcome = false; //doesn't exist
+
+        for (String user : users){
+            if (user.equals(username)){
+                JOptionPane.showMessageDialog(null, "User already exists!");
+                List<String> contactsOfUser = getContactsOfUser("all/files/contacts.txt", username);
+                //view.populateRPanel(contactsOfUser); //Populates the right panel with the contacts of the user
+                //TODO load chats for the user
+                outcome = true; //exists
+                break;
+            }
+        }
+        return outcome;
+    }
+
+    /**
+     * saves new user to file containing usernames
+     * @param userName name of user
+     * @param filePath path of file to write to
+     */
+    public void saveUserToFile(String userName, String filePath) {
         try (FileWriter fw = new FileWriter(filePath, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
-            bw.write(text);
+            bw.write(userName);
             bw.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
