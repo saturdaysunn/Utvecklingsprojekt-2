@@ -80,7 +80,7 @@ public class MainFrame extends JFrame {
             File imgFile = new File(imgPath); //create file from path to create imageIcon
 
             String imgFileString = modify(imgPath); //shorten image path to file name
-            String modifiedMessage = message.replace(message, imgFileString); //modify string message
+            String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
 
             this.messageClient.sendImageMessage(modifiedMessage, imgFile, stringUser, receivers, imgFileString);
         } else {
