@@ -80,6 +80,7 @@ public class LPanel extends JPanel{
 
                     String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUserLabel(); //current user
                     selectedUsers = leftPanelList.getSelectedValuesList(); //selected users on LPanel
+                    currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts'
 
                     for(String selectedUser : selectedUsers) {
                         if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
@@ -89,9 +90,15 @@ public class LPanel extends JPanel{
                     }
 
                     userContacts.put(currentUser, currentUserContacts); //before writing to file, the user's contacts are stored a HashMap
+                    try {
+                        mainFrame.removeDataBlock("all/files/contacts.txt", currentUser, "all/files/new-contacts.txt");
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    mainFrame.writeHashMapToFile(userContacts, "all/files/new-contacts.txt");
+                    mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/new-contacts.txt", currentUser));
 
-                    mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
-                    mainFrame.populateRPanel(mainFrame.getDataAfterEmptyRow("all/files/contacts.txt", currentUser));
+
 
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select a user.");
@@ -141,10 +148,9 @@ public class LPanel extends JPanel{
         return null; //TODO: temp
     }
 
-    /*
     public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename));
-             BufferedWriter writer = new BufferedWriter(new FileWriter("temp.txt"))) {
+             BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/temp.txt"))) {
 
             boolean foundKey = false;
             String line;
@@ -200,14 +206,14 @@ public class LPanel extends JPanel{
         }
 
         //rename the temporary file to the original filename
-        File tempFile = new File("temp.txt");
+        File tempFile = new File("all/files/temp.txt");
         File originalFile = new File(filename);
         if (tempFile.exists()) {
             if (originalFile.exists())
                 originalFile.delete();
             tempFile.renameTo(originalFile);
         }
-    }*/
+    }
 
 
     private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
