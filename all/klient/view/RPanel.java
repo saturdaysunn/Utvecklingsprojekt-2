@@ -2,11 +2,6 @@ package all.klient.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -53,7 +48,6 @@ public class RPanel extends JPanel {
         JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         currentUserLabel = new JLabel();
         currentUserPictureLabel = new JLabel();
-
         currentUserPictureLabel.setIcon(resizeImage(image));
 
         currentUserPanel.setPreferredSize(new Dimension(20, 90));
@@ -65,17 +59,19 @@ public class RPanel extends JPanel {
     }
 
     public void setCurrentUsername(String username){
-
         this.currentUserLabel.setText(username);
-
     }
 
-    public String getCurrentUserLabel() {
+    public String getCurrentUsername() {
         return currentUserLabel.getText();
     }
 
-    public void setImage(ImageIcon image) {
+    public void setUserIcon(ImageIcon image) {
         currentUserPictureLabel.setIcon(resizeImage(image));
+    }
+
+    public ImageIcon getUserIcon() {
+        return (ImageIcon) currentUserPictureLabel.getIcon(); //TODO: correct?
     }
 
 

@@ -2,8 +2,6 @@ package all.klient.view;
 
 import all.klient.controller.*;
 import javax.swing.*;
-import all.Controller;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -15,8 +13,6 @@ import java.util.List;
 public class MainFrame extends JFrame {
     private MainPanel panel;
     private UserController userController = new UserController(); //TODO: initialize inside constructor?
-    private Controller controller; //TODO: remove this class and use UserController instead for file reading
-    private LoginPanel loginPanel;
     private MessageClient messageClient;
 
     public MainFrame(int width, int height, MessageClient messageClient) {
@@ -29,17 +25,7 @@ public class MainFrame extends JFrame {
         this.setBounds(100, 100, width, height);
         this.setDefaultCloseOperation(3);
         this.messageClient = messageClient;
-        setupLogin(); //open login window
         //TODO: make it so that login window shows up first?
-    }
-
-    /**
-     * Initiates and calls to set up login window
-     */
-    public void setupLogin() {
-        loginPanel = new LoginPanel(this, this.messageClient); //create new login window
-        loginPanel.setUpWindow(); //call to set up
-        System.out.println("login panel started");
     }
 
     /**
@@ -58,11 +44,6 @@ public class MainFrame extends JFrame {
         panel.getlPanel().populateLPanel(onlineArray);
     }
 
-    //TODO: don't think we need this here
-    // only needed when new user logs in to store all users
-    public void saveUserToFile(String username){
-        userController.saveUserToFile(username, "all/files/users.txt");
-    }
 
     /**
      * sends message info to messageClient
@@ -131,24 +112,14 @@ public class MainFrame extends JFrame {
         return panel;
     }
 
-    public LinkedList<String> readFromFile(String filePath) {
+    /**
+     * retrieves all users from given filepath
+     * @param filePath path of given file
+     * @return LinkedList of all users
+     */
+    public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         return userController.retrieveAllUsersFromFile(filePath);
     }
-
-    //TODO: change to userController instead of controller
-    /*
-    public boolean checkIfUserAlreadyExists(String username) {
-        return controller.checkIfUserAlreadyExists(username, "all/files/users.txt");
-    } */
-
-    /**
-     * informs controller that user has logged in
-     * @param userName name of user
-     */ //TODO: don't think we need this either, online status should be handled in messageClient/Server
-    public void userLoggedIn(String userName){
-        controller.userLoggedIn(userName);
-    }
-
 
     //TODO: vague name
     /*

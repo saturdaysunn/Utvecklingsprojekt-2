@@ -3,7 +3,6 @@ import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
 import all.klient.CallBackInterface;
-import all.klient.entity.Client;
 import all.klient.view.MainFrame;
 
 import javax.imageio.ImageIO;
@@ -11,11 +10,8 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * The class initiates a connection between the client and the server
@@ -23,41 +19,62 @@ import java.util.HashMap;
  */
 
 public class MessageClient extends Thread {
-
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private ArrayList<CallBackInterface> listeners = new ArrayList<>();
+    private MainFrame mainFrame;
 
     public MessageClient(String ip, int port){
         try{
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
-            new MainFrame(1000, 600, this); //create new frame for client
+            this.mainFrame = new MainFrame(1000, 600, this); //create new frame for client
+            sendLoginMessage(); //inform server that user has logged in.
             new Listener().start(); //start listening for messages from server
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
 
+    /**
+     * @return MainFrame instance for this client
+     */
+    public MainFrame getMainFrame() {
+        return mainFrame;
+    }
+
+    /**
+     * creates instance of User and informs server that user has logged in
+     */
+    public void sendLoginMessage() {
+        //TODO: use sleep or checking condition here?
+        // to make sure they have been set before creating user and sending
+        String username = mainFrame.getMainPanel().getrPanel().getCurrentUsername();
+        ImageIcon userPicture = mainFrame.getMainPanel().getrPanel().getUserIcon();
+        User user = new User(username, userPicture); //create new instance of user
+
+        try {
+            oos.writeObject(user); //write to server through stream
+            oos.flush();
+            System.out.println("informing server that " + user.getUsername() + " has logged in");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * add listener instance to callback listener arraylist
      * @param listener instance of listener
-     */
+     */ //TODO: might not need this since using streams instead
     public void addListener(CallBackInterface listener){
         listeners.add(listener);
     }
 
-    //TODO: ???
-    public synchronized Client get(User user){
-        return get(user);
-    }
-
-    private class Listener extends Thread implements CallBackInterface {
+    private class Listener extends Thread implements CallBackInterface { //TODO: maybe no callback
         @Override
         public void run() {
-            addListener(this);
+            addListener(this); //TODO: remove?
 
             try {
                 ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -74,14 +91,10 @@ public class MessageClient extends Thread {
                     // TODO: here check for when to send private messages or group chat
                 }
             } catch (IOException e) {
-                // Handle IOException (e.g., connection closure)
                 System.err.println("IOException occurred: " + e.getMessage());
-                // Optionally, close resources (e.g., input stream) here
             } catch (ClassNotFoundException e) {
-                // Handle ClassNotFoundException (e.g., unexpected object type)
                 System.err.println("ClassNotFoundException occurred: " + e.getMessage());
             } finally {
-                // Optionally, close resources in the finally block to ensure they are closed
                 try {
                     if (ois != null) {
                         ois.close();
