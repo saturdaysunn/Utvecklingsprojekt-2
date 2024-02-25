@@ -4,6 +4,7 @@ import all.klient.controller.*;
 import javax.swing.*;
 import all.Controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,7 +90,7 @@ public class MainFrame extends JFrame {
     }
 
     public LinkedList<String> readFromFile(String filePath) {
-        return userController.readFromFile(filePath);
+        return userController.retrieveAllUsersFromFile(filePath);
     }
 
     public boolean checkIfUserAlreadyExists(String username) {
@@ -98,15 +99,15 @@ public class MainFrame extends JFrame {
 
     }
 
-    public List<String> getDataAfterEmptyRow(String filePath, String searchString) {
-        return userController.getDataAfterEmptyRow(filePath, searchString);
+    public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
+        userController.removeDataBlock(filePath, targetString, outputFilePath);
     }
 
-    public HashMap<String, ArrayList<String>> getContactsOfUser(String filepath, String user){
+    public List<String> getContactsOfUser(String filepath, String user){
         return userController.getContactsOfUser(filepath, user);
     }
 
     public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
-        userController.writeHashMapToFile(hashMap, filePath);
+        userController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
     }
 }

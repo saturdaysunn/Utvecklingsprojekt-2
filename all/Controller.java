@@ -6,7 +6,9 @@ import all.klient.view.MainFrame;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Controller {
 
@@ -26,7 +28,9 @@ public class Controller {
         for (String user : users){
             if (user.equals(username)){
                 JOptionPane.showMessageDialog(null, "User already exists!");
-                //TODO make the user log in again in LoginPanel
+                List<String> contactsOfUser = view.getContactsOfUser("all/files/contacts.txt", username);
+                view.populateRPanel(contactsOfUser); //Populates the right panel with the contacts of the user
+                //TODO load chats for the user
                 outcome = true;
                 break;
             }
