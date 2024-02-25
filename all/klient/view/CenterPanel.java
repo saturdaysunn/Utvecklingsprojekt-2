@@ -110,8 +110,6 @@ public class CenterPanel extends JPanel{
                     }
                     existingText += selectedFile.getAbsolutePath();
                     messageInputField.setText(existingText); //update text in input field with image
-
-                    //TODO: fix how to make sure image gets sent/saved to server
                 } else {
                     System.out.println("No file chosen");
                 }

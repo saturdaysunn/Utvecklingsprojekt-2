@@ -151,6 +151,11 @@ public class MessageClient extends Thread {
         }
     }
 
+    /**
+     * part of logic to save image to sent_pictures package
+     * @param file image file
+     * @param imageName name of image file
+     */
     private void loadImage(File file, String imageName) {
         try {
             BufferedImage image = ImageIO.read(file);
@@ -160,11 +165,14 @@ public class MessageClient extends Thread {
         }
     }
 
-
+    /**
+     * saves image to be sent to sent_pictures to be retrieved later by receiver
+     * @param image image itself
+     * @param imageName file name
+     */
     private void saveImage(BufferedImage image, String imageName) {
         try {
-            //TODO: can i save all as png?
-            String path = "all/files/sent_pictures" + imageName + ".png";
+            String path = "all/sent_pictures/" + imageName + ".png";
             File outputfile = new File(path);
             ImageIO.write(image, "png", outputfile);
         } catch (IOException e) {

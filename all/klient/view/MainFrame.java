@@ -73,10 +73,13 @@ public class MainFrame extends JFrame {
 
         if (message.contains(".png") | message.contains(".jpeg") | message.contains(".jpg")) { //check if text contains image
             System.out.println("it's an image message");
+
             String imgPath = extractImage(message); //extract image path from message
             File imgFile = new File(imgPath); //create file from path to create imageIcon
+
             String imgFileString = modify(imgPath); //shorten image path to file name
             String modifiedMessage = message.replace(message, imgFileString); //modify string message
+
             this.messageClient.sendImageMessage(modifiedMessage, imgFile, stringUser, receivers, imgFileString);
         } else {
             System.out.println("it's a text message");
@@ -85,9 +88,9 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * extracts image fiel path from whole message
+     * extracts image path from whole message
      * @param message whole message to be sent
-     * @return image file path
+     * @return image path in string format
      */
     public String extractImage(String message) {
         String[] words = message.split("\\s+");
@@ -126,10 +129,11 @@ public class MainFrame extends JFrame {
     }
 
     //TODO: change to userController instead of controller
+    /*
     public boolean checkIfUserAlreadyExists(String username) {
         return controller.checkIfUserAlreadyExists(username, "all/files/users.txt");
 
-    }
+    } */
 
     /**
      * informs controller that user has logged in
