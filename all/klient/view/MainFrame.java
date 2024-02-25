@@ -133,14 +133,12 @@ public class MainFrame extends JFrame {
 
     public LinkedList<String> readFromFile(String filePath) {
         return userController.retrieveAllUsersFromFile(filePath);
-      
     }
 
     //TODO: change to userController instead of controller
     /*
     public boolean checkIfUserAlreadyExists(String username) {
         return controller.checkIfUserAlreadyExists(username, "all/files/users.txt");
-
     } */
 
     /**
@@ -151,15 +149,14 @@ public class MainFrame extends JFrame {
         controller.userLoggedIn(userName);
     }
 
-    public LinkedList<String> readFromFile(String filePath) {
-        return userController.readFromFile(filePath);
-    }
-
 
     //TODO: vague name
+    /*
     public List<String> getDataAfterEmptyRow(String filePath, String searchString) {
         return userController.getDataAfterEmptyRow(filePath, searchString);
     }
+    */
+
 
     public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
         userController.removeDataBlock(filePath, targetString, outputFilePath);
