@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class Server {
     private Connection connection;
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
-    private HashMap<User, ArrayList<Message>> userArrayListHashMap; //TODO: ??
+    private HashMap<User, ArrayList<Message>> userArrayListHashMap; //TODO: ?? change name, what function?
 
 
     public Server(int port){
@@ -64,7 +64,7 @@ public class Server {
             this.socket = socket;
             ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            this.fileController = new FileController(); //TODO: correct?
+            this.fileController = new FileController();
             start();
         }
 
@@ -75,12 +75,12 @@ public class Server {
                         Object receivedObj = ois.readObject();
                         if (receivedObj instanceof Message) {
                             Message message = (Message) receivedObj;
-                            message.setReceivedTime(new Date());
+                            message.setReceivedTime(new Date()); //set received date
                             System.out.println("read from client: " + message.getText()); //test
-                            forwardMessage(message); //send message to receiver client(s)
+                            checkIfOnline(message); //send message to receiver client(s)
                         } else if (receivedObj instanceof User) { //when someone logs in
                             User onlineUser = (User) receivedObj;
-                            onlineClients.put(onlineUser, this); //add to clients hashmap
+                            onlineClients.put(onlineUser, this); //add to online clients hashmap
                             System.out.println(onlineUser.getUsername() + " has logged in");
 
                             //check if user already exists
@@ -112,22 +112,42 @@ public class Server {
          * forwards message from server to receiving client(s)
          * @param message message to send
          */
-        public void forwardMessage(Message message) {
-            System.out.println("here to forward message");
-            //TODO: inform client that they have a message
+        public void checkIfOnline(Message message) {
+            for (String receiver : message.getReceiverList()) { //iterate through receivers list
+                for (User receiverUser : onlineClients.keySet()) { //check online clients to see if online
+                    if (receiverUser.getUsername().equals(receiver)) { //if matches
+                        System.out.println("message to send to: " + receiver);
+                        onlineClients.get(receiverUser).forwardMessage(message); //send to receiver clientHandler
+                        break; //end search for receiver
+                    } else {
+                        //TODO: store message for them to receive later
+                        //TODO: en hashmap med receiverName som key och en Hashmap som value.
+                        // ValueHashmap har sändare som key och en arraylist med meddelanden som value? suggestion
+                    }
+                }
 
-            //TODO: check if message is private or group chat
 
-            //TODO: groupchat
-            // loop through all online users and send message
+                //TODO: Question: should you be able to create a groupchat? or just send same message to many ppl?
 
-            //TODO: individual
-            // check if user online, if yes, send message to their clientHandler
-            // if no, store message in SOMETHING (unsure, hashmap & file etc?)
-
+            }
         }
 
+        /**
+         * forwards message to receiver clients
+         */
+        public void forwardMessage(Message message) {
+            System.out.println("forwarding message to receivers");
+            try {
+                oos.writeObject(message);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
+
 
 
     /**

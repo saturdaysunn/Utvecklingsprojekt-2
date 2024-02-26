@@ -7,12 +7,12 @@ import java.util.Date;
 public class Message implements Serializable {
 
     private User sender;
-    private ArrayList<User> receiverList;
+    private ArrayList<String> receiverList;
     private String text;
     private Date receivedTime;
     private Date deliveredTime;
 
-    public Message(User sender, ArrayList<User> receiverList, String text,
+    public Message(User sender, ArrayList<String> receiverList, String text,
                    Date receivedTime, Date deliveredTime){
 
         this.sender = sender;
@@ -31,11 +31,11 @@ public class Message implements Serializable {
         this.sender = sender;
     }
 
-    public ArrayList<User> getReceiverList() {
+    public ArrayList<String> getReceiverList() {
         return receiverList;
     }
 
-    public void setReceiverList(ArrayList<User> receiverList) {
+    public void setReceiverList(ArrayList<String> receiverList) {
         this.receiverList = receiverList;
     }
 

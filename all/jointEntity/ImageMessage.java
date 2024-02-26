@@ -8,7 +8,7 @@ public class ImageMessage extends Message {
 
     private ImageIcon image;
 
-    public ImageMessage(User sender, ArrayList<User> receiverList,
+    public ImageMessage(User sender, ArrayList<String> receiverList,
                         String text, Date receivedTime, Date deliveredTime, ImageIcon image){
 
         super(sender, receiverList, text, receivedTime, deliveredTime);
