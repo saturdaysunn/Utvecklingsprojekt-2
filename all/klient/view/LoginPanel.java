@@ -83,7 +83,7 @@ public class LoginPanel extends JFrame {
                 //check if image and username have been set
                 if (!username.isEmpty() && userPicture.getIcon() != null) {
                     System.out.println("Username: " + username); //test print
-                    loginUser(username);
+                    loginUser(username, (ImageIcon) userPicture.getIcon());
                     dispose(); //close window
                 } else if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
@@ -99,13 +99,14 @@ public class LoginPanel extends JFrame {
     /**
      * in charge of forwarding message to client to inform sender a user has logged in
      */
-    public void loginUser(String username) { //TODO: unsure about parameters
+    public void loginUser(String username, ImageIcon userPicture) { //TODO: unsure about parameters
         messageClient = new MessageClient("127.0.0.1", 724);
         mainFrame = messageClient.getMainFrame(); //get main client's mainFrame instance
 
         //display user's name and icon on GUI
         mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
         mainFrame.getMainPanel().getrPanel().setUserIcon(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
+        messageClient.sendLoginMessage(username, userPicture); //send login message
     }
 
     private void loadImage(File file) {

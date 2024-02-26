@@ -1,18 +1,14 @@
 package all.klient.controller;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
 /**
  * takes care of reading from and writing to files (contacts, messages, users)
  */
-public class UserController { //TODO: change name to FileController?
+public class FileController {
     //TODO: should all these methods be synchronized?
     //TODO: or synchronized where these are called.
-
-    public UserController() {
-    }
 
     /**
      * checks if user has already been registered previously
@@ -21,19 +17,17 @@ public class UserController { //TODO: change name to FileController?
      * @return true if user exists, false if not
      */
     public boolean checkIfUserAlreadyExists(String username, String filePath) {
-        LinkedList<String> users = retrieveAllUsersFromFile(filePath);
-        boolean outcome = false; //doesn't exist
+        LinkedList<String> users = retrieveAllUsersFromFile(filePath); //retrieve all stored usernames
 
         for (String user : users){
-            if (user.equals(username)){
+            if (user.equals(username)){ //if user has logged in before
                 List<String> contactsOfUser = getContactsOfUser("all/files/contacts.txt", username);
                 //view.populateRPanel(contactsOfUser); //Populates the right panel with the contacts of the user
-                //TODO load chats for the user
-                outcome = true; //exists
-                break;
+                //TODO: move out? think of method purpose
+                return true;
             }
         }
-        return outcome;
+        return false;
     }
 
     /**
@@ -66,33 +60,38 @@ public class UserController { //TODO: change name to FileController?
         return lines;
     }
 
-    public ArrayList<String> getContactsOfUser(String filePath, String searchString) {
+    public ArrayList<String> getContactsOfUser(String filePath, String userName) {
         ArrayList<String> resultList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            boolean found = false;
+            boolean usernameFound = false;
             while ((line = br.readLine()) != null) {
-                if (line.isEmpty() && found) { // Empty row found after the search string
-                    break; // Stop reading after finding the next empty row
+                if (line.isEmpty() && usernameFound) { //if next line is empty after username has been found
+                    break; //all contacts have been found
                 }
-                if (found && !line.isEmpty()) { // Add lines after the search string
+                if (usernameFound && !line.isEmpty()) { //username found, add following contacts
                     resultList.add(line);
                 }
-                if (line.equals(searchString)) {
-                    found = true; // Set found to true when the search string is found
+                if (line.equals(userName)) { //username has been found
+                    usernameFound = true; // Set usernameFound to true when the search string is usernameFound
                 }
+
+                //tiffany --> username found
+                //bruna --> not empty, add contact
+                //mihail --> not empty, add contact
+                //       --> empty 
+
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle the IOException appropriately
         }
-
         return resultList;
     }
 
     /**
      * This method removes data blocks from a text file that start with a specific
-     * string and are bounded by empty rows before and after.
+     * string and are bounded by empty rows before and after. //TODO: ??
      *
      * @param filePath The path to the text file.
      * @param targetString The string to search for.

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MainFrame extends JFrame {
     private MainPanel panel;
-    private UserController userController = new UserController(); //TODO: initialize inside constructor?
+    private FileController fileController = new FileController(); //TODO: initialize inside constructor?
     private MessageClient messageClient;
 
     public MainFrame(int width, int height, MessageClient messageClient) {
@@ -118,7 +118,7 @@ public class MainFrame extends JFrame {
      * @return LinkedList of all users
      */
     public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
-        return userController.retrieveAllUsersFromFile(filePath);
+        return fileController.retrieveAllUsersFromFile(filePath);
     }
 
     //TODO: vague name
@@ -130,16 +130,16 @@ public class MainFrame extends JFrame {
 
 
     public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
-        userController.removeDataBlock(filePath, targetString, outputFilePath);
+        fileController.removeDataBlock(filePath, targetString, outputFilePath);
 
     }
 
     public List<String> getContactsOfUser(String filepath, String user){
-        return userController.getContactsOfUser(filepath, user);
+        return fileController.getContactsOfUser(filepath, user);
     }
 
     //TODO: vague name
     public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
-        userController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
+        fileController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
     }
 }

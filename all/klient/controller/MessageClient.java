@@ -30,7 +30,6 @@ public class MessageClient extends Thread {
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
             this.mainFrame = new MainFrame(1000, 600, this); //create new frame for client
-            sendLoginMessage(); //inform server that user has logged in.
             new Listener().start(); //start listening for messages from server
         } catch (IOException e){
             e.printStackTrace();
@@ -47,11 +46,9 @@ public class MessageClient extends Thread {
     /**
      * creates instance of User and informs server that user has logged in
      */
-    public void sendLoginMessage() {
+    public void sendLoginMessage(String username, ImageIcon userPicture) {
         //TODO: use sleep or checking condition here?
         // to make sure they have been set before creating user and sending
-        String username = mainFrame.getMainPanel().getrPanel().getCurrentUsername();
-        ImageIcon userPicture = mainFrame.getMainPanel().getrPanel().getUserIcon();
         User user = new User(username, userPicture); //create new instance of user
 
         try {
