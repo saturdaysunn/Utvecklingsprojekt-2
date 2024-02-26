@@ -88,10 +88,15 @@ public class Server {
                             if (!fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt")) {
                                 //if no, save to users.txt file
                                 fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
-                            }else { //if yes
-                                //read contacts file
-                                //store contacts to user array
-                                //TODO: load messages for user from file?
+                            }else {//if yes
+                                //TODO: read contacts file here instead?
+                                //TODO: store contacts to array in User class? could be good
+
+                                //TODO: Read from unsent messages file. example below
+                                /*HashMap<String, ArrayList<Message>> unsentMessagesMap =
+                                        fileController.readUnsentFile("all/files/unsentMessages.txt"); */
+                                sendUnsentMessages(unsentMessagesMap, onlineUser.getUsername());
+
                             }
 
                             //TODO: send message to other clients that user is online (do this through callback?)
@@ -109,6 +114,29 @@ public class Server {
                 }
             }
 
+        }
+
+
+        //TODO: figure out how to show messages in client when user opens chat window for that user.
+        //TODO: here they get sent, but where do they go before the user opens a chat window?
+        /**
+         * retrieves unsent messages from unsentMessagesMap and sends them to receiver
+         * @param unsentMessagesMap hashmap containing unsent messages for all offline users
+         */
+        public void sendUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessagesMap, String receiver) {
+            if (unsentMessagesMap.containsKey(receiver)) {
+                ArrayList<Message> unsentMessages= unsentMessagesMap.get(receiver);
+                for (Message unsent : unsentMessages) {
+                    try {
+                        oos.writeObject(unsent);
+                        oos.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                unsentMessagesMap.remove(receiver); //TODO: remove from hashmap?
+                //TODO: and then write updated hashmap to file, through fileController?
+            }
         }
 
         /**
