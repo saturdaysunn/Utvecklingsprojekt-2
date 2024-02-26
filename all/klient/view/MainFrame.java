@@ -25,7 +25,6 @@ public class MainFrame extends JFrame {
         this.setBounds(100, 100, width, height);
         this.setDefaultCloseOperation(3);
         this.messageClient = messageClient;
-        //TODO: make it so that login window shows up first?
     }
 
     /**
@@ -51,7 +50,6 @@ public class MainFrame extends JFrame {
      */
     public void sendMessage(String message) {
         System.out.println("message arrived in mainframe");
-        String stringUser = panel.getlPanel().getUsername(); //username of current user
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
 
         if (message.contains(".png") | message.contains(".jpeg") | message.contains(".jpg")) { //check if text contains image
@@ -63,10 +61,10 @@ public class MainFrame extends JFrame {
             String imgFileString = modify(imgPath); //shorten image path to file name
             String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
 
-            this.messageClient.sendImageMessage(modifiedMessage, imgFile, stringUser, receivers, imgFileString);
+            this.messageClient.sendImageMessage(modifiedMessage, imgFile, receivers, imgFileString);
         } else {
             System.out.println("it's a text message");
-            this.messageClient.sendTextMessage(message, stringUser, receivers);
+            this.messageClient.sendTextMessage(message, receivers);
         }
     }
 
