@@ -134,18 +134,12 @@ public class LPanel extends JPanel{
         leftPanelList.setListData(contactsArray);
     }
 
-    //TODO: implement method which reads which users have been selected
-    //TODO: call method to reset buttons (should have a check mark next to them) and empty arraylist of selectedUsers
-    //TODO: the latter is to be called from mainFrame.
-
-    public String getUsername() {
-        //TODO: returns username from JLabel above users list
-        return null; //TODO: temp
-    }
-
+    /**
+     * @return users selected from lPanel
+     */
     public ArrayList<String> getReceivers() {
-        //TODO: returns users which have been selected
-        return null; //TODO: temp
+        selectedUsers = leftPanelList.getSelectedValuesList();
+        return new ArrayList<>(selectedUsers);
     }
 
     public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filename) {

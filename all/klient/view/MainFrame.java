@@ -52,19 +52,23 @@ public class MainFrame extends JFrame {
         System.out.println("message arrived in mainframe");
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
 
-        if (message.contains(".png") | message.contains(".jpeg") | message.contains(".jpg")) { //check if text contains image
-            System.out.println("it's an image message");
-
-            String imgPath = extractImage(message); //extract image path from message
-            File imgFile = new File(imgPath); //create file from path to create imageIcon
-
-            String imgFileString = modify(imgPath); //shorten image path to file name
-            String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
-
-            this.messageClient.sendImageMessage(modifiedMessage, imgFile, receivers, imgFileString);
+        if (receivers.isEmpty()) { //if no receiver has been selected
+            JOptionPane.showMessageDialog(null, "No receiver has been selected");
         } else {
-            System.out.println("it's a text message");
-            this.messageClient.sendTextMessage(message, receivers);
+            if (message.contains(".png") | message.contains(".jpeg") | message.contains(".jpg")) { //check if text contains image
+                System.out.println("it's an image message");
+
+                String imgPath = extractImage(message); //extract image path from message
+                File imgFile = new File(imgPath); //create file from path to create imageIcon
+
+                String imgFileString = modify(imgPath); //shorten image path to file name
+                String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
+
+                this.messageClient.sendImageMessage(modifiedMessage, imgFile, receivers, imgFileString);
+            } else {
+                System.out.println("it's a text message");
+                this.messageClient.sendTextMessage(message, receivers);
+            }
         }
     }
 
