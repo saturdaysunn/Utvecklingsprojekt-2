@@ -8,6 +8,8 @@ import java.util.*;
  * takes care of reading from and writing to files (contacts, messages, users)
  */
 public class UserController { //TODO: change name to FileController?
+    //TODO: should all these methods be synchronized?
+    //TODO: or synchronized where these are called.
 
     public UserController() {
     }
@@ -24,7 +26,6 @@ public class UserController { //TODO: change name to FileController?
 
         for (String user : users){
             if (user.equals(username)){
-                JOptionPane.showMessageDialog(null, "User already exists!");
                 List<String> contactsOfUser = getContactsOfUser("all/files/contacts.txt", username);
                 //view.populateRPanel(contactsOfUser); //Populates the right panel with the contacts of the user
                 //TODO load chats for the user

@@ -9,11 +9,11 @@ public class Message implements Serializable {
     private User sender;
     private ArrayList<User> receiverList;
     private String text;
-    private Date receivedTime;
-    private Date deliveredTime;
+    private String receivedTime;
+    private String deliveredTime;
 
     public Message(User sender, ArrayList<User> receiverList, String text,
-                   Date receivedTime, Date deliveredTime){
+                   String receivedTime, String deliveredTime){
 
         this.sender = sender;
         this.receiverList = receiverList;
@@ -47,19 +47,19 @@ public class Message implements Serializable {
         this.text = text;
     }
 
-    public Date getReceivedTime() {
+    public String getReceivedTime() {
         return receivedTime;
     }
 
-    public void setReceivedTime(Date receivedTime) {
+    public void setReceivedTime(String receivedTime) {
         this.receivedTime = receivedTime;
     }
 
-    public Date getDeliveredTime() {
+    public String getDeliveredTime() {
         return deliveredTime;
     }
 
-    public void setDeliveredTime(Date deliveredTime) {
+    public void setDeliveredTime(String deliveredTime) {
         this.deliveredTime = deliveredTime;
     }
 }

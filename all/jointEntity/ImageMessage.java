@@ -9,7 +9,7 @@ public class ImageMessage extends Message {
     private ImageIcon image;
 
     public ImageMessage(User sender, ArrayList<User> receiverList,
-                        String text, Date receivedTime, Date deliveredTime, ImageIcon image){
+                        String text, String receivedTime, String deliveredTime, ImageIcon image){
 
         super(sender, receiverList, text, receivedTime, deliveredTime);
         this.image = image;

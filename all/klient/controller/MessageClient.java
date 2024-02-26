@@ -123,9 +123,10 @@ public class MessageClient extends Thread {
      */
     public void sendTextMessage(String message, String senderName, ArrayList<String> receivers) {
         System.out.println("text message arrived in messageClient");
-        Date todaysDate = new Date(); //TODO: what format?
 
-        Message newMessage = new Message(null, null, message, todaysDate, null);
+        //TODO: receivers as String arraylist?
+        //TODO: create user for each user after they log in? store as global var to include here?
+        Message newMessage = new Message(null, null, message, null, null);
         try {
             oos.writeObject(newMessage); //write to server through stream
             System.out.println("i am trying to send: " + newMessage);
@@ -149,12 +150,11 @@ public class MessageClient extends Thread {
      */
     public void sendImageMessage(String message, File file, String senderName, ArrayList<String> receivers, String imgFileName) {
         System.out.println("image message arrived in messageClient");
-        Date todaysDate = new Date(); //TODO: what format?
         ImageIcon image = new ImageIcon(file.getPath()); //create image icon from file
-        loadImage(file, imgFileName); //to save to file
+        loadImage(file, imgFileName); //save to sent_pictures package
 
-        //TODO: temp null values
-        Message imageMessage = new ImageMessage(null, null, message, todaysDate, null, image);
+        //TODO: temp null values for sender and receivers
+        Message imageMessage = new ImageMessage(null, null, message, null, null, image);
         try {
             oos.writeObject(imageMessage); //write to server through stream
             System.out.println("i am trying to send: " + imageMessage);

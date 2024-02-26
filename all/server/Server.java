@@ -7,8 +7,13 @@ import all.klient.controller.UserController;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class Server {
     private Connection connection;
@@ -73,8 +78,9 @@ public class Server {
                         Object receivedObj = ois.readObject();
                         if (receivedObj instanceof Message) {
                             Message message = (Message) receivedObj;
+                            addReceivedTime(message); // time received by server
                             System.out.println("read from client: " + message.getText()); //test
-                            forwardMessage(message);
+                            forwardMessage(message); //send message to receiver client(s)
                         } else if (receivedObj instanceof User) { //when someone logs in
                             User onlineUser = (User) receivedObj;
 
@@ -121,8 +127,19 @@ public class Server {
 
             //TODO: individual
             // check if user online, if yes, send message to their clientHandler
-            // if no, store message in SOMETHING (unusure, hashmap & file etc?)
+            // if no, store message in SOMETHING (unsure, hashmap & file etc?)
 
+        }
+
+        /**
+         * retrieves date and time for stockholm timezone
+         * @param message message object to add delivered time to
+         */
+        public void addReceivedTime(Message message) {
+            Date date = new Date();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println("Date and time in Stockholm: " + df.format(date));
+            message.setReceivedTime(df.format(date));
         }
     }
 
@@ -134,5 +151,6 @@ public class Server {
     public static void main(String[] args){
         new Server(724);
     }
+
 
 }
