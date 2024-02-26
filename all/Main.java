@@ -11,5 +11,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         new LoginPanel();
+        //TODO: how to make it so that they are created independently and can be closed independently?
+        //TODO: call e.g. this.dispose() when clicking log out?
     }
 }

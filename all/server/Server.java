@@ -2,17 +2,19 @@ package all.server;
 
 import all.jointEntity.Message;
 import all.jointEntity.User;
-import all.klient.controller.UserController;
+import all.klient.controller.FileController;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Server {
     private Connection connection;
-    private HashMap<String, ClientHandler> clients = new HashMap<>(); //stores clients and their connections
+    private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
     private HashMap<User, ArrayList<Message>> userArrayListHashMap; //TODO: ??
 
 
@@ -56,13 +58,13 @@ public class Server {
         private Socket socket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private UserController userController;
+        private FileController fileController;
 
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
             ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            this.userController = new UserController(); //TODO: correct?
+            this.fileController = new FileController(); //TODO: correct?
             start();
         }
 
@@ -73,22 +75,22 @@ public class Server {
                         Object receivedObj = ois.readObject();
                         if (receivedObj instanceof Message) {
                             Message message = (Message) receivedObj;
+                            message.setReceivedTime(new Date());
                             System.out.println("read from client: " + message.getText()); //test
-                            forwardMessage(message);
+                            forwardMessage(message); //send message to receiver client(s)
                         } else if (receivedObj instanceof User) { //when someone logs in
                             User onlineUser = (User) receivedObj;
-
-                            //TODO: issue where message is received before name has been set in gui?
+                            onlineClients.put(onlineUser, this); //add to clients hashmap
                             System.out.println(onlineUser.getUsername() + " has logged in");
-                            //TODO: register in online users array
 
                             //check if user already exists
-                            if (!userController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt")) {
+                            if (!fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt")) {
                                 //if no, save to users.txt file
-                                userController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
-                            }else {
-                                //TODO: if yes, load contents for user from files (messages, contacts)
-                                //TODO: how?
+                                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
+                            }else { //if yes
+                                //read contacts file
+                                //store contacts to user array
+                                //TODO: load messages for user.
                             }
 
                         }
@@ -121,9 +123,10 @@ public class Server {
 
             //TODO: individual
             // check if user online, if yes, send message to their clientHandler
-            // if no, store message in SOMETHING (unusure, hashmap & file etc?)
+            // if no, store message in SOMETHING (unsure, hashmap & file etc?)
 
         }
+
     }
 
 
@@ -131,8 +134,9 @@ public class Server {
      * starts instance of server on port 724
      * @param args
      */
-    public static void main(String[] args){
+    public static void main(String[] args) throws ParseException {
         new Server(724);
     }
+
 
 }

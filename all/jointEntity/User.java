@@ -5,10 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User implements Serializable {
-
     private String username;
     private ImageIcon icon;
-    private ArrayList<User> contacts;
+    private ArrayList<String> contacts;
     private boolean isOnline;
 
     public User(String username, ImageIcon icon){
@@ -42,7 +41,7 @@ public class User implements Serializable {
         } return false;
     }
 
-    public void addContact(User user){
+    public void addContact(String user){
         contacts.add(user);
     }
 

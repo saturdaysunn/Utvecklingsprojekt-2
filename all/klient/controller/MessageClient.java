@@ -30,7 +30,6 @@ public class MessageClient extends Thread {
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
             this.mainFrame = new MainFrame(1000, 600, this); //create new frame for client
-            sendLoginMessage(); //inform server that user has logged in.
             new Listener().start(); //start listening for messages from server
         } catch (IOException e){
             e.printStackTrace();
@@ -47,11 +46,9 @@ public class MessageClient extends Thread {
     /**
      * creates instance of User and informs server that user has logged in
      */
-    public void sendLoginMessage() {
+    public void sendLoginMessage(String username, ImageIcon userPicture) {
         //TODO: use sleep or checking condition here?
         // to make sure they have been set before creating user and sending
-        String username = mainFrame.getMainPanel().getrPanel().getCurrentUsername();
-        ImageIcon userPicture = mainFrame.getMainPanel().getrPanel().getUserIcon();
         User user = new User(username, userPicture); //create new instance of user
 
         try {
@@ -123,9 +120,10 @@ public class MessageClient extends Thread {
      */
     public void sendTextMessage(String message, String senderName, ArrayList<String> receivers) {
         System.out.println("text message arrived in messageClient");
-        Date todaysDate = new Date(); //TODO: what format?
 
-        Message newMessage = new Message(null, null, message, todaysDate, null);
+        //TODO: receivers as String arraylist?
+        //TODO: create user for each user after they log in? store as global var to include here?
+        Message newMessage = new Message(null, null, message, null, null);
         try {
             oos.writeObject(newMessage); //write to server through stream
             System.out.println("i am trying to send: " + newMessage);
@@ -149,12 +147,11 @@ public class MessageClient extends Thread {
      */
     public void sendImageMessage(String message, File file, String senderName, ArrayList<String> receivers, String imgFileName) {
         System.out.println("image message arrived in messageClient");
-        Date todaysDate = new Date(); //TODO: what format?
         ImageIcon image = new ImageIcon(file.getPath()); //create image icon from file
-        loadImage(file, imgFileName); //to save to file
+        loadImage(file, imgFileName); //save to sent_pictures package
 
-        //TODO: temp null values
-        Message imageMessage = new ImageMessage(null, null, message, todaysDate, null, image);
+        //TODO: temp null values for sender and receivers
+        Message imageMessage = new ImageMessage(null, null, message, null, null, image);
         try {
             oos.writeObject(imageMessage); //write to server through stream
             System.out.println("i am trying to send: " + imageMessage);
