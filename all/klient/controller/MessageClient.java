@@ -56,14 +56,14 @@ public class MessageClient extends Thread {
 
     private class Listener extends Thread {
         @Override
-        public void run() {
+        public synchronized void run() {
             try {
                 ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
                 while (true) {
                     Object receivedObject = ois.readObject();
                     if (receivedObject instanceof Message) {
                         Message receivedMessage = (Message) receivedObject;
-                        System.out.println("Received a message: " + receivedMessage);
+                        System.out.println("Received a message: " + receivedMessage.getText());
                         //TODO: invoke callback for gui to display message
                     } else {
 
@@ -95,11 +95,10 @@ public class MessageClient extends Thread {
      * @param receivers names of selected receivers
      */
     public void sendTextMessage(String message, ArrayList<String> receivers) {
-        System.out.println("text message arrived in messageClient");
         Message newMessage = new Message(user, receivers, message, null, null);
         try {
             oos.writeObject(newMessage); //write to server through stream
-            System.out.println("i am trying to send: " + newMessage);
+            System.out.println("i am trying to send: " + newMessage.getText());
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -121,6 +120,7 @@ public class MessageClient extends Thread {
         Message imageMessage = new ImageMessage(user, receivers, message, null, null, image);
         try {
             oos.writeObject(imageMessage); //write to server through stream
+            System.out.println("i am trying to send: " + imageMessage.getText());
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();

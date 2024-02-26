@@ -1,8 +1,5 @@
 package all.klient.view;
 
-import all.jointEntity.ImageMessage;
-import all.jointEntity.Message;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -10,10 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
 
 public class CenterPanel extends JPanel{
     private int width;
@@ -84,8 +77,12 @@ public class CenterPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("send button pressed");
-                sendMessage(messageInputField.getText()); //send contents of input field as message
-                messageInputField.setText(""); //clear input field after sending message
+                if (!messageInputField.getText().isEmpty()) { //if no message to send
+                    sendMessage(messageInputField.getText()); //send contents of input field as message
+                    messageInputField.setText(""); //clear input field after sending message
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please input a message first");
+                }
             }
         });
 
