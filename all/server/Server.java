@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Server {
     private Connection connection;
@@ -81,16 +82,16 @@ public class Server {
                             checkIfOnline(message); //send message to receiver client(s)
                         } else if (receivedObj instanceof User) { //when someone logs in
                             User onlineUser = (User) receivedObj;
+                            String username = onlineUser.getUsername();
                             onlineClients.put(onlineUser, this); //add to online clients hashmap
                             System.out.println(onlineUser.getUsername() + " has logged in");
 
                             //check if user already exists
-                            if (!fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt")) {
-                                //if no, save to users.txt file
-                                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
-                            }else {//if yes
-                                //TODO: read contacts file here instead?
-                                //TODO: store contacts to array in User class? could be good
+                            if (!fileController.checkIfUserAlreadyExists(username, "all/files/users.txt")) {
+                                fileController.saveUserToFile(username, "all/files/users.txt"); //save
+                            }else { //if yes
+                                //List<String> contactsOfUser = fileController.getContactsOfUser("all/files/contacts.txt", username);
+                                //TODO: read contacts in client instead?
 
                                 //TODO: Read from unsent messages file. example below
                                 /*HashMap<String, ArrayList<Message>> unsentMessagesMap =
