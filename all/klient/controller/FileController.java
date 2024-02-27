@@ -21,9 +21,6 @@ public class FileController {
 
         for (String user : users){
             if (user.equals(username)){ //if user has logged in before
-                List<String> contactsOfUser = getContactsOfUser("all/files/contacts.txt", username);
-                //view.populateRPanel(contactsOfUser); //Populates the right panel with the contacts of the user
-                //TODO: move out? think of method purpose
                 return true;
             }
         }

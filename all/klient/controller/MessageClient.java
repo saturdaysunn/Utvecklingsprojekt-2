@@ -21,12 +21,14 @@ public class MessageClient extends Thread {
     private ObjectOutputStream oos;
     private MainFrame mainFrame;
     private User user;
+    private FileController fileController;
+    private ArrayList<String> contacts;
 
     public MessageClient(String ip, int port){
         try{
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
-            this.mainFrame = new MainFrame(1000, 600, this); //create gui for client & send messageClient
+            this.mainFrame = new MainFrame(1000, 600, this); //create gui for client
             new Listener().start(); //start listening for messages from server
         } catch (IOException e){
             e.printStackTrace();
@@ -38,12 +40,24 @@ public class MessageClient extends Thread {
      */
     public void sendLoginMessage(String username, ImageIcon userPicture) {
         this.user = new User(username, userPicture);
+        retrieveContacts();
         try {
             oos.writeObject(user);
             oos.flush();
             System.out.println("informing server that " + user.getUsername() + " has logged in");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * retrieves user's contacts from
+     */
+    public void retrieveContacts() {
+        fileController = new FileController();
+        contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());
+        if (!contacts.isEmpty()) {
+            this.mainFrame.getMainPanel().getrPanel().populateRPanel(contacts);
         }
     }
 
