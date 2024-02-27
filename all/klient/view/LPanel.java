@@ -71,25 +71,18 @@ public class LPanel extends JPanel{
         addToContactsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: what if several have been selected?
-                Object selectedObject = leftPanelList.getSelectedValue();
+                String selectedUser = leftPanelList.getSelectedValue();
+                System.out.println("selected user: " + selectedUser); //test
 
-                if (selectedObject != null) {
-                    //TODO: check if already in contacts
-                    //TODO: logic to add to contacts file
-
-                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //current user
-                    selectedUsers = leftPanelList.getSelectedValuesList(); //selected users on LPanel
+                if (selectedUser != null) {
+                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //get username of current user
                     currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts'
 
-                    for(String selectedUser : selectedUsers) {
-                        if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
-                            //if the user isn't already in contact, then the user is added.
-                            currentUserContacts.add(selectedUser);
-                        }
+                    if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
+                        currentUserContacts.add(selectedUser); //if not, the user is added.
                     }
+                    userContacts.put(currentUser, currentUserContacts); //update hashmap of contacts
 
-                    userContacts.put(currentUser, currentUserContacts); //before writing to file, the user's contacts are stored a HashMap
                     try {
                         mainFrame.removeDataBlock("all/files/contacts.txt", currentUser);
                     } catch (IOException ex) {
@@ -99,10 +92,8 @@ public class LPanel extends JPanel{
                     mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
                     mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser));
 
-
-
                 } else {
-                    JOptionPane.showMessageDialog(LPanel.this, "Please select a user.");
+                    JOptionPane.showMessageDialog(LPanel.this, "Please select one user.");
                 }
             }
         });

@@ -90,14 +90,10 @@ public class Server {
                             if (!fileController.checkIfUserAlreadyExists(username, "all/files/users.txt")) {
                                 fileController.saveUserToFile(username, "all/files/users.txt"); //save
                             }else { //if yes
-                                //List<String> contactsOfUser = fileController.getContactsOfUser("all/files/contacts.txt", username);
-                                //TODO: read contacts in client instead?
-
                                 //TODO: Read from unsent messages file. example below
                                 /*HashMap<String, ArrayList<Message>> unsentMessagesMap =
                                         fileController.readUnsentFile("all/files/unsentMessages.txt"); */
                                 sendUnsentMessages(unsentMessagesMap, onlineUser.getUsername());
-
                             }
 
                             //TODO: send message to other clients that user is online (do this through callback?)

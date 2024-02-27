@@ -21,6 +21,8 @@ public class MessageClient extends Thread {
     private ObjectOutputStream oos;
     private MainFrame mainFrame;
     private User user;
+    private FileController fileController;
+    private ArrayList<String> contacts;
 
     public MessageClient(String ip, int port){
         try{
@@ -38,12 +40,24 @@ public class MessageClient extends Thread {
      */
     public void sendLoginMessage(String username, ImageIcon userPicture) {
         this.user = new User(username, userPicture);
+        retrieveContacts();
         try {
             oos.writeObject(user);
             oos.flush();
             System.out.println("informing server that " + user.getUsername() + " has logged in");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * retrieves user's contacts from
+     */
+    public void retrieveContacts() {
+        fileController = new FileController();
+        contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());
+        if (!contacts.isEmpty()) {
+            this.mainFrame.getMainPanel().getrPanel().populateRPanel(contacts);
         }
     }
 
