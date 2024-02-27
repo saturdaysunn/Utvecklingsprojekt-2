@@ -123,25 +123,19 @@ public class MainFrame extends JFrame {
         return fileController.retrieveAllUsersFromFile(filePath);
     }
 
-    //TODO: vague name
-    /*
-    public List<String> getDataAfterEmptyRow(String filePath, String searchString) {
-        return userController.getDataAfterEmptyRow(filePath, searchString);
-    }
-    */
-
-
-    public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
-        fileController.removeDataBlock(filePath, targetString, outputFilePath);
-
+    public void removeDataBlock(String filePath, String targetString) throws IOException {
+        fileController.removeTargetContent(filePath, targetString);
     }
 
     public List<String> getContactsOfUser(String filepath, String user){
         return fileController.getContactsOfUser(filepath, user);
     }
 
-    //TODO: vague name
     public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
         fileController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
+    }
+
+    public void saveUserToFile(String userName, String filePath) {
+        fileController.saveUserToFile(userName, filePath);
     }
 }

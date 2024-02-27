@@ -91,12 +91,13 @@ public class LPanel extends JPanel{
 
                     userContacts.put(currentUser, currentUserContacts); //before writing to file, the user's contacts are stored a HashMap
                     try {
-                        mainFrame.removeDataBlock("all/files/contacts.txt", currentUser, "all/files/new-contacts.txt");
+                        mainFrame.removeDataBlock("all/files/contacts.txt", currentUser);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                    mainFrame.writeHashMapToFile(userContacts, "all/files/new-contacts.txt");
-                    mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/new-contacts.txt", currentUser));
+
+                    mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
+                    mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser));
 
 
 
