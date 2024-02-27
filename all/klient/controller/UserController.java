@@ -63,40 +63,42 @@ public class UserController {
     }
 
     /**
-     * This method removes data blocks from a text file that start with a specific
-     * string and are bounded by empty rows before and after.
+     * This method removes the target content from a text file while keeping the
+     * remaining data intact.
      *
-     * @param filePath The path to the text file.
-     * @param targetString The string to search for.
-     * @param outputFilePath The path to write the modified text file.
+     * @param filePath     The path to the text file.
+     * @param targetString The string to search for and remove.
      * @throws IOException If an I/O error occurs while reading or writing the file.
      */
-    public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
+    public static void removeTargetContent(String filePath, String targetString) throws IOException {
         BufferedReader reader = null;
         BufferedWriter writer = null;
 
         try {
             reader = new BufferedReader(new FileReader(filePath));
-            writer = new BufferedWriter(new FileWriter(outputFilePath));
+            StringBuilder contentBuilder = new StringBuilder();
 
             String line;
-            boolean isInBlock = false; //flag to indicate if current line is within the block to remove
+            boolean isInBlock = false;
 
             while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) { //check for empty row
+                if (line.trim().isEmpty()) {
                     if (isInBlock) {
-                        isInBlock = false; //mark end of block
+                        isInBlock = false; //end of block
                     }
-                } else if (line.contains(targetString)) { //check if line contains target string
+                } else if (line.contains(targetString)) { // Check if line contains target string
                     isInBlock = true; //start of the block
                 }
 
                 if (!isInBlock) {
-                    //write line to output file only if it's not within the block
-                    writer.write(line);
-                    writer.newLine();
+                    //append line to contentBuilder if it's not within the block
+                    contentBuilder.append(line);
+                    contentBuilder.append(System.lineSeparator());
                 }
             }
+
+            writer = new BufferedWriter(new FileWriter(filePath));
+            writer.write(contentBuilder.toString());
         } finally {
             if (reader != null) {
                 reader.close();
@@ -106,6 +108,7 @@ public class UserController {
             }
         }
     }
+
     public void rewriteContactsTextFileWithNewContacts(HashMap<String, ArrayList<String>> hashMap, String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename));
              BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/temp.txt"))) {

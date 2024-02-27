@@ -1,40 +1,35 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 
 Test
 iMissFarid
 Mr Frog
+=======
+
+>>>>>>> Stashed changes
 Mihail
 FrogsAreSick
 Beeeeep
-
 Lalalallalaalla
 jajajaja
-kakakak
-Tester
-Miki
-hehe
-
-tetetete
-dadadad
-ajjajajajajajaj
-Testerino
-Testerinita
-MihailMaybeNot
 
 Pancake
-Testytesta
-Beepboop
-Pin
-jeje
-Frogita
+Miki
+hehe
+tetetete
+dadadad
+jajajaja
 
-TestingTempFile
-Alelele
-Lkaokaloako
 
+
+
+
+<<<<<<< Updated upstream
 Hehehehehehe
 TEsterinoooooooo
 TestingTestingTesting
 tiffany
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

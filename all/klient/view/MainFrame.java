@@ -99,8 +99,8 @@ public class MainFrame extends JFrame {
 
     }
 
-    public void removeDataBlock(String filePath, String targetString, String outputFilePath) throws IOException {
-        userController.removeDataBlock(filePath, targetString, outputFilePath);
+    public void removeDataBlock(String filePath, String targetString) throws IOException {
+        userController.removeTargetContent(filePath, targetString);
     }
 
     public List<String> getContactsOfUser(String filepath, String user){
