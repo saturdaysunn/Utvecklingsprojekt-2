@@ -60,7 +60,7 @@ public class MainFrame extends JFrame {
     /**
      * extracts image path from whole message
      * @param message whole message to be sent
-     * @return image path in string format
+     * @return image path in string format  
      */
     public String extractImage(String message) {
         String[] words = message.split("\\s+");
