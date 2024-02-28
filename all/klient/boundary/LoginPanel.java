@@ -1,4 +1,4 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import all.klient.controller.MessageClient;
 

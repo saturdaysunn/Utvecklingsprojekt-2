@@ -1,6 +1,8 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import all.klient.controller.*;
+import all.server.controllerAndBoundary.FileController;
+
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -138,4 +140,9 @@ public class MainFrame extends JFrame {
     public void saveUserToFile(String userName, String filePath) {
         fileController.saveUserToFile(userName, filePath);
     }
+
+    public void updateOnlineList(ArrayList<String> onlineUsers){
+        panel.getlPanel().updateOnlineList(onlineUsers);
+    }
+
 }

@@ -1,12 +1,6 @@
 package all;
 
-import all.jointEntity.User;
-import all.klient.controller.MessageClient;
-import all.klient.view.LoginPanel;
-import all.klient.view.MainFrame;
-
-import javax.swing.*;
-import java.io.IOException;
+import all.klient.boundary.LoginPanel;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,8 +1,6 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import javax.swing.*;
-import java.awt.*;
-import all.klient.view.*;
 
 public class MainPanel extends JPanel {
     private LPanel lPanel;

@@ -53,4 +53,6 @@ public class User implements Serializable {
         return isOnline;
     }
 
+    //TODO: onlineusers klass?
+
 }

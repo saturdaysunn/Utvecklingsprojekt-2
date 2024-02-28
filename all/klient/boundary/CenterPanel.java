@@ -1,4 +1,4 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import javax.swing.*;
 import javax.swing.border.Border;
