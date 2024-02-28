@@ -1,10 +1,9 @@
 package all.klient.controller;
+import all.jointEntity.ContactsMessage;
 import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
-import all.klient.CallBackInterface;
 import all.klient.boundary.MainFrame;
-import all.server.controllerAndBoundary.FileController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,8 +22,8 @@ public class MessageClient extends Thread {
     private ObjectOutputStream oos;
     private MainFrame mainFrame;
     private User user;
-    private FileController fileController;
     private ArrayList<String> contacts;
+    private ArrayList<String> onlineUsers;
 
     public MessageClient(String ip, int port){
         try{
@@ -42,7 +41,6 @@ public class MessageClient extends Thread {
      */
     public void sendLoginMessage(String username, ImageIcon userPicture) {
         this.user = new User(username, userPicture);
-        retrieveContacts();
         try {
             oos.writeObject(user);
             oos.flush();
@@ -53,15 +51,24 @@ public class MessageClient extends Thread {
     }
 
     /**
-     * retrieves user's contacts from
-     */ //TODO: this should be done in the server side, sent to client as arraylist
-    public void retrieveContacts() {
-        fileController = new FileController();
-        contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());
-        if (!contacts.isEmpty()) {
-            this.mainFrame.getMainPanel().getrPanel().populateRPanel(contacts);
+     * checks the status of the object that was received.
+     * @param receivedObject object that was received through stream.
+     */
+    public void checkObjectStatus(Object receivedObject) {
+        if (receivedObject instanceof Message) {
+            Message receivedMessage = (Message) receivedObject;
+            System.out.println("Received a message: " + receivedMessage.getText());
+            //TODO: invoke callback for gui to display message??
+        } else if (receivedObject instanceof ContactsMessage) {
+            ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
+            contacts = contactsMessage.getContactsList();
+            //TODO: callback to populate panel in gui??
+        } else if (receivedObject instanceof ArrayList<?>) {
+            onlineUsers = (ArrayList<String>) receivedObject;
+            //TODO: callback to populate panel in gui??
         }
     }
+
 
     /**
      * @return MainFrame instance for this client
@@ -70,6 +77,9 @@ public class MessageClient extends Thread {
         return mainFrame;
     }
 
+    /**
+     * inner class responsible for communication between client and server
+     */
     private class Listener extends Thread {
 
         @Override
@@ -78,14 +88,7 @@ public class MessageClient extends Thread {
                 ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
                 while (true) {
                     Object receivedObject = ois.readObject();
-                    if (receivedObject instanceof Message) {
-                        Message receivedMessage = (Message) receivedObject;
-                        System.out.println("Received a message: " + receivedMessage.getText());
-                        //TODO: invoke callback for gui to display message
-                    } else {
-
-                        System.out.println("Received unknown object type: " + receivedObject.getClass());
-                    }
+                    checkObjectStatus(receivedObject);
                 }
             } catch (IOException e) {
                 System.err.println("IOException occurred: " + e.getMessage());
@@ -100,13 +103,10 @@ public class MessageClient extends Thread {
                     System.err.println("Error closing ObjectInputStream: " + e.getMessage());
                 }
             }
-
         }
-
     }
 
-
-    //TODO: handle receivers & groupchat situation
+    //TODO: hande checks so it is right
     /**
      * sends text message from client to server
      * @param message message
@@ -145,6 +145,8 @@ public class MessageClient extends Thread {
         }
     }
 
+
+    //TODO: should these be done in server then? or, do we need to store the images?
     /**
      * part of logic to save image to sent_pictures package
      * @param file image file

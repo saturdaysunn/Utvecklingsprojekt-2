@@ -1,7 +1,7 @@
 package all.klient.boundary;
 
 import all.klient.controller.*;
-import all.server.controllerAndBoundary.FileController;
+import all.server.controller.FileController;
 
 import javax.swing.*;
 import java.io.File;

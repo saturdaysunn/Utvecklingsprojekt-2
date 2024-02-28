@@ -6,9 +6,6 @@ import all.jointEntity.User;
 import java.util.ArrayList;
 
 public interface CallBackInterface {
-
-     void newMessage(Message message);
-
-     void newLogin(ArrayList<String> onlineUsers);
+     //TODO: for communicating with gui?
 
 }
