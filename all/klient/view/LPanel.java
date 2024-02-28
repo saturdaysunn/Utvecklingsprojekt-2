@@ -76,7 +76,7 @@ public class LPanel extends JPanel{
 
                 if (selectedUser != null) {
                     String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //get username of current user
-                    currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts'
+                    currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts
 
                     if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
                         currentUserContacts.add(selectedUser); //if not, the user is added.
@@ -132,73 +132,6 @@ public class LPanel extends JPanel{
     public ArrayList<String> getReceivers() {
         selectedUsers = leftPanelList.getSelectedValuesList();
         return new ArrayList<>(selectedUsers);
-    }
-
-    public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename));
-             BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/temp.txt"))) {
-
-            boolean foundKey = false;
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) {
-                    if (foundKey) {
-                        //found an empty row after the key, break loop
-                        break;
-                    }
-                    continue;
-                }
-
-                if (!foundKey) {
-                    if (hashMap.containsKey(line)) {
-                        foundKey = true;
-                    }
-                }
-
-                //if key found, ignore lines until an empty row is found
-                if (foundKey) {
-                    continue;
-                }
-
-                //copy the line to the new file
-                writer.write(line);
-                writer.newLine();
-            }
-
-            //write the HashMap to the new fi
-            for (Map.Entry<String, ArrayList<String>> entry : hashMap.entrySet()) {
-                String key = entry.getKey();
-                ArrayList<String> values = entry.getValue();
-
-                writer.write(key);
-                writer.newLine();
-
-                for (String value : values) {
-                    writer.write(value);
-                    writer.newLine();
-                }
-                writer.newLine();
-            }
-
-            //copy the remaining content of the file
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
-                writer.newLine();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //rename the temporary file to the original filename
-        File tempFile = new File("all/files/temp.txt");
-        File originalFile = new File(filename);
-        if (tempFile.exists()) {
-            if (originalFile.exists())
-                originalFile.delete();
-            tempFile.renameTo(originalFile);
-        }
     }
 
 
