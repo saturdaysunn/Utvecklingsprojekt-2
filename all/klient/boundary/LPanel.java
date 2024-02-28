@@ -27,7 +27,7 @@ public class LPanel extends JPanel{
     private List<String> selectedUsers;
     private ArrayList<String> currentUserContacts = new ArrayList<>();
     private HashMap<String, ArrayList<String>> userContacts = new HashMap<>();
-    private ArrayList<String> userList = new ArrayList<>();
+    private ArrayList<String> onlineUsersList = new ArrayList<>();
 
     public LPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -58,9 +58,6 @@ public class LPanel extends JPanel{
         JScrollPane scrollPane = new JScrollPane(leftPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
 
-        populateLPanel(mainFrame.retrieveAllUsersFromFile("all/files/users.txt"));
-
-
         JPanel buttonPanel = new JPanel(new FlowLayout());
         addToContactsButton = new JButton("Add to Contacts");
         viewChatButton = new JButton("View Chat");
@@ -77,6 +74,10 @@ public class LPanel extends JPanel{
 
                 if (selectedUser != null) {
                     String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //get username of current user
+
+
+                    //TODO: should be done in server, not here
+                    /*
                     currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts
 
                     if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
@@ -93,6 +94,9 @@ public class LPanel extends JPanel{
                     mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
                     mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser));
 
+                     */
+                    //TODO: should only be done in server, not here.
+
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select one user.");
                 }
@@ -108,6 +112,7 @@ public class LPanel extends JPanel{
                     String selectedObject = selectedObjects.get(0);
                     if (selectedObject != null) {
                         mainFrame.getMainPanel().getcPanel().viewChat(selectedObject);
+                        //TODO: implement more here? what exactly?
                     }
                 } else {
                     JOptionPane.showMessageDialog(buttonPanel, "Please select only one user to view chat.", "Selection Error", JOptionPane.ERROR_MESSAGE);
@@ -135,11 +140,10 @@ public class LPanel extends JPanel{
         return new ArrayList<>(selectedUsers);
     }
 
+
     public void updateOnlineList(ArrayList<String> onlineUsers){
-
-        userList = onlineUsers;
-        leftPanelList.setListData(userList.toArray(String[]::new));
-
+        onlineUsersList = onlineUsers;
+        leftPanelList.setListData(onlineUsersList.toArray(String[]::new));
     }
 
 

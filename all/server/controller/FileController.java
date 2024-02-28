@@ -1,5 +1,7 @@
 package all.server.controller;
 
+import all.jointEntity.Message;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,14 +13,13 @@ public class FileController {
     //TODO: or synchronized where these are called.
 
     /**
-     * checks if user has already been registered previously
+     * checks if user has logged in previously.
      * @param username name of user
      * @param filePath path of file to check
      * @return true if user exists, false if not
      */
     public boolean checkIfUserAlreadyExists(String username, String filePath) {
         LinkedList<String> users = retrieveAllUsersFromFile(filePath); //retrieve all stored usernames
-
         for (String user : users){
             if (user.equals(username)){ //if user has logged in before
                 return true;
@@ -53,7 +54,6 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return lines;
     }
 
@@ -92,7 +92,6 @@ public class FileController {
     /**
      * This method removes the target content from a text file while keeping the
      * remaining data intact.
-     *
      * @param filePath file path
      * @param targetString search for this string in text file
      * @throws IOException error
@@ -164,7 +163,6 @@ public class FileController {
                 writer.write(line);
                 writer.newLine();
             }
-
             writer.newLine();
 
         } catch (IOException e) {
@@ -198,5 +196,56 @@ public class FileController {
             writer.newLine();
         }
     }
+
+    /** //
+     * stores unsent messages in a .dat file for later retrieval.
+     * @param unsentMessages hashmap containing unsent messages for different offline users.
+     */ //TODO: NOT YET TESTED
+    public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
+            for (String receiver : unsentMessages.keySet()) {
+                oos.writeObject(receiver); //name of receiver
+
+                ArrayList<Message> messages = unsentMessages.get(receiver);
+                for (Message message : messages) {
+                    oos.writeObject(message); //write message object to file
+                }
+                oos.writeObject(""); //add blank line
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * retrieves unsent messages from .dat file and inserts into HashMap.
+     * @return HashMap containing unread messages for different users.
+     */ //TODO: NOT YET TESTED
+    public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
+        HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>();
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
+            while (true) {
+                //TODO: not sure if correct approach or if it works
+                String receiver = (String) ois.readObject();
+                if (receiver.isEmpty()) {
+                    break;
+                }
+                ArrayList<Message> messages = new ArrayList<>();
+                while (true) {
+                    Message message = (Message) ois.readObject();
+                    if (message == null) {
+                        break;
+                    }
+                    messages.add(message);
+                }
+                unsentMessagesMap.put(receiver, messages);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return unsentMessagesMap;
+    }
+
 
 }

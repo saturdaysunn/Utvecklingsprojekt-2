@@ -13,9 +13,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
- * Responsible for client side of the connection
+ * Responsible for client side logic
  */
-
 public class MessageClient extends Thread {
     private Socket socket;
     private ObjectInputStream ois;
@@ -58,14 +57,14 @@ public class MessageClient extends Thread {
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
             System.out.println("Received a message: " + receivedMessage.getText());
-            //TODO: invoke callback for gui to display message??
+            //TODO: populate gui
         } else if (receivedObject instanceof ContactsMessage) {
             ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
             contacts = contactsMessage.getContactsList();
-            //TODO: callback to populate panel in gui??
+            mainFrame.updateContactsList(contacts); //TODO: test if works
         } else if (receivedObject instanceof ArrayList<?>) {
             onlineUsers = (ArrayList<String>) receivedObject;
-            //TODO: callback to populate panel in gui??
+            mainFrame.updateOnlineList(onlineUsers); //TODO: test if works
         }
     }
 
@@ -106,7 +105,7 @@ public class MessageClient extends Thread {
         }
     }
 
-    //TODO: hande checks so it is right
+    //TODO: hande checks so it is sent to right person for sure
     /**
      * sends text message from client to server
      * @param message message
