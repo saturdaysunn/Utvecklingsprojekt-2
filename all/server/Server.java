@@ -95,9 +95,6 @@ public class Server {
                                         fileController.readUnsentFile("all/files/unsentMessages.txt"); */
                                 sendUnsentMessages(unsentMessagesMap, onlineUser.getUsername());
                             }
-
-                            //TODO: send message to other clients that user is online (do this through callback?)
-
                         }
                     } catch (ClassNotFoundException e){
                         throw new RuntimeException(e);
@@ -142,7 +139,6 @@ public class Server {
          * @param message message to send
          */
         public void checkIfOnline(Message message) {
-            //check if any receiver is online or not
             for (String receiver : message.getReceiverList()) {
                 for (User receiverUser : onlineClients.keySet()) { //check if registered as online
                     if (receiverUser.getUsername().equals(receiver)) { //if yes

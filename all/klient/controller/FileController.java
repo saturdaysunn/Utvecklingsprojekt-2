@@ -57,6 +57,9 @@ public class FileController {
         return lines;
     }
 
+
+    //TODO: should we store them in a dat file so that we can access their contacts lists?
+    //TODO: this might be good for when we have to check if receiver has sender as a contact
     public ArrayList<String> getContactsOfUser(String filePath, String userName) {
         ArrayList<String> resultList = new ArrayList<>();
 

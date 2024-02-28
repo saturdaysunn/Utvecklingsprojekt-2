@@ -52,7 +52,7 @@ public class MessageClient extends Thread {
 
     /**
      * retrieves user's contacts from
-     */
+     */ //TODO: this should be done in the server side, sent to client as arraylist
     public void retrieveContacts() {
         fileController = new FileController();
         contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());

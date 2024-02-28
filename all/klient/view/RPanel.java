@@ -2,6 +2,8 @@ package all.klient.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -13,7 +15,6 @@ public class RPanel extends JPanel {
     private int height;
     private MainFrame mainFrame;
     private JList<Object> rightPanelList;
-    private JLabel contactsTitle;
     private JLabel currentUserLabel;
     private JLabel currentUserPictureLabel;
     private ImageIcon image = new ImageIcon("all/files/default-image.png");
@@ -54,6 +55,18 @@ public class RPanel extends JPanel {
 
         currentUserPanel.add(currentUserLabel, BorderLayout.WEST);
         currentUserPanel.add(currentUserPictureLabel, BorderLayout.EAST);
+
+        //Add logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Logout button clicked");
+                //TODO: handle logic to close down client connection and inform server that user has logged out
+                mainFrame.dispose();
+            }
+        });
+        currentUserPanel.add(logoutButton, BorderLayout.EAST);
 
         add(currentUserPanel, BorderLayout.SOUTH);
     }
