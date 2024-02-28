@@ -2,7 +2,9 @@ package all.klient.controller;
 import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
-import all.klient.view.MainFrame;
+import all.klient.CallBackInterface;
+import all.klient.boundary.MainFrame;
+import all.server.controllerAndBoundary.FileController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -69,6 +71,7 @@ public class MessageClient extends Thread {
     }
 
     private class Listener extends Thread {
+
         @Override
         public synchronized void run() {
             try {
@@ -99,6 +102,7 @@ public class MessageClient extends Thread {
             }
 
         }
+
     }
 
 

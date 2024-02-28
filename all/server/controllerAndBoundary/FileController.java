@@ -1,4 +1,4 @@
-package all.klient.controller;
+package all.server.controllerAndBoundary;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +27,7 @@ public class LPanel extends JPanel{
     private List<String> selectedUsers;
     private ArrayList<String> currentUserContacts = new ArrayList<>();
     private HashMap<String, ArrayList<String>> userContacts = new HashMap<>();
+    private ArrayList<String> userList = new ArrayList<>();
 
     public LPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -132,6 +133,13 @@ public class LPanel extends JPanel{
     public ArrayList<String> getReceivers() {
         selectedUsers = leftPanelList.getSelectedValuesList();
         return new ArrayList<>(selectedUsers);
+    }
+
+    public void updateOnlineList(ArrayList<String> onlineUsers){
+
+        userList = onlineUsers;
+        leftPanelList.setListData(userList.toArray(String[]::new));
+
     }
 
 

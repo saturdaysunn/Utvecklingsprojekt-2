@@ -1,4 +1,4 @@
-package all.klient.view;
+package all.klient.boundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +17,7 @@ public class RPanel extends JPanel {
     private JList<Object> rightPanelList;
     private JLabel currentUserLabel;
     private JLabel currentUserPictureLabel;
+    private JButton logoutButton;
     private ImageIcon image = new ImageIcon("all/files/default-image.png");
 
 
@@ -57,7 +58,7 @@ public class RPanel extends JPanel {
         currentUserPanel.add(currentUserPictureLabel, BorderLayout.EAST);
 
         //Add logout button
-        JButton logoutButton = new JButton("Logout");
+        logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
