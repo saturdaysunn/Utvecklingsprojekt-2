@@ -28,17 +28,18 @@ public class Server {
     //TODO: figure out how to show messages in client when user opens chat window for that user.
     //TODO: here they get sent, but where do they go before the user opens a chat window?
     /**
-     * retrieves unsent messages from unsentMessagesMap and sends them to receiver
-     * @param unsentMessagesMap hashmap containing unsent messages for all offline users
+     * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
+     * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
+     * @param receiver user to send unsent messages to (the user that just went online).
      */
     public void sendUnsentMessages(HashMap <String, ArrayList <Message>>unsentMessagesMap, User receiver){
         if (unsentMessagesMap.containsKey(receiver)) {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages from unsentmessagemap with correct receiver
             for (Message unsent : unsentMessages) {
-                //TODO: get clienthandler from receiver and call forwardMessage()
+                onlineClients.get(receiver).forwardMessage(unsent); //send unsent message to receiver clientHandler
             }
-            unsentMessagesMap.remove(receiver); //TODO: remove from hashmap?
-            //TODO: and then write updated hashmap to file, through fileController?
+            unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+            //TODO: and then write updated unsentMessages hashmap to file, through fileController.
         }
     }
 
@@ -85,7 +86,6 @@ public class Server {
      */
 
     public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
-
         if(receivedObj instanceof Message){
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date());
@@ -93,44 +93,56 @@ public class Server {
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
             onlineClients.put(onlineUser, clientHandler);
-            ArrayList<String> userList = updateOnlineStatus(onlineUser.getUsername());
-            for(User user : onlineClients.keySet()){
-                onlineClients.get(user).updateOnlineList(userList);
+            for(User user : onlineClients.keySet()){ //for each currently online user
+                ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
+                onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
-            //TODO: work with filecontroller to receive unsent messages when user was offline
+
+            //TODO: work with FileController to receive unsent messages when user was offline
             /*
             HashMap<String, Arraylist<Message>> unsentMessagesMap =
                 fileController.readUnsentFile("all/files/unsentMessages.dat");
              */
-            //sendUnsentMessages(unsentMessagesMap, onlineUser);
+            sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
         }
 
     }
 
+    /**
+     * returns list of online users excluding user it is to be sent to.
+     * @param username username of user list is to be sent to.
+     * @return list of other online users
+     */
     public ArrayList<String> updateOnlineStatus(String username){
-
         ArrayList<String> onlineUsers = new ArrayList<>();
 
-        for(User user : onlineClients.keySet()){
-            if(!user.getUsername().equals(username)){
+        for(User user : onlineClients.keySet()){ //loop through online clients hashmap
+            if(!user.getUsername().equals(username)){ //for each case where
                 onlineUsers.add(user.getUsername());
             }
         }
-
         return onlineUsers;
-
     }
 
-    public void userHasLoggedOut(String username){
 
+    //TODO: this should be called somewhere when user logs out.
+    // possibly if user sends their name as string to server as a last thing and then server calls this method.
+    //TODO: and then server updates all other clients with update online status etc again, as above.
+    /**
+     * removes user from onlineClients hashmap when user logs out.
+     * @param username username of user that has logged out.
+     */
+    public void userHasLoggedOut(String username){
         for(User user : onlineClients.keySet()){
             if(user.getUsername().equals(username)){
                 onlineClients.remove(user);
             }
         }
-
     }
 
+    /**
+     * inner class responsible for connection between server and client.
+     */
     private class Connection extends Thread {
         private int port;
         private ClientHandler clientHandler;
@@ -180,8 +192,8 @@ public class Server {
             try {
                 while (true) {
                     try {
-                        Object receivedObj = ois.readObject();
-                        checkObjectStatus(receivedObj, this);
+                        Object receivedObj = ois.readObject(); //server boundary receives message from client.
+                        checkObjectStatus(receivedObj, this); //send to clientHandler (server controller)
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException(e);
                     }
@@ -190,13 +202,16 @@ public class Server {
             } catch (IOException e) {
                 System.out.println(e);
             }
-
         }
 
-        public void updateOnlineList(ArrayList<String> userlist){
-
+        /**
+         * sends list of online clients to all clients.
+         * Called every time a new user logs in.
+         * @param userList list of all online users (except the user themselves).
+         */
+        public void updateOnlineList(ArrayList<String> userList){
             try {
-                oos.writeObject(userlist);
+                oos.writeObject(userList);
                 oos.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -205,7 +220,7 @@ public class Server {
         }
 
         /**
-         * forwards message to receiver clients
+         * forwards message to receiver clients.
          */
         public void forwardMessage (Message message){
             System.out.println("forwarding message to receiver(s)");
@@ -228,6 +243,6 @@ public class Server {
     }
 
 
-    }
+}
 
 
