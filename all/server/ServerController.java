@@ -111,10 +111,9 @@ public class ServerController {
 
                 //retrieve possible unsent messages
                 //TODO: work with FileController to receive unsent messages when user was offline
-            /*
-            HashMap<String, Arraylist<Message>> unsentMessagesMap =
-                fileController.readUnsentFile("all/files/unsentMessages.dat");
-             */
+                HashMap<String, ArrayList<Message>> unsentMessagesMap =
+                    fileController.retrieveUnsentMessages();
+
                 sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         }
@@ -161,6 +160,8 @@ public class ServerController {
         for(User user : onlineClients.keySet()){
             if(user.getUsername().equals(username)){
                 onlineClients.remove(user);
+                //TODO: is this when we should update the contacts file too?
+                //TODO: or should that be done earlier?
             }
         }
     }

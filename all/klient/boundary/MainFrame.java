@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MainFrame extends JFrame {
     private MainPanel panel;
-    private FileController fileController = new FileController(); //TODO: initialize inside constructor?
+    private FileController fileController = new FileController(); //TODO: shouldn't exist here
     private MessageClient messageClient;
 
     public MainFrame(int width, int height, MessageClient messageClient) {
@@ -28,23 +28,6 @@ public class MainFrame extends JFrame {
         this.setDefaultCloseOperation(3);
         this.messageClient = messageClient;
     }
-
-    /**
-     * displays users added to contacts
-     * @param contactsArray array of contacts
-     */
-    public void populateRPanel(List<String> contactsArray) {
-        panel.getrPanel().populateRPanel(contactsArray);
-    }
-
-    /**
-     * displays online users
-     * @param onlineArray array containing online users
-     */
-    public void populateLPanel (List<String> onlineArray) {
-        panel.getlPanel().populateLPanel(onlineArray);
-    }
-
 
     /**
      * sends message info to messageClient
@@ -116,11 +99,9 @@ public class MainFrame extends JFrame {
         return panel;
     }
 
-    /**
-     * retrieves all users from given filepath
-     * @param filePath path of given file
-     * @return LinkedList of all users
-     */
+
+    //TODO: shouldn't happen here, should be in server. So, commented out for now
+    /*
     public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         return fileController.retrieveAllUsersFromFile(filePath);
     }
@@ -141,8 +122,22 @@ public class MainFrame extends JFrame {
         fileController.saveUserToFile(userName, filePath);
     }
 
+     */
+
+    /**
+     * calls to update online list in left panel
+     * @param onlineUsers list of online users 
+     */
     public void updateOnlineList(ArrayList<String> onlineUsers){
         panel.getlPanel().updateOnlineList(onlineUsers);
+    }
+
+    /**
+     * calls to update contacts list in right panel
+     * @param contactsList list of contacts
+     */
+    public void updateContactsList(ArrayList<String> contactsList) {
+        panel.getrPanel().populateRPanel(contactsList);
     }
 
 }

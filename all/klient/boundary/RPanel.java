@@ -91,7 +91,7 @@ public class RPanel extends JPanel {
 
     /**
      * populates right panel with contacts
-     * @param contactsList
+     * @param contactsList list of contacts
      */
     public void populateRPanel(List<String> contactsList){
         rightPanelList.removeAll(); //clears panel first
