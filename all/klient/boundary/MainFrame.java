@@ -60,7 +60,7 @@ public class MainFrame extends JFrame {
     /**
      * extracts image path from whole message
      * @param message whole message to be sent
-     * @return image path in string format  
+     * @return image path in string format
      */
     public String extractImage(String message) {
         String[] words = message.split("\\s+");
@@ -124,10 +124,18 @@ public class MainFrame extends JFrame {
 
      */
 
+    /**
+     * calls to update online list in left panel
+     * @param onlineUsers list of online users 
+     */
     public void updateOnlineList(ArrayList<String> onlineUsers){
         panel.getlPanel().updateOnlineList(onlineUsers);
     }
 
+    /**
+     * calls to update contacts list in right panel
+     * @param contactsList list of contacts
+     */
     public void updateContactsList(ArrayList<String> contactsList) {
         panel.getrPanel().populateRPanel(contactsList);
     }
