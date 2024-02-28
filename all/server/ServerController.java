@@ -1,28 +1,28 @@
 package all.server;
 
+import all.jointEntity.ContactsMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
-import all.server.controllerAndBoundary.FileController;
+import all.server.controller.FileController;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Server {
+public class ServerController {
     private Connection connection;
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
-    private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //Key: receiver, Value: unsent messages arraylist
-    //TODO: this hashmap should always be read from file.... but when? That is when it is initialized
+    private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //receiver, unsent messages
+    private FileController fileController;
     
-    public Server(int port){
+    public ServerController(int port){
+        this.fileController = new FileController();
         connection = new Connection(port);
         connection.start();
     }
-
 
 
     //TODO: figure out how to show messages in client when user opens chat window for that user.
@@ -40,11 +40,12 @@ public class Server {
             }
             unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
             //TODO: and then write updated unsentMessages hashmap to file, through fileController.
+            //fileController.updateUnsent();
         }
     }
 
     /**
-     * checks if receivers are online.
+     * checks if intended receivers of message are online.
      * If yes, call to forward message. If no, call to store message in file
      * @param message message to send
      */
@@ -60,7 +61,6 @@ public class Server {
                 }
             }
         }
-
     }
 
     /**
@@ -75,14 +75,14 @@ public class Server {
             ArrayList<Message> unsentMessages = new ArrayList<>(); //create new arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
-            //TODO: also store to file for later retrieval by offline user? is that to be done here?
         }
+        fileController.storeUnsentMessages(unsentMessagesMap); //store unsent messages in file through fileController
     }
 
     /**
      * Method that checks the status of the object that was received.
-     * @param receivedObj
-     * @param clientHandler
+     * @param receivedObj object received through stream.
+     * @param clientHandler ClientHandler instance associated with client sending object.
      */
 
     public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
@@ -93,17 +93,30 @@ public class Server {
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
             onlineClients.put(onlineUser, clientHandler);
+
+            //retrieve online users
             for(User user : onlineClients.keySet()){ //for each currently online user
                 ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
                 onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
-            //TODO: work with FileController to receive unsent messages when user was offline
+            boolean exists = fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/contacts.txt");
+            if (!exists) {
+                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/contacts.txt");
+            } else {
+                //retrieve contacts
+                ArrayList<String> contacts = retrieveContacts(onlineUser); //retrieve contacts for user
+                ContactsMessage contactsMessage = new ContactsMessage(contacts); //TODO: does this seem nice?
+                clientHandler.sendContacts(contactsMessage); //send contacts to user
+
+                //retrieve possible unsent messages
+                //TODO: work with FileController to receive unsent messages when user was offline
             /*
             HashMap<String, Arraylist<Message>> unsentMessagesMap =
                 fileController.readUnsentFile("all/files/unsentMessages.dat");
              */
-            sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+            }
         }
 
     }
@@ -122,6 +135,18 @@ public class Server {
             }
         }
         return onlineUsers;
+    }
+
+    /**
+     * retrieves user's contacts from file and returns them
+     */
+    public ArrayList<String> retrieveContacts(User user) {
+        ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());
+        if (!contacts.isEmpty()) {
+            return contacts;
+        } else {
+            return null;
+        }
     }
 
 
@@ -178,13 +203,11 @@ public class Server {
         private Socket socket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private FileController fileController;
 
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
             ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            this.fileController = new FileController();
             start();
         }
 
@@ -216,7 +239,6 @@ public class Server {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
 
         /**
@@ -232,14 +254,27 @@ public class Server {
             }
         }
 
+        /**
+         * sends a user's contacts to the user.
+         * @param contactsMessage message containing list of contacts
+         */
+        public void sendContacts(ContactsMessage contactsMessage) {
+            try {
+                oos.writeObject(contactsMessage);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
      }
 
     /**
      * starts instance of server on port 724
      * @param args
      */
-    public static void main(String[] args) throws ParseException {
-        new Server(724);
+    public static void main(String[] args) {
+        new ServerController(724);
     }
 
 
