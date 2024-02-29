@@ -8,14 +8,8 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-//TODO: change so that the panel is called only users
-//TODO: online users have green circle
-//TODO: offline users have grey circle
-//TODO: such that any can receive a message
-
-
 /**
- * diaplays online users. Updated every time a user logs in or out
+ * displays online users. Updated every time a user logs in or out
  */
 public class LPanel extends JPanel{
     private int width;
@@ -73,30 +67,7 @@ public class LPanel extends JPanel{
                 System.out.println("selected user: " + selectedUser); //test
 
                 if (selectedUser != null) {
-                    String currentUser = mainFrame.getMainPanel().getrPanel().getCurrentUsername(); //get username of current user
-
-
-                    //TODO: should be done in server, not here
-                    /*
-                    currentUserContacts = (ArrayList<String>) mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser); //current user's contacts
-
-                    if (!currentUserContacts.contains(selectedUser)) { //check if current user's contacts contains the selected user
-                        currentUserContacts.add(selectedUser); //if not, the user is added.
-                    }
-                    userContacts.put(currentUser, currentUserContacts); //update hashmap of contacts
-
-                    try {
-                        mainFrame.removeDataBlock("all/files/contacts.txt", currentUser);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-
-                    mainFrame.writeHashMapToFile(userContacts, "all/files/contacts.txt");
-                    mainFrame.populateRPanel(mainFrame.getContactsOfUser("all/files/contacts.txt", currentUser));
-
-                     */
-                    //TODO: should only be done in server, not here.
-
+                    mainFrame.addToContacts(selectedUser); //call mainframe to call messageclient to add to contacts var in User obj
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select one user.");
                 }
@@ -124,16 +95,7 @@ public class LPanel extends JPanel{
     }
 
     /**
-     * populates left panel with online users
-     * @param contactsList list
-     */
-    protected void populateLPanel(List<String> contactsList){
-        String[] contactsArray = contactsList.toArray(String[]::new);
-        leftPanelList.setListData(contactsArray);
-    }
-
-    /**
-     * @return users selected from lPanel
+     * @return user(s) selected from lPanel
      */
     public ArrayList<String> getReceivers() {
         selectedUsers = leftPanelList.getSelectedValuesList();
@@ -141,6 +103,10 @@ public class LPanel extends JPanel{
     }
 
 
+    /**
+     * populates left panel with users that are online
+     * @param onlineUsers list of online users
+     */
     public void updateOnlineList(ArrayList<String> onlineUsers){
         onlineUsersList = onlineUsers;
         leftPanelList.setListData(onlineUsersList.toArray(String[]::new));

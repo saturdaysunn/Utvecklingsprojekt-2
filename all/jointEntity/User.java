@@ -3,12 +3,12 @@ package all.jointEntity;
 import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class User implements Serializable {
     private String username;
     private ImageIcon icon;
-    private ArrayList<String> contacts;
-    private boolean isOnline;
+    private ArrayList<String> contacts = new ArrayList<>();
 
     public User(String username, ImageIcon icon){
         this.username = username;
@@ -35,6 +35,7 @@ public class User implements Serializable {
         return username.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof User) {
             return username.equals(((User) obj).getUsername());
@@ -45,14 +46,9 @@ public class User implements Serializable {
         contacts.add(user);
     }
 
-    public void setOnline(boolean onlineStatus){
-        isOnline = onlineStatus;
+    public ArrayList<String> getContacts(){
+        return contacts;
     }
 
-    public boolean getOnline(){
-        return isOnline;
-    }
-
-    //TODO: onlineusers klass?
 
 }

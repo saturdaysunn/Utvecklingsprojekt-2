@@ -7,14 +7,13 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * displays contacts. Populated from server by reading from file on harddisk
+ * displays user's contacts
  */
 public class RPanel extends JPanel {
-
     private int width;
     private int height;
     private MainFrame mainFrame;
-    private JList<Object> rightPanelList;
+    private JList<String> rightPanelList;
     private JLabel currentUserLabel;
     private JLabel currentUserPictureLabel;
     private JButton logoutButton;
@@ -37,14 +36,16 @@ public class RPanel extends JPanel {
         contactsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(contactsLabel, BorderLayout.NORTH);
 
-        rightPanelList = new JList<>();
+        rightPanelList = new JList<String>();
         rightPanelList.setLocation(105, 200);
         rightPanelList.setSize(width, height - 100);
         rightPanelList.setBackground(new Color(218, 218, 218));
         rightPanelList.setFont(new Font("Helvetica", Font.PLAIN, 16));
-        rightPanelList.setEnabled(false);
+        rightPanelList.setEnabled(true);
         JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
+
+        rightPanelList.setCellRenderer(new RPanel.CheckboxListCellRenderer());
 
 
         JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -63,8 +64,11 @@ public class RPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Logout button clicked");
+                mainFrame.saveUserInfo();
+                //TODO: TEMPORARY TEST save user to file again. This is to update the file with the new contacts list
                 //TODO: handle logic to close down client connection and inform server that user has logged out
-                mainFrame.dispose();
+
+                mainFrame.dispose(); //close window.
             }
         });
         currentUserPanel.add(logoutButton, BorderLayout.EAST);
@@ -95,9 +99,6 @@ public class RPanel extends JPanel {
      */
     public void populateRPanel(List<String> contactsList){
         rightPanelList.removeAll(); //clears panel first
-        for(String contact : contactsList){
-            System.out.println(contact);
-        }
         String[] contactsArray = contactsList.toArray(String[]::new);
         rightPanelList.setListData(contactsArray);
     }
@@ -108,5 +109,26 @@ public class RPanel extends JPanel {
         int height = 40;
         Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
+    }
+
+    private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
+        private static final long serialVersionUID = 1L;
+
+        public CheckboxListCellRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends String> list,
+                                                      String value,
+                                                      int index,
+                                                      boolean isSelected,
+                                                      boolean cellHasFocus) {
+            setText(value);
+            setSelected(isSelected);
+            setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+            setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+            return this;
+        }
     }
 }
