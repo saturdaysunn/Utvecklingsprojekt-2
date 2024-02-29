@@ -1,27 +1,31 @@
 package all.jointEntity;
 
-import java.lang.reflect.Array;
+import java.io.Serializable;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UnsentMessages {
+/**
+ * allows unsent messages to be sent as object
+ */
+public class UnsentMessages implements Serializable {
 
-    private HashMap<User, ArrayList<Message>> unsentMessages = new HashMap<User, ArrayList<Message>>();
+    private ArrayList<Message> unsentList;
 
-    public UnsentMessages(){}
-
-    public void put(User user, Message message){
-        synchronized (this){
-            // hämta arraylist (skapa ny om null och placera i unsentMessages)
-            // lägga till message i arraylist
-        }
-
+    public UnsentMessages (ArrayList<Message> unsentList) {
+        this.unsentList = unsentList;
     }
 
-    public synchronized ArrayList<Message> get(User user){
-
-        return unsentMessages.get(user);
-
+    public synchronized void add (Message message) {
+        unsentList.add(message);
     }
+
+    public ArrayList<Message> getUnsentList() {
+        return unsentList;
+    }
+
+
+
+
 
 }

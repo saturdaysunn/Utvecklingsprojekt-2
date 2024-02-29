@@ -1,14 +1,8 @@
 package all.klient.controller;
-import all.jointEntity.ContactsMessage;
-import all.jointEntity.ImageMessage;
-import all.jointEntity.Message;
-import all.jointEntity.User;
+import all.jointEntity.*;
 import all.klient.boundary.MainFrame;
-import all.server.controller.FileController;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -24,14 +18,14 @@ public class MessageClient extends Thread {
     private User user;
     private ArrayList<String> contacts;
     private ArrayList<String> onlineUsers;
-    private Listener listener; //TODO: can it be here?
+    private Listener listener;
 
     public MessageClient(String ip, int port){
         try{
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
             this.mainFrame = new MainFrame(1000, 600, this); //create gui for client
-            listener = new Listener(); //TODO: is this correct? Can i save it like this?
+            listener = new Listener();
             listener.start();
         } catch (IOException e){
             e.printStackTrace();
@@ -58,6 +52,8 @@ public class MessageClient extends Thread {
         } else if (receivedObject instanceof ArrayList<?>) {
             onlineUsers = (ArrayList<String>) receivedObject;
             mainFrame.updateOnlineList(onlineUsers);
+        } else if (receivedObject instanceof UnsentMessages) {
+            //TODO: handle unsent messages. what to do with them?
         }
     }
 

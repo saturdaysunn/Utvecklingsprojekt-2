@@ -1,9 +1,6 @@
 package all.server;
 
-import all.jointEntity.ContactsMessage;
-import all.jointEntity.ImageMessage;
-import all.jointEntity.Message;
-import all.jointEntity.User;
+import all.jointEntity.*;
 import all.server.controller.FileController;
 
 import javax.swing.*;
@@ -35,13 +32,14 @@ public class ServerController {
      * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
      * @param receiver user to send unsent messages to (the user that just went online).
      */
-    public void sendUnsentMessages(HashMap <String, ArrayList <Message>>unsentMessagesMap, User receiver){
+    public synchronized void sendUnsentMessages(HashMap <String, ArrayList <Message>>unsentMessagesMap, User receiver){
         if (unsentMessagesMap.containsKey(receiver)) {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages from unsentmessagemap with correct receiver
-            for (Message unsent : unsentMessages) {
-                onlineClients.get(receiver).forwardMessage(unsent); //send unsent message to receiver clientHandler
-            }
+            UnsentMessages unsent = new UnsentMessages(unsentMessages);
+            onlineClients.get(receiver).sendUnsent(unsent);
             unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+
+
             //TODO: and then write updated unsentMessages hashmap to file, through fileController.
             //fileController.updateUnsent();
         }
@@ -79,6 +77,7 @@ public class ServerController {
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
         }
+        //TODO: has not been implemented yet.
         fileController.storeUnsentMessages(unsentMessagesMap); //store unsent messages in file through fileController
     }
 
@@ -113,11 +112,8 @@ public class ServerController {
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //retrieve possible unsent messages
-                /* //TODO: work with FileController to receive unsent messages when user was offline.
-                //TODO: not currently functional.
-                HashMap<String, ArrayList<Message>> unsentMessagesMap =
-                    fileController.retrieveUnsentMessages();
-                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user */
+                this.unsentMessagesMap = fileController.retrieveUnsentMessages(); //TODO: NOT FUNCTIONAL YET.
+                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof String) { //user has logged out
             String loggedOutUser = (String) receivedObj;
@@ -265,6 +261,20 @@ public class ServerController {
                 e.printStackTrace();
             }
         }
+
+        /**
+         * sends UnsentMessages object through stream
+         * @param unsent object containing arraylist of unsent messages.
+         */
+        public void sendUnsent(UnsentMessages unsent) {
+            try {
+                oos.writeObject(unsent);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
      }
 
     /**
