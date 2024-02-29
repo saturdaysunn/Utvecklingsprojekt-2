@@ -36,58 +36,12 @@ public class MainFrame extends JFrame {
     public void sendMessage(String message) {
         System.out.println("message arrived in mainframe");
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
+        //TODO: get from rpanel too?
 
         if (receivers.isEmpty()) { //if no receiver has been selected
             JOptionPane.showMessageDialog(null, "No receiver has been selected");
         } else {
-            if (message.contains(".png") | message.contains(".jpeg") | message.contains(".jpg")) { //check if text contains image
-                System.out.println("it's an image message");
-
-                String imgPath = extractImage(message); //extract image path from message
-                File imgFile = new File(imgPath); //create file from path to create imageIcon
-
-                String imgFileString = modify(imgPath); //shorten image path to file name
-                String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
-
-                this.messageClient.sendImageMessage(modifiedMessage, imgFile, receivers, imgFileString);
-            } else {
-                System.out.println("it's a text message");
-                this.messageClient.sendTextMessage(message, receivers);
-            }
-        }
-    }
-
-    /**
-     * extracts image path from whole message
-     * @param message whole message to be sent
-     * @return image path in string format
-     */
-    public String extractImage(String message) {
-        String[] words = message.split("\\s+");
-        String imageFileName = "";
-
-        for (String word : words) {
-            if (word.toLowerCase().endsWith(".jpeg") || word.toLowerCase().endsWith(".png") || word.toLowerCase().endsWith(".jpg")) {
-                imageFileName = word;
-                break;
-            }
-        }
-        System.out.println("Image path: " + imageFileName);
-        return imageFileName;
-    }
-
-    /**
-     * extracts file name from image path
-     * @param imgPath full image path
-     * @return file name of image
-     */
-    public String modify(String imgPath) {
-        int lastIndex = imgPath.lastIndexOf('/');
-        if (lastIndex != -1) { //if '/' character is found
-            System.out.println("image file: " + imgPath.substring(lastIndex + 1));
-            return imgPath.substring(lastIndex + 1); //extract substring
-        } else {
-            return imgPath;
+            this.messageClient.sendMessage(message, receivers);
         }
     }
 
@@ -98,31 +52,6 @@ public class MainFrame extends JFrame {
     public MainPanel getMainPanel() {
         return panel;
     }
-
-
-    //TODO: shouldn't happen here, should be in server. So, commented out for now
-    /*
-    public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
-        return fileController.retrieveAllUsersFromFile(filePath);
-    }
-
-    public void removeDataBlock(String filePath, String targetString) throws IOException {
-        fileController.removeTargetContent(filePath, targetString);
-    }
-
-    public List<String> getContactsOfUser(String filepath, String user){
-        return fileController.getContactsOfUser(filepath, user);
-    }
-
-    public void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap, String filePath) {
-        fileController.rewriteContactsTextFileWithNewContacts(hashMap, filePath);
-    }
-
-    public void saveUserToFile(String userName, String filePath) {
-        fileController.saveUserToFile(userName, filePath);
-    }
-
-     */
 
     /**
      * calls to update online list in left panel
@@ -140,4 +69,15 @@ public class MainFrame extends JFrame {
         panel.getrPanel().populateRPanel(contactsList);
     }
 
+    /**
+     * calls to update contacts list of user instance
+     */
+    public void addToContacts(String userToAdd) {
+        messageClient.addToContacts(userToAdd);
+    }
+
+    //TODO: temp test
+    public void saveUserInfo() {
+        messageClient.saveUserInfo();
+    }
 }

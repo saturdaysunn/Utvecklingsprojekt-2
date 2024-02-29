@@ -4,6 +4,7 @@ import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
 import all.klient.boundary.MainFrame;
+import all.server.controller.FileController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,28 +24,16 @@ public class MessageClient extends Thread {
     private User user;
     private ArrayList<String> contacts;
     private ArrayList<String> onlineUsers;
+    private Listener listener; //TODO: can it be here?
 
     public MessageClient(String ip, int port){
         try{
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
             this.mainFrame = new MainFrame(1000, 600, this); //create gui for client
-            new Listener().start(); //start listening for messages from server
+            listener = new Listener(); //TODO: is this correct? Can i save it like this?
+            listener.start();
         } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * creates instance of User and informs server that user has logged in
-     */
-    public void sendLoginMessage(String username, ImageIcon userPicture) {
-        this.user = new User(username, userPicture);
-        try {
-            oos.writeObject(user);
-            oos.flush();
-            System.out.println("informing server that " + user.getUsername() + " has logged in");
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -57,17 +46,115 @@ public class MessageClient extends Thread {
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
             System.out.println("Received a message: " + receivedMessage.getText());
-            //TODO: populate gui
+            //TODO: populate gui!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         } else if (receivedObject instanceof ContactsMessage) {
             ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
             contacts = contactsMessage.getContactsList();
+            if (contacts == null) { //if doesn't exist.
+                System.out.println("received list is null, creating new one");
+                contacts = new ArrayList<>(); //create new one
+            }
             mainFrame.updateContactsList(contacts); //TODO: test if works
         } else if (receivedObject instanceof ArrayList<?>) {
             onlineUsers = (ArrayList<String>) receivedObject;
-            mainFrame.updateOnlineList(onlineUsers); //TODO: test if works
+            mainFrame.updateOnlineList(onlineUsers);
         }
     }
 
+    /**
+     * creates instance of User and informs server that user has logged in
+     */
+    public void sendLoginMessage(String username, ImageIcon userPicture) {
+        this.user = new User(username, userPicture);
+        this.listener.sendLoginmessage(this.user);
+    }
+
+    //TODO: handle checks so it's sent to the correct person.
+    /**
+     * handles logic for creating instance of message to send to server
+     * @param message full text message
+     * @param receivers list of receivers
+     */
+    public void sendMessage(String message, ArrayList<String> receivers) {
+        System.out.println("message in sender's client");
+
+        if (message.contains(".png") | message.contains(".jpg")) { //if text contains image
+            System.out.println("it's an image message");
+
+            String imgPath = extractImagePath(message); //extract image path from message
+            File imgFile = new File(imgPath); //create file from path to create imageIcon
+            ImageIcon image = new ImageIcon(imgFile.getPath()); //create image icon from file
+
+            String imgFileString = modify(imgPath); //shorten image path
+            String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
+
+            Message imageMessage = new ImageMessage(this.user, receivers, modifiedMessage,
+                    null, null, image);
+
+            listener.sendMessage(imageMessage); //send message to client boundary
+        } else {
+            System.out.println("it's a text message");
+            Message textMessage = new Message(this.user, receivers, message, null, null);
+            listener.sendMessage(textMessage);
+        }
+    }
+
+    /**
+     * extracts image path from whole message
+     * @param message whole message to be sent
+     * @return image path in string format
+     */
+    public String extractImagePath(String message) {
+        String[] words = message.split("\\s+");
+        String imageFileName = "";
+
+        for (String word : words) {
+            if (word.toLowerCase().endsWith(".jpeg") || word.toLowerCase().endsWith(".png") || word.toLowerCase().endsWith(".jpg")) {
+                imageFileName = word;
+                break;
+            }
+        }
+        System.out.println("Image path: " + imageFileName);
+        return imageFileName;
+    }
+
+    /**
+     * extracts file name from image path
+     * @param imgPath full image path
+     * @return file name of image
+     */
+    public String modify(String imgPath) {
+        int lastIndex = imgPath.lastIndexOf('/');
+        if (lastIndex != -1) { //if '/' character is found
+            System.out.println("image file: " + imgPath.substring(lastIndex + 1));
+            return imgPath.substring(lastIndex + 1); //extract substring
+        } else {
+            return imgPath;
+        }
+    }
+
+    /**
+     * adds new contact to user's contact list if not already there
+     * @param userToAdd name of user
+     */
+    public void addToContacts(String userToAdd) {
+        boolean alreadyContact = false;
+        for (String contact : contacts) {
+            if (contact.equals(userToAdd)) {
+                alreadyContact = true;
+                break;
+            }
+        }
+
+        if (alreadyContact) {
+            JOptionPane.showMessageDialog(null, "This user is already in your contacts");
+        } else {
+            user.addContact(userToAdd); //add to user's contacts list
+            contacts.add(userToAdd);
+            System.out.println("added " + userToAdd + " to contacts");
+            mainFrame.updateContactsList(contacts); //update on GUI
+        }
+    }
 
     /**
      * @return MainFrame instance for this client
@@ -75,6 +162,18 @@ public class MessageClient extends Thread {
     public MainFrame getMainFrame() {
         return mainFrame;
     }
+
+    //TODO: should store info and send to server somehow?
+    //TODO: or, how should it be saved. do we need a dat file?
+    /**
+     * should save user info upon logout?
+     */
+    public void saveUserInfo() {
+        this.listener.sendLogoutMessage(this.user.getUsername());
+    }
+
+
+
 
     /**
      * inner class responsible for communication between client and server
@@ -103,76 +202,51 @@ public class MessageClient extends Thread {
                 }
             }
         }
-    }
 
-    //TODO: hande checks so it is sent to right person for sure
-    /**
-     * sends text message from client to server
-     * @param message message
-     * @param receivers names of selected receivers
-     */
-    public void sendTextMessage(String message, ArrayList<String> receivers) {
-        Message newMessage = new Message(user, receivers, message, null, null);
-        try {
-            oos.writeObject(newMessage); //write to server through stream
-            System.out.println("i am trying to send: " + newMessage.getText());
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        /**
+         * sends message to server that user has logged in.
+         * @param user instance of user than logged in
+         */
+        public void sendLoginmessage(User user) {
+            try {
+                oos.writeObject(user);
+                oos.flush();
+                System.out.println("informing server that " + user.getUsername() + " has logged in");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-
-    /**
-     * sends image message from client to server
-     * @param message full text message
-     * @param file file of image to create image icon
-     * @param receivers list of receivers
-     */
-    public void sendImageMessage(String message, File file, ArrayList<String> receivers, String imgFileName) {
-        System.out.println("image message arrived in messageClient");
-        ImageIcon image = new ImageIcon(file.getPath()); //create image icon from file
-        loadImage(file, imgFileName); //save to sent_pictures package
-
-        Message imageMessage = new ImageMessage(user, receivers, message, null, null, image);
-        try {
-            oos.writeObject(imageMessage); //write to server through stream
-            System.out.println("i am trying to send: " + imageMessage.getText());
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        /**
+         * sends message to server that user has logged out.
+         * @param username name of user that logged out.
+         */
+        public void sendLogoutMessage(String username) {
+            try {
+                oos.writeObject(username);
+                oos.flush();
+                System.out.println("informing server that " + username + " has logged out");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
 
-    //TODO: should these be done in server then? or, do we need to store the images?
-    /**
-     * part of logic to save image to sent_pictures package
-     * @param file image file
-     * @param imageName name of image file
-     */
-    private void loadImage(File file, String imageName) {
-        try {
-            BufferedImage image = ImageIO.read(file);
-            saveImage(image, imageName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        /**
+         * sends message object to server.
+         * @param newMessage new message object
+         */
+        public void sendMessage(Message newMessage) {
+            try {
+                oos.writeObject(newMessage);
+                System.out.println("i am trying to send: " + newMessage.getText());
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-    /**
-     * saves image to be sent to sent_pictures to be retrieved later by receiver
-     * @param image image itself
-     * @param imageName file name
-     */
-    private void saveImage(BufferedImage image, String imageName) {
-        try {
-            String path = "all/sent_pictures/" + imageName + ".png";
-            File outputfile = new File(path);
-            ImageIO.write(image, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 

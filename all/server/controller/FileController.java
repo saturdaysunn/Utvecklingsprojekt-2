@@ -1,7 +1,10 @@
 package all.server.controller;
 
 import all.jointEntity.Message;
+import all.jointEntity.User;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -14,7 +17,7 @@ public class FileController {
 
     /**
      * checks if user has logged in previously.
-     * @param username name of user
+     * @param // username name of user
      * @param filePath path of file to check
      * @return true if user exists, false if not
      */
@@ -26,6 +29,20 @@ public class FileController {
             }
         }
         return false;
+    }
+
+    public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
+        LinkedList<String> lines = new LinkedList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
     }
 
     /**
@@ -43,23 +60,7 @@ public class FileController {
         }
     }
 
-    public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
-        LinkedList<String> lines = new LinkedList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lines;
-    }
-
-
-    //TODO: should we store them in a dat file so that we can access their contacts lists?
-    //TODO: this might be good for when we have to check if receiver has sender as a contact
     public ArrayList<String> getContactsOfUser(String filePath, String userName) {
         ArrayList<String> resultList = new ArrayList<>();
 
@@ -246,6 +247,47 @@ public class FileController {
         }
         return unsentMessagesMap;
     }
+
+
+
+
+
+
+
+
+
+
+
+    //TODO: we might not need to save images to the server in order to be able to see them.
+
+    /**
+     * part of logic to save image to sent_pictures package
+     * @param file image file
+     * @param imageName name of image file
+     */ /*
+    public void loadImage(File file, String imageName) {
+        try {
+            BufferedImage image = ImageIO.read(file);
+            saveImage(image, imageName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * saves image to be sent to sent_pictures to be retrieved later by receiver
+     * @param image image itself
+     * @param imageName file name
+     */ /*
+    public void saveImage(BufferedImage image, String imageName) {
+        try {
+            String path = "all/sent_pictures/" + imageName + ".png";
+            File outputfile = new File(path);
+            ImageIO.write(image, "png", outputfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } */
 
 
 }

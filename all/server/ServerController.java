@@ -1,10 +1,12 @@
 package all.server;
 
 import all.jointEntity.ContactsMessage;
+import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 import all.jointEntity.User;
 import all.server.controller.FileController;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -100,22 +102,25 @@ public class ServerController {
                 onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
-            boolean exists = fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/contacts.txt");
+            boolean exists = fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt");
             if (!exists) {
-                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/contacts.txt");
+                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
             } else {
                 //retrieve contacts
-                ArrayList<String> contacts = retrieveContacts(onlineUser); //retrieve contacts for user
+                ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", onlineUser.getUsername()); //retrieve contacts for user
                 ContactsMessage contactsMessage = new ContactsMessage(contacts); //TODO: does this seem nice?
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //retrieve possible unsent messages
-                //TODO: work with FileController to receive unsent messages when user was offline
+                /* //TODO: work with FileController to receive unsent messages when user was offline.
+                //TODO: not currently functional.
                 HashMap<String, ArrayList<Message>> unsentMessagesMap =
                     fileController.retrieveUnsentMessages();
-
-                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user */
             }
+        } else if (receivedObj instanceof String) { //user has logged out
+            String loggedOutUser = (String) receivedObj;
+            logOut(loggedOutUser);
         }
 
     }
@@ -136,19 +141,6 @@ public class ServerController {
         return onlineUsers;
     }
 
-    /**
-     * retrieves user's contacts from file and returns them
-     */
-    public ArrayList<String> retrieveContacts(User user) {
-        ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", user.getUsername());
-        if (!contacts.isEmpty()) {
-            return contacts;
-        } else {
-            return null;
-        }
-    }
-
-
     //TODO: this should be called somewhere when user logs out.
     // possibly if user sends their name as string to server as a last thing and then server calls this method.
     //TODO: and then server updates all other clients with update online status etc again, as above.
@@ -156,13 +148,15 @@ public class ServerController {
      * removes user from onlineClients hashmap when user logs out.
      * @param username username of user that has logged out.
      */
-    public void userHasLoggedOut(String username){
+    public void logOut(String username){
         for(User user : onlineClients.keySet()){
             if(user.getUsername().equals(username)){
                 onlineClients.remove(user);
-                //TODO: is this when we should update the contacts file too?
-                //TODO: or should that be done earlier?
             }
+        }
+        for(User user : onlineClients.keySet()){ //for each currently online user
+            ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
+            onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
         }
     }
 
@@ -260,6 +254,7 @@ public class ServerController {
          * @param contactsMessage message containing list of contacts
          */
         public void sendContacts(ContactsMessage contactsMessage) {
+            System.out.println("sending contacts from server");
             try {
                 oos.writeObject(contactsMessage);
                 oos.flush();
