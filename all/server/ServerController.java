@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class ServerController {
     private Connection connection;
@@ -148,10 +149,12 @@ public class ServerController {
      * removes user from onlineClients hashmap when user logs out.
      * @param username username of user that has logged out.
      */
-    public void logOut(String username){
-        for(User user : onlineClients.keySet()){
-            if(user.getUsername().equals(username)){
-                onlineClients.remove(user);
+    public synchronized void logOut(String username){
+        Iterator<User> iterator = onlineClients.keySet().iterator();
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+            if (user.getUsername().equals(username)) {
+                iterator.remove(); // Remove the user using the iterator
             }
         }
         for(User user : onlineClients.keySet()){ //for each currently online user
@@ -262,7 +265,6 @@ public class ServerController {
                 e.printStackTrace();
             }
         }
-
      }
 
     /**
