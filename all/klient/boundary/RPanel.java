@@ -41,12 +41,9 @@ public class RPanel extends JPanel {
         rightPanelList.setSize(width, height - 100);
         rightPanelList.setBackground(new Color(218, 218, 218));
         rightPanelList.setFont(new Font("Helvetica", Font.PLAIN, 16));
-        rightPanelList.setEnabled(true);
+        rightPanelList.setEnabled(false);
         JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
         add(scrollPane, BorderLayout.CENTER);
-
-        rightPanelList.setCellRenderer(new RPanel.CheckboxListCellRenderer());
-
 
         JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         currentUserLabel = new JLabel();
@@ -111,24 +108,4 @@ public class RPanel extends JPanel {
         return new ImageIcon(resizedImage);
     }
 
-    private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
-        private static final long serialVersionUID = 1L;
-
-        public CheckboxListCellRenderer() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList<? extends String> list,
-                                                      String value,
-                                                      int index,
-                                                      boolean isSelected,
-                                                      boolean cellHasFocus) {
-            setText(value);
-            setSelected(isSelected);
-            setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-            setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-            return this;
-        }
-    }
 }

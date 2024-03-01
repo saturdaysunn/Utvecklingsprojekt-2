@@ -22,6 +22,7 @@ public class LPanel extends JPanel{
     private ArrayList<String> currentUserContacts = new ArrayList<>();
     private HashMap<String, ArrayList<String>> userContacts = new HashMap<>();
     private ArrayList<String> onlineUsersList = new ArrayList<>();
+    private ArrayList<String> contactsList = new ArrayList<>();
 
     public LPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -67,6 +68,7 @@ public class LPanel extends JPanel{
                 System.out.println("selected user: " + selectedUser); //test
 
                 if (selectedUser != null) {
+                    selectedUser = selectedUser.replaceAll("\\<.*?\\>", "");
                     mainFrame.addToContacts(selectedUser); //call mainframe to call messageclient to add to contacts var in User obj
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select one user.");
@@ -108,10 +110,38 @@ public class LPanel extends JPanel{
      * @param onlineUsers list of online users
      */
     public void updateOnlineList(ArrayList<String> onlineUsers){
-        onlineUsersList = onlineUsers;
-        leftPanelList.setListData(onlineUsersList.toArray(String[]::new));
+        this.onlineUsersList = onlineUsers;
+        populateLPanel();
     }
 
+    //TODO: use this and the online list together to show all in LPanel, online users in green text.
+    public void updateContactsList(ArrayList<String> contactsList) {
+        this.contactsList = contactsList;
+        populateLPanel();
+    }
+
+    public void populateLPanel() {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel.clear();
+
+        // Add online users
+        if (onlineUsersList != null) {
+            for (String user : onlineUsersList) {
+                listModel.addElement("<html><font color='green'>" + user + "</font></html>");
+            }
+        }
+
+        // Add offline users
+        if (contactsList != null) {
+            for (String user : contactsList) {
+                if (!onlineUsersList.contains(user)) {
+                    listModel.addElement(user);
+                }
+            }
+        }
+
+        leftPanelList.setModel(listModel);
+    }
 
     private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {
         private static final long serialVersionUID = 1L;
@@ -121,11 +151,8 @@ public class LPanel extends JPanel{
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends String> list,
-                                                      String value,
-                                                      int index,
-                                                      boolean isSelected,
-                                                      boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
             setText(value);
             setSelected(isSelected);
             setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());

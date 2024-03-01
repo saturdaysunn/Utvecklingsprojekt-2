@@ -112,11 +112,12 @@ public class ServerController {
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //retrieve possible unsent messages
-                this.unsentMessagesMap = fileController.retrieveUnsentMessages(); //TODO: NOT FUNCTIONAL YET.
-                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                //this.unsentMessagesMap = fileController.retrieveUnsentMessages(); //TODO: NOT FUNCTIONAL YET.
+                //sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof String) { //user has logged out
             String loggedOutUser = (String) receivedObj;
+            System.out.println("server found that " + loggedOutUser + " has logged out");
             logOut(loggedOutUser);
         }
 
@@ -146,6 +147,7 @@ public class ServerController {
      * @param username username of user that has logged out.
      */
     public synchronized void logOut(String username){
+        System.out.println(username + " has logged out, server says");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();

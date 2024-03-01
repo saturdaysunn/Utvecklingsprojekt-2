@@ -48,7 +48,7 @@ public class MessageClient extends Thread {
                 System.out.println("received list is null, creating new one");
                 contacts = new ArrayList<>(); //create new one
             }
-            mainFrame.updateContactsList(contacts); //TODO: test if works
+            mainFrame.updateContactsList(contacts);
         } else if (receivedObject instanceof ArrayList<?>) {
             onlineUsers = (ArrayList<String>) receivedObject;
             mainFrame.updateOnlineList(onlineUsers);
@@ -165,7 +165,7 @@ public class MessageClient extends Thread {
      * should save user info upon logout?
      */
     public void saveUserInfo() {
-        this.listener.sendLogoutMessage(this.user.getUsername());
+        this.listener.sendLogoutMessage(user.getUsername());
     }
 
 

@@ -66,7 +66,8 @@ public class MainFrame extends JFrame {
      * @param contactsList list of contacts
      */
     public void updateContactsList(ArrayList<String> contactsList) {
-        panel.getrPanel().populateRPanel(contactsList);
+        panel.getrPanel().populateRPanel(contactsList); //show contacts on rPanel
+        panel.getlPanel().updateContactsList(contactsList); //show contacts on lPanel for selection
     }
 
     /**
