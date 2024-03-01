@@ -1,16 +1,12 @@
 package all.klient.boundary;
 
+import all.jointEntity.Message;
 import all.klient.controller.*;
 import all.server.controller.FileController;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MainFrame extends JFrame {
     private MainPanel panel;
@@ -76,6 +72,15 @@ public class MainFrame extends JFrame {
     public void addToContacts(String userToAdd) {
         messageClient.addToContacts(userToAdd);
     }
+
+    /**
+     * sends message further to center panel.
+     * @param receivedMessage message received from client.
+     */
+    public void newMessage(Message receivedMessage) {
+        panel.getcPanel().newMessage(receivedMessage);
+    }
+
 
     //TODO: temp test
     public void saveUserInfo() {

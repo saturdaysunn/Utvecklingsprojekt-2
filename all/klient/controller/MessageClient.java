@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Responsible for client side logic
@@ -37,15 +38,18 @@ public class MessageClient extends Thread {
      * @param receivedObject object that was received through stream.
      */
     public void checkObjectStatus(Object receivedObject) {
+        System.out.println("client going to check obj status");
         if (receivedObject instanceof Message) {
+            System.out.println("i've received a message");
             Message receivedMessage = (Message) receivedObject;
             System.out.println("Received a message: " + receivedMessage.getText());
-            //TODO: populate gui!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
+            mainFrame.newMessage(receivedMessage);
         } else if (receivedObject instanceof ContactsMessage) {
             ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
             contacts = contactsMessage.getContactsList();
             if (contacts == null) { //if doesn't exist.
-                System.out.println("received list is null, creating new one");
+                System.out.println("received contacts list is null, creating new one");
                 contacts = new ArrayList<>(); //create new one
             }
             mainFrame.updateContactsList(contacts);
@@ -54,6 +58,7 @@ public class MessageClient extends Thread {
             mainFrame.updateOnlineList(onlineUsers);
         } else if (receivedObject instanceof UnsentMessages) {
             //TODO: handle unsent messages. what to do with them?
+            //TODO: same as for other messages? send to mainframe to temp store?
         }
     }
 

@@ -5,7 +5,7 @@ import all.jointEntity.Message;
 import java.util.LinkedList;
 
 public class MessageHandler {
-    //TODO: adds message to buffer so that they arrive in the same order. implemented as queue.
+    //TODO: adds message to buffer so that they arrive in the correct order. implemented as queue.
     private LinkedList<Message> messageQueue;
 
     public MessageHandler() {

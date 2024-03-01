@@ -80,12 +80,12 @@ public class LPanel extends JPanel{
         viewChatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("view chat button as been called");
                 List<String> selectedObjects = leftPanelList.getSelectedValuesList();
                 if (selectedObjects.size() == 1) { //check so only one user has been selected
                     String selectedObject = selectedObjects.get(0);
                     if (selectedObject != null) {
                         mainFrame.getMainPanel().getcPanel().viewChat(selectedObject);
-                        //TODO: implement more here? what exactly?
                     }
                 } else {
                     JOptionPane.showMessageDialog(buttonPanel, "Please select only one user to view chat.", "Selection Error", JOptionPane.ERROR_MESSAGE);

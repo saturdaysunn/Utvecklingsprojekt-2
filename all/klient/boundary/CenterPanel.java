@@ -1,5 +1,8 @@
 package all.klient.boundary;
 
+import all.jointEntity.ImageMessage;
+import all.jointEntity.Message;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -7,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.*;
 
 public class CenterPanel extends JPanel{
     private int width;
@@ -18,6 +22,7 @@ public class CenterPanel extends JPanel{
     private JButton uploadImageButton;
     private JLabel userChatLabel;
     private JPanel chatNamePanel;
+    private HashMap<String, ArrayList<Message>> conversationMap; //stores all conversation history.
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -27,6 +32,7 @@ public class CenterPanel extends JPanel{
         this.setVisible(true);
         this.setBounds(250, 0, 500, 580);
         this.setBackground(new Color(238, 95, 95));
+        this.conversationMap = new HashMap<>(); //initiate
         setUp();
     }
 
@@ -129,18 +135,36 @@ public class CenterPanel extends JPanel{
      * @param userName name of selected user
      */
     public void viewChat(String userName) {
-        System.out.println("i have been called to view chat");
-        //TODO: communicate to mainframe and then to controller to retrieve messages for chat with given user.
-        //TODO: send messages to populate chat window
+        System.out.println("i have been called to view chat for " + userName);
         setChatName(userName); //sets name of user chatting with
-        populateChatWindow(); //TODO: currently not functional, should show all message history
+        populateChatWindow(userName);
     }
 
     /**
      * populates chat window with messages from selected user
      */
-    public void populateChatWindow() {
-        //populate chat window with messages (text and images, somehow).
+    public void populateChatWindow(String selectedUserName) {
+        if (conversationMap.containsKey(selectedUserName)) {
+            ArrayList<Message> conversation = conversationMap.get(selectedUserName);
+            for (Message message : conversation) { //for each message in conversation history
+                //TODO: populate chat window with messages (text and images).
+                if (message instanceof ImageMessage) {
+                    System.out.println("image message to go on chat view");
+                    ImageMessage imageMessage = (ImageMessage) message;
+                    JLabel messageLabel = new JLabel();
+                    if (imageMessage.getImage() != null) {
+                        ImageIcon imageIcon = imageMessage.getImage();
+                        messageLabel.setIcon(imageIcon);
+                    }
+                    if (imageMessage.getText() != null && !imageMessage.getText().isEmpty()) {
+                        messageLabel.setText(messageLabel.getText() + " " + imageMessage.getText());
+                    }
+                    add(messageLabel);
+                }
+            }
+        } else {
+            System.out.println("no history contents here");
+        }
     }
 
     /**
@@ -153,6 +177,24 @@ public class CenterPanel extends JPanel{
         } else {
             userChatLabel.setText("Showing Chat With " + userName);
             System.out.println("chat with " + userName);
+        }
+    }
+
+    /**
+     * receives message sent from MessageClient and stores in conversationMap containing message history.
+     * @param receivedMessage instance of Message
+     */
+    public synchronized void newMessage(Message receivedMessage) {
+        System.out.println("adding message to history map");
+        String senderName = receivedMessage.getSender().getUsername();
+        if (conversationMap.containsKey(senderName)) {
+            ArrayList<Message> history = conversationMap.get(senderName);
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
+        } else {
+            ArrayList<Message> history = new ArrayList<>();
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
         }
     }
 

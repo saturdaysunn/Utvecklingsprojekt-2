@@ -3,7 +3,6 @@ package all.server;
 import all.jointEntity.*;
 import all.server.controller.FileController;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -51,6 +50,7 @@ public class ServerController {
      * @param message message to send
      */
     public void checkIfOnline(Message message){
+        System.out.println("inside check if online now");
         for (String receiver : message.getReceiverList()) {
             for (User receiverUser : onlineClients.keySet()) { //check if registered as online
                 if (receiverUser.getUsername().equals(receiver)) { //if yes
@@ -88,12 +88,15 @@ public class ServerController {
      */
 
     public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
+        System.out.println("going to check obj status");
         if(receivedObj instanceof Message){
+            System.out.println("its a message");
             Message message = (Message) receivedObj;
-            message.setReceivedTime(new Date());
+            message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message);
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
+            System.out.println(onlineUser.getUsername() + " has logged in, said by server");
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
@@ -108,7 +111,7 @@ public class ServerController {
             } else {
                 //retrieve contacts
                 ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", onlineUser.getUsername()); //retrieve contacts for user
-                ContactsMessage contactsMessage = new ContactsMessage(contacts); //TODO: does this seem nice?
+                ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //retrieve possible unsent messages
