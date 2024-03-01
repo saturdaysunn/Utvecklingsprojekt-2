@@ -46,8 +46,7 @@ public class ServerController {
      * If yes, call to forward message. If no, call to store message in file
      * @param message message to send
      */
-    public void checkIfOnline(Message message){
-        System.out.println("inside check if online now");
+    public synchronized void checkIfOnline(Message message){
         for (String receiver : message.getReceiverList()) {
             for (User receiverUser : onlineClients.keySet()) { //check if registered as online
                 if (receiverUser.getUsername().equals(receiver)) { //if yes
@@ -84,9 +83,8 @@ public class ServerController {
      * @param clientHandler ClientHandler instance associated with client sending object.
      */
 
-    public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
+    public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
         if(receivedObj instanceof Message){
-            System.out.println("its a message");
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message);
@@ -101,6 +99,7 @@ public class ServerController {
                 onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
+            //check if new or old user.
             boolean exists = fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt");
             if (!exists) {
                 fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
@@ -110,14 +109,20 @@ public class ServerController {
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
+                //TODO: UNSENT MESSAGES NOT FUNCTIONAL YET. NOT FULLY IMPLEMENTED.
                 //retrieve possible unsent messages
-                //this.unsentMessagesMap = fileController.retrieveUnsentMessages(); //TODO: NOT FUNCTIONAL YET.
+                //this.unsentMessagesMap = fileController.retrieveUnsentMessages();
                 //sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
-        } else if (receivedObj instanceof String) { //user has logged out
-            String loggedOutUser = (String) receivedObj;
-            System.out.println("server found that " + loggedOutUser + " has logged out");
-            logOut(loggedOutUser);
+        } else if (receivedObj instanceof ContactsMessage) { //user logged out
+            ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
+            ArrayList<String> contactsList = updatedContacts.getContactsList();
+            //TODO: here write contactsList to file.
+            //TODO: mihail, help
+
+            //register that user has logged out.
+            String loggedOutUser = updatedContacts.getOwner();
+            logOutUser(loggedOutUser); //update online clients
         }
 
     }
@@ -127,7 +132,7 @@ public class ServerController {
      * @param username username of user list is to be sent to.
      * @return list of other online users
      */
-    public ArrayList<String> updateOnlineStatus(String username){
+    public synchronized ArrayList<String> updateOnlineStatus(String username){
         ArrayList<String> onlineUsers = new ArrayList<>();
 
         for(User user : onlineClients.keySet()){ //loop through online clients hashmap
@@ -143,7 +148,7 @@ public class ServerController {
      * removes user from onlineClients hashmap.
      * @param username username of user that logged out.
      */
-    public synchronized void logOut(String username){
+    public synchronized void logOutUser(String username){
         System.out.println(username + " has logged out, server says");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
@@ -170,19 +175,19 @@ public class ServerController {
         }
 
         public void run(){
-            //Socket socket = null;
+            Socket socket = null;
             System.out.println("Server started");
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     try {
-                        Socket socket = serverSocket.accept();
+                        socket = serverSocket.accept();
                         System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
                         clientHandler = new ClientHandler(socket); //create clientHandler for individual client
                     } catch (IOException e) {
                         System.err.println(e);
-                        /*
+
                         if (socket != null)
-                            socket.close(); */
+                            socket.close();
                     }
                 }
             } catch (IOException e) {
@@ -238,7 +243,6 @@ public class ServerController {
          * forwards message to receiver clients.
          */
         public void forwardMessage (Message message){
-            System.out.println("forwarding message to receiver(s)");
             try {
                 oos.writeObject(message);
                 oos.flush();
@@ -252,7 +256,6 @@ public class ServerController {
          * @param contactsMessage message containing list of contacts
          */
         public void sendContacts(ContactsMessage contactsMessage) {
-            System.out.println("sending contacts from server");
             try {
                 oos.writeObject(contactsMessage);
                 oos.flush();

@@ -61,10 +61,7 @@ public class RPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Logout button clicked");
-                mainFrame.saveUserInfo();
-                //TODO: TEMPORARY TEST save user to file again. This is to update the file with the new contacts list
-                //TODO: handle logic to close down client connection and inform server that user has logged out
-
+                mainFrame.logOut();
                 mainFrame.dispose(); //close window.
             }
         });

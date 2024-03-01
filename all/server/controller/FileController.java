@@ -58,6 +58,12 @@ public class FileController {
     }
 
 
+    /**
+     * retrieves contacts of a given user
+     * @param filePath path to file to read from
+     * @param userName name of user whose contacts we want to retrieve
+     * @return list of contacts for given user.
+     */
     public ArrayList<String> getContactsOfUser(String filePath, String userName) {
         ArrayList<String> resultList = new ArrayList<>();
 
@@ -198,7 +204,7 @@ public class FileController {
     /** //
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
-     */ //TODO: NOT YET TESTED
+     */ //TODO: NOT YET TESTED OR PROPERLY IMPLEMENTED
     public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
             for (String receiver : unsentMessages.keySet()) {
@@ -244,47 +250,5 @@ public class FileController {
         }
         return unsentMessagesMap;
     }
-
-
-
-
-
-
-
-
-
-
-
-    //TODO: we might not need to save images to the server in order to be able to see them.
-
-    /**
-     * part of logic to save image to sent_pictures package
-     * @param file image file
-     * @param imageName name of image file
-     */ /*
-    public void loadImage(File file, String imageName) {
-        try {
-            BufferedImage image = ImageIO.read(file);
-            saveImage(image, imageName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * saves image to be sent to sent_pictures to be retrieved later by receiver
-     * @param image image itself
-     * @param imageName file name
-     */ /*
-    public void saveImage(BufferedImage image, String imageName) {
-        try {
-            String path = "all/sent_pictures/" + imageName + ".png";
-            File outputfile = new File(path);
-            ImageIO.write(image, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    } */
-
 
 }

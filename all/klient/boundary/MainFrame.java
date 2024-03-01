@@ -84,9 +84,7 @@ public class MainFrame extends JFrame {
         panel.getcPanel().tempStoreOwnMessage(sendingMessage);
     }
 
-
-    //TODO: temp test
-    public void saveUserInfo() {
-        messageClient.saveUserInfo();
+    public void logOut() {
+        messageClient.logOut();
     }
 }

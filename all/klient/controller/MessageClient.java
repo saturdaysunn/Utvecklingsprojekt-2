@@ -37,7 +37,7 @@ public class MessageClient extends Thread {
      * checks the status of the object that was received.
      * @param receivedObject object that was received through stream.
      */
-    public void checkObjectStatus(Object receivedObject) {
+    public synchronized void checkObjectStatus(Object receivedObject) {
 
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
@@ -79,9 +79,8 @@ public class MessageClient extends Thread {
      * @param message full text message
      * @param receivers list of receivers
      */
-    public void sendMessage(String message, ArrayList<String> receivers) {
+    public synchronized void sendMessage(String message, ArrayList<String> receivers) {
         if (message.contains(".png") | message.contains(".jpg")) { //if text contains image
-            System.out.println("it's an image message");
 
             String imgPath = extractImagePath(message); //extract image path from message
             File imgFile = new File(imgPath); //create file from path to create imageIcon
@@ -96,7 +95,6 @@ public class MessageClient extends Thread {
             listener.sendMessage(imageMessage); //send message to client boundary
             mainFrame.tempStoreOwnMessage(imageMessage);
         } else {
-            System.out.println("it's a text message");
             Message textMessage = new Message(this.user, receivers, message, null, null);
             listener.sendMessage(textMessage);
             mainFrame.tempStoreOwnMessage(textMessage);
@@ -118,7 +116,6 @@ public class MessageClient extends Thread {
                 break;
             }
         }
-        System.out.println("Image path: " + imageFileName);
         return imageFileName;
     }
 
@@ -130,7 +127,6 @@ public class MessageClient extends Thread {
     public String modify(String imgPath) {
         int lastIndex = imgPath.lastIndexOf('/');
         if (lastIndex != -1) { //if '/' character is found
-            System.out.println("image file: " + imgPath.substring(lastIndex + 1));
             return imgPath.substring(lastIndex + 1); //extract substring
         } else {
             return imgPath;
@@ -141,7 +137,7 @@ public class MessageClient extends Thread {
      * adds new contact to user's contact list if not already there
      * @param userToAdd name of user
      */
-    public void addToContacts(String userToAdd) {
+    public synchronized void addToContacts(String userToAdd) {
         boolean alreadyContact = false;
         for (String contact : contacts) {
             if (contact.equals(userToAdd)) {
@@ -167,13 +163,14 @@ public class MessageClient extends Thread {
         return mainFrame;
     }
 
-    //TODO: should store info and send to server somehow?
-    //TODO: or, how should it be saved. do we need a dat file?
     /**
-     * should save user info upon logout?
-     */
-    public void saveUserInfo() {
-        this.listener.sendLogoutMessage(user.getUsername());
+     * sends message containing name of user that logged out
+     * and their updated list of contacts.
+     */ //TODO: do i need to close connection too? if so, how?
+    public synchronized void logOut() {
+        ContactsMessage updatedContacts = new ContactsMessage(contacts);
+        updatedContacts.setOwner(user.getUsername());
+        this.listener.sendUpdatedContacts(updatedContacts);
     }
 
 
@@ -216,21 +213,18 @@ public class MessageClient extends Thread {
             try {
                 oos.writeObject(user);
                 oos.flush();
-                System.out.println("informing server that " + user.getUsername() + " has logged in");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         /**
-         * sends message to server that user has logged out.
-         * @param username name of user that logged out.
+         * sends ContactsMessage to server when user logs out.
          */
-        public void sendLogoutMessage(String username) {
+        public void sendUpdatedContacts(ContactsMessage updatedContacts) {
             try {
-                oos.writeObject(username);
+                oos.writeObject(updatedContacts);
                 oos.flush();
-                System.out.println("informing server that " + username + " has logged out");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -244,7 +238,6 @@ public class MessageClient extends Thread {
         public void sendMessage(Message newMessage) {
             try {
                 oos.writeObject(newMessage);
-                System.out.println("i am trying to send: " + newMessage.getText());
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
