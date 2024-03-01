@@ -28,8 +28,8 @@ public class CenterPanel extends JPanel{
         this.mainFrame = mainFrame;
         this.setSize(width, height);
         this.setVisible(true);
-        this.setBounds(250, 0, 500, 580);
-        this.setBackground(new Color(238, 95, 95));
+        this.setBounds(150, 0, 400, 480);
+        this.setBackground(new Color(245, 151, 194));
         this.conversationMap = new HashMap<>(); //initiate
         setUp();
     }

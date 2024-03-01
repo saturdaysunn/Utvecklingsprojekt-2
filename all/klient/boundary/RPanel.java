@@ -26,8 +26,8 @@ public class RPanel extends JPanel {
         this.width = width;
         this.height = height;
         this.setSize(width, height);
-        this.setBounds(750, 0, 250, 600); //set to the right on the main panel
-        this.setBackground(new Color(227, 195, 255)); //colour
+        this.setBounds(550, 0, 150, 480); //set to the right on the main panel
+        this.setBackground(new Color(90, 186, 255)); //colour
         setUp();
     }
 
