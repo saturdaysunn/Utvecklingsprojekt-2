@@ -30,12 +30,12 @@ public class LPanel extends JPanel{
         setLayout(new BorderLayout());
         this.setSize(width, height);
         this.setBounds(0, 0, 150, 480);
-        this.setBackground(new Color(199, 248, 241));
+        this.setBackground(new Color(90, 186, 255));
         setUp();
     }
 
     public void setUp(){
-        JLabel onlineUsersLabel = new JLabel("Online Users");
+        JLabel onlineUsersLabel = new JLabel("Users");
         onlineUsersLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(onlineUsersLabel, BorderLayout.NORTH);
 
