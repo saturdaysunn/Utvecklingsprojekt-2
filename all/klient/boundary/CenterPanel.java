@@ -1,5 +1,6 @@
 package all.klient.boundary;
 
+import all.jointEntity.ImageMessage;
 import all.jointEntity.Message;
 
 import javax.swing.*;
@@ -12,8 +13,6 @@ import java.io.File;
 import java.util.*;
 
 public class CenterPanel extends JPanel{
-    private int width;
-    private int height;
     private MainFrame mainFrame;
     private Border border;
     private JTextField messageInputField;
@@ -21,13 +20,12 @@ public class CenterPanel extends JPanel{
     private JButton uploadImageButton;
     private JLabel userChatLabel;
     private JPanel chatNamePanel;
-    private JTextArea chatArea;
+    private DefaultListModel listModel;
+    private JList chatList;
     private HashMap<String, ArrayList<Message>> conversationMap; //stores all conversation history.
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.width = width;
-        this.height = height;
         this.setSize(width, height);
         this.setVisible(true);
         this.setBounds(250, 0, 500, 580);
@@ -53,11 +51,11 @@ public class CenterPanel extends JPanel{
         add(chatNamePanel, BorderLayout.NORTH); //add to center panel
         setChatName(null);
 
-        //chat area to display messages
-        chatArea = new JTextArea();
-        chatArea.setEditable(false); //non-editable
-        JScrollPane scrollableChatPane = new JScrollPane(chatArea); //scroll bar for many messages
-        add(scrollableChatPane, BorderLayout.CENTER); //add chat window to the center
+        listModel = new DefaultListModel<>();
+        chatList = new JList<>(listModel);
+        chatList.setCellRenderer(new MessageListRenderer());
+        JScrollPane scrollableChatPane = new JScrollPane(chatList); //scroll bar for many messages
+        add(scrollableChatPane, BorderLayout.CENTER);
 
         JPanel messageInputPanel = new JPanel(); //panel for input box
         messageInputPanel.setLayout(new BoxLayout(messageInputPanel, BoxLayout.X_AXIS));
@@ -84,12 +82,6 @@ public class CenterPanel extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 System.out.println("send button pressed");
                 if (!messageInputField.getText().isEmpty()) { //if no message to send
-
-
-                    //TODO: check if any chat is currently open.
-                    //TODO: if yes, show directly on panel?
-
-
                     sendMessage(messageInputField.getText()); //send contents of input field
                     messageInputField.setText(""); //clear input field
                 } else {
@@ -146,19 +138,13 @@ public class CenterPanel extends JPanel{
     /**
      * populates chat window with messages from selected user
      */
-    public void populateChatWindow(String selectedUserName) {
-        chatArea.setText(""); //reset
-        if (conversationMap.containsKey(selectedUserName)) {
-            ArrayList<Message> conversation = conversationMap.get(selectedUserName);
-            for (Message message : conversation) { //for each message in conversation history
-
-                //TODO: handle images. might have to change from jtextarea? defaultlistmodel?
-                if (message.getText() != null && !message.getText().isEmpty()) {
-                    chatArea.append(message.getSender().getUsername() + ": " + message.getText() + "\n"); // Append text to the existing JTextArea
-                }
+    public synchronized void populateChatWindow(String selectedUserName) {
+        listModel.clear(); //reset
+        if (conversationMap.containsKey(selectedUserName)) { //if history exists
+            ArrayList<Message> conversation = conversationMap.get(selectedUserName); //retrieve
+            for (Message message : conversation) { //iterate messages
+                listModel.addElement(message);
             }
-        } else {
-            System.out.println("no history contents here");
         }
     }
 
@@ -168,7 +154,6 @@ public class CenterPanel extends JPanel{
     public void setChatName(String userName) {
         if (userName == null) {
             userChatLabel.setText("No Chat Selected");
-            System.out.println("no chat selected");
         } else {
             userChatLabel.setText("Showing Chat With " + userName);
         }
@@ -207,19 +192,40 @@ public class CenterPanel extends JPanel{
     public synchronized void tempStoreOwnMessage(Message sendingMessage) {
         ArrayList<String> receivers = sendingMessage.getReceiverList();
         for (String receiver : receivers) {
-            if (conversationMap.containsKey(receiver)) {
-                ArrayList<Message> messageHistory = conversationMap.get(receiver);
-                messageHistory.add(sendingMessage);
-                conversationMap.put(receiver, messageHistory);
+            if (conversationMap.containsKey(receiver)) { //if there is a chat history
+                ArrayList<Message> messageHistory = conversationMap.get(receiver); //retrieve from hashmap
+                messageHistory.add(sendingMessage); //add new message
+                conversationMap.put(receiver, messageHistory); //update
             } else {
-                ArrayList<Message> messageHistory = new ArrayList<>();
-                messageHistory.add(sendingMessage);
-                conversationMap.put(receiver, messageHistory);
+                ArrayList<Message> messageHistory = new ArrayList<>(); //create new history
+                messageHistory.add(sendingMessage); //add new message
+                conversationMap.put(receiver, messageHistory); //update hashmap
             }
             //if chat with this receiver is already open, populate chat window
             if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With " + receiver)) {
                 populateChatWindow(receiver);
             }
+        }
+    }
+
+    private class MessageListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            Message message = (Message) value;
+            String displayText = message.getSender().getUsername() + ": ";
+            if (message instanceof ImageMessage) {
+                displayText += message.getText();
+                displayText += "[Image]";
+                ImageIcon imageIcon = ((ImageMessage) message).getImage(); //to be able to display image
+                setIcon(imageIcon);
+            } else {
+                displayText += message.getText();
+                setIcon(null);
+            }
+            setText(displayText);
+            return this;
         }
     }
 

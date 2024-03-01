@@ -64,7 +64,6 @@ public class LPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedUser = leftPanelList.getSelectedValue();
-                System.out.println("selected user: " + selectedUser); //test
 
                 if (selectedUser != null) {
                     selectedUser = selectedUser.replaceAll("\\<.*?\\>", "");
