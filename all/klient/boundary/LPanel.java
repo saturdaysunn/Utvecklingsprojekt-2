@@ -18,7 +18,6 @@ public class LPanel extends JPanel{
     private JList<String> leftPanelList;
     private JButton addToContactsButton;
     private JButton viewChatButton;
-    private List<String> selectedUsers;
     private ArrayList<String> currentUserContacts = new ArrayList<>();
     private HashMap<String, ArrayList<String>> userContacts = new HashMap<>();
     private ArrayList<String> onlineUsersList = new ArrayList<>();
@@ -82,10 +81,12 @@ public class LPanel extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 System.out.println("view chat button as been called");
                 List<String> selectedObjects = leftPanelList.getSelectedValuesList();
+
                 if (selectedObjects.size() == 1) { //check so only one user has been selected
                     String selectedObject = selectedObjects.get(0);
                     if (selectedObject != null) {
-                        mainFrame.getMainPanel().getcPanel().viewChat(selectedObject);
+                        String plainName = selectedObject.replaceAll("\\<.*?\\>", "");
+                        mainFrame.getMainPanel().getcPanel().viewChat(plainName);
                     }
                 } else {
                     JOptionPane.showMessageDialog(buttonPanel, "Please select only one user to view chat.", "Selection Error", JOptionPane.ERROR_MESSAGE);
@@ -100,8 +101,15 @@ public class LPanel extends JPanel{
      * @return user(s) selected from lPanel
      */
     public ArrayList<String> getReceivers() {
-        selectedUsers = leftPanelList.getSelectedValuesList();
-        return new ArrayList<>(selectedUsers);
+        ArrayList<String> selectedUsers = new ArrayList<>();
+        List<String> selectedValues = leftPanelList.getSelectedValuesList();
+        for (String person : selectedValues) {
+            String plainName = person.replaceAll("\\<.*?\\>", "");
+            selectedUsers.add(plainName);
+            System.out.println("receiver is: " + plainName);
+        }
+        System.out.println("the selected users are: " + selectedUsers);
+        return selectedUsers;
     }
 
 

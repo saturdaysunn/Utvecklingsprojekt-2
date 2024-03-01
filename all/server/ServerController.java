@@ -23,9 +23,6 @@ public class ServerController {
         connection.start();
     }
 
-
-    //TODO: figure out how to show messages in client when user opens chat window for that user.
-    //TODO: here they get sent, but where do they go before the user opens a chat window?
     /**
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
      * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
@@ -88,7 +85,6 @@ public class ServerController {
      */
 
     public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
-        System.out.println("going to check obj status");
         if(receivedObj instanceof Message){
             System.out.println("its a message");
             Message message = (Message) receivedObj;
@@ -142,12 +138,10 @@ public class ServerController {
         return onlineUsers;
     }
 
-    //TODO: this should be called somewhere when user logs out.
-    // possibly if user sends their name as string to server as a last thing and then server calls this method.
-    //TODO: and then server updates all other clients with update online status etc again, as above.
+
     /**
-     * removes user from onlineClients hashmap when user logs out.
-     * @param username username of user that has logged out.
+     * removes user from onlineClients hashmap.
+     * @param username username of user that logged out.
      */
     public synchronized void logOut(String username){
         System.out.println(username + " has logged out, server says");
@@ -155,7 +149,7 @@ public class ServerController {
         while (iterator.hasNext()) {
             User user = iterator.next();
             if (user.getUsername().equals(username)) {
-                iterator.remove(); // Remove the user using the iterator
+                iterator.remove();
             }
         }
         for(User user : onlineClients.keySet()){ //for each currently online user

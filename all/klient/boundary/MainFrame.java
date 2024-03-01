@@ -32,7 +32,6 @@ public class MainFrame extends JFrame {
     public void sendMessage(String message) {
         System.out.println("message arrived in mainframe");
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
-        //TODO: get from rpanel too?
 
         if (receivers.isEmpty()) { //if no receiver has been selected
             JOptionPane.showMessageDialog(null, "No receiver has been selected");
@@ -77,8 +76,12 @@ public class MainFrame extends JFrame {
      * sends message further to center panel.
      * @param receivedMessage message received from client.
      */
-    public void newMessage(Message receivedMessage) {
-        panel.getcPanel().newMessage(receivedMessage);
+    public void tempStoreMessage(Message receivedMessage) {
+        panel.getcPanel().tempStoreMessage(receivedMessage);
+    }
+
+    public void tempStoreOwnMessage(Message sendingMessage) {
+        panel.getcPanel().tempStoreOwnMessage(sendingMessage);
     }
 
 
