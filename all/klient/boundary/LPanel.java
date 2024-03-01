@@ -29,7 +29,7 @@ public class LPanel extends JPanel{
         this.height = height;
         setLayout(new BorderLayout());
         this.setSize(width, height);
-        this.setBounds(0, 0, 250, 600);
+        this.setBounds(0, 0, 150, 480);
         this.setBackground(new Color(199, 248, 241));
         setUp();
     }

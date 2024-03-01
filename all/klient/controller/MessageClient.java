@@ -25,7 +25,7 @@ public class MessageClient extends Thread {
         try{
             socket = new Socket(ip, port);
             oos = new ObjectOutputStream(socket.getOutputStream());
-            this.mainFrame = new MainFrame(1000, 600, this); //create gui for client
+            this.mainFrame = new MainFrame(700, 500, this); //create gui for client
             listener = new Listener();
             listener.start();
         } catch (IOException e){
