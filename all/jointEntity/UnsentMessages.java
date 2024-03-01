@@ -1,9 +1,7 @@
 package all.jointEntity;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * allows unsent messages to be sent as object

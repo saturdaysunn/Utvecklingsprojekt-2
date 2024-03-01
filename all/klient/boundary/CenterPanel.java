@@ -1,5 +1,7 @@
 package all.klient.boundary;
 
+import all.jointEntity.Message;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -7,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.*;
 
 public class CenterPanel extends JPanel{
     private int width;
@@ -18,6 +21,8 @@ public class CenterPanel extends JPanel{
     private JButton uploadImageButton;
     private JLabel userChatLabel;
     private JPanel chatNamePanel;
+    private JTextArea chatArea;
+    private HashMap<String, ArrayList<Message>> conversationMap; //stores all conversation history.
 
     public CenterPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -27,6 +32,7 @@ public class CenterPanel extends JPanel{
         this.setVisible(true);
         this.setBounds(250, 0, 500, 580);
         this.setBackground(new Color(238, 95, 95));
+        this.conversationMap = new HashMap<>(); //initiate
         setUp();
     }
 
@@ -48,7 +54,7 @@ public class CenterPanel extends JPanel{
         setChatName(null);
 
         //chat area to display messages
-        JTextArea chatArea = new JTextArea();
+        chatArea = new JTextArea();
         chatArea.setEditable(false); //non-editable
         JScrollPane scrollableChatPane = new JScrollPane(chatArea); //scroll bar for many messages
         add(scrollableChatPane, BorderLayout.CENTER); //add chat window to the center
@@ -78,8 +84,14 @@ public class CenterPanel extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 System.out.println("send button pressed");
                 if (!messageInputField.getText().isEmpty()) { //if no message to send
-                    sendMessage(messageInputField.getText()); //send contents of input field as message
-                    messageInputField.setText(""); //clear input field after sending message
+
+
+                    //TODO: check if any chat is currently open.
+                    //TODO: if yes, show directly on panel?
+
+
+                    sendMessage(messageInputField.getText()); //send contents of input field
+                    messageInputField.setText(""); //clear input field
                 } else {
                     JOptionPane.showMessageDialog(null, "Please input a message first");
                 }
@@ -92,7 +104,6 @@ public class CenterPanel extends JPanel{
         uploadImageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("upload image button pressed"); //test
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 int returnValue = fileChooser.showOpenDialog(null);
@@ -107,8 +118,6 @@ public class CenterPanel extends JPanel{
                     }
                     existingText += selectedFile.getAbsolutePath();
                     messageInputField.setText(existingText); //update text in input field with image
-                } else {
-                    System.out.println("No file chosen");
                 }
             }
         });
@@ -129,18 +138,28 @@ public class CenterPanel extends JPanel{
      * @param userName name of selected user
      */
     public void viewChat(String userName) {
-        System.out.println("i have been called to view chat");
-        //TODO: communicate to mainframe and then to controller to retrieve messages for chat with given user.
-        //TODO: send messages to populate chat window
+        System.out.println("i have been called to view chat for " + userName);
         setChatName(userName); //sets name of user chatting with
-        populateChatWindow(); //TODO: currently not functional, should show all message history
+        populateChatWindow(userName);
     }
 
     /**
      * populates chat window with messages from selected user
      */
-    public void populateChatWindow() {
-        //populate chat window with messages (text and images, somehow).
+    public void populateChatWindow(String selectedUserName) {
+        chatArea.setText(""); //reset
+        if (conversationMap.containsKey(selectedUserName)) {
+            ArrayList<Message> conversation = conversationMap.get(selectedUserName);
+            for (Message message : conversation) { //for each message in conversation history
+
+                //TODO: handle images. might have to change from jtextarea? defaultlistmodel?
+                if (message.getText() != null && !message.getText().isEmpty()) {
+                    chatArea.append(message.getSender().getUsername() + ": " + message.getText() + "\n"); // Append text to the existing JTextArea
+                }
+            }
+        } else {
+            System.out.println("no history contents here");
+        }
     }
 
     /**
@@ -152,7 +171,55 @@ public class CenterPanel extends JPanel{
             System.out.println("no chat selected");
         } else {
             userChatLabel.setText("Showing Chat With " + userName);
-            System.out.println("chat with " + userName);
+        }
+    }
+
+    /**
+     * stores message sent from another user in conversation history map.
+     * stored under key = sender of message.
+     * @param receivedMessage instance of Message
+     */
+    public synchronized void tempStoreMessage(Message receivedMessage) {
+        System.out.println("adding message to history map");
+        String senderName = receivedMessage.getSender().getUsername();
+        if (conversationMap.containsKey(senderName)) {
+            ArrayList<Message> history = conversationMap.get(senderName);
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
+        } else {
+            ArrayList<Message> history = new ArrayList<>();
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
+        }
+
+        //if already viewing chat with this person, populate chat window
+        if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With " + senderName)) {
+            populateChatWindow(senderName);
+        }
+    }
+
+    /**
+     * stores message from current user in conversationHistory map
+     * stored under key = receiver.
+     * such that it can be viewed when opening chat with a selected user.
+     * @param sendingMessage instance of message.
+     */
+    public synchronized void tempStoreOwnMessage(Message sendingMessage) {
+        ArrayList<String> receivers = sendingMessage.getReceiverList();
+        for (String receiver : receivers) {
+            if (conversationMap.containsKey(receiver)) {
+                ArrayList<Message> messageHistory = conversationMap.get(receiver);
+                messageHistory.add(sendingMessage);
+                conversationMap.put(receiver, messageHistory);
+            } else {
+                ArrayList<Message> messageHistory = new ArrayList<>();
+                messageHistory.add(sendingMessage);
+                conversationMap.put(receiver, messageHistory);
+            }
+            //if chat with this receiver is already open, populate chat window
+            if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With " + receiver)) {
+                populateChatWindow(receiver);
+            }
         }
     }
 

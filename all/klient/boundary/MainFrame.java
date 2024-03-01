@@ -1,16 +1,12 @@
 package all.klient.boundary;
 
+import all.jointEntity.Message;
 import all.klient.controller.*;
 import all.server.controller.FileController;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MainFrame extends JFrame {
     private MainPanel panel;
@@ -36,7 +32,6 @@ public class MainFrame extends JFrame {
     public void sendMessage(String message) {
         System.out.println("message arrived in mainframe");
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
-        //TODO: get from rpanel too?
 
         if (receivers.isEmpty()) { //if no receiver has been selected
             JOptionPane.showMessageDialog(null, "No receiver has been selected");
@@ -76,6 +71,19 @@ public class MainFrame extends JFrame {
     public void addToContacts(String userToAdd) {
         messageClient.addToContacts(userToAdd);
     }
+
+    /**
+     * sends message further to center panel.
+     * @param receivedMessage message received from client.
+     */
+    public void tempStoreMessage(Message receivedMessage) {
+        panel.getcPanel().tempStoreMessage(receivedMessage);
+    }
+
+    public void tempStoreOwnMessage(Message sendingMessage) {
+        panel.getcPanel().tempStoreOwnMessage(sendingMessage);
+    }
+
 
     //TODO: temp test
     public void saveUserInfo() {

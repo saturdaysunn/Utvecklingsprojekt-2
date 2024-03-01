@@ -3,7 +3,6 @@ package all.server;
 import all.jointEntity.*;
 import all.server.controller.FileController;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,9 +23,6 @@ public class ServerController {
         connection.start();
     }
 
-
-    //TODO: figure out how to show messages in client when user opens chat window for that user.
-    //TODO: here they get sent, but where do they go before the user opens a chat window?
     /**
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
      * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
@@ -51,6 +47,7 @@ public class ServerController {
      * @param message message to send
      */
     public void checkIfOnline(Message message){
+        System.out.println("inside check if online now");
         for (String receiver : message.getReceiverList()) {
             for (User receiverUser : onlineClients.keySet()) { //check if registered as online
                 if (receiverUser.getUsername().equals(receiver)) { //if yes
@@ -89,11 +86,13 @@ public class ServerController {
 
     public void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
         if(receivedObj instanceof Message){
+            System.out.println("its a message");
             Message message = (Message) receivedObj;
-            message.setReceivedTime(new Date());
+            message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message);
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
+            System.out.println(onlineUser.getUsername() + " has logged in, said by server");
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
@@ -108,7 +107,7 @@ public class ServerController {
             } else {
                 //retrieve contacts
                 ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", onlineUser.getUsername()); //retrieve contacts for user
-                ContactsMessage contactsMessage = new ContactsMessage(contacts); //TODO: does this seem nice?
+                ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //retrieve possible unsent messages
@@ -139,12 +138,10 @@ public class ServerController {
         return onlineUsers;
     }
 
-    //TODO: this should be called somewhere when user logs out.
-    // possibly if user sends their name as string to server as a last thing and then server calls this method.
-    //TODO: and then server updates all other clients with update online status etc again, as above.
+
     /**
-     * removes user from onlineClients hashmap when user logs out.
-     * @param username username of user that has logged out.
+     * removes user from onlineClients hashmap.
+     * @param username username of user that logged out.
      */
     public synchronized void logOut(String username){
         System.out.println(username + " has logged out, server says");
@@ -152,7 +149,7 @@ public class ServerController {
         while (iterator.hasNext()) {
             User user = iterator.next();
             if (user.getUsername().equals(username)) {
-                iterator.remove(); // Remove the user using the iterator
+                iterator.remove();
             }
         }
         for(User user : onlineClients.keySet()){ //for each currently online user
