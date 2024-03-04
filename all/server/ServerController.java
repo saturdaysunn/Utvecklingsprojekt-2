@@ -90,29 +90,30 @@ public class ServerController {
             checkIfOnline(message);
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
+            String username = onlineUser.getUsername();
             System.out.println(onlineUser.getUsername() + " has logged in, said by server");
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
             for(User user : onlineClients.keySet()){ //for each currently online user
-                ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
+                ArrayList<String> userList = updateOnlineStatus(username); //retrieve list of other online users
                 onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
             //check if new or old user.
-            boolean exists = fileController.checkIfUserAlreadyExists(onlineUser.getUsername(), "all/files/users.txt");
+            boolean exists = fileController.checkIfUserAlreadyExists(username, "all/files/users.txt");
             if (!exists) {
-                fileController.saveUserToFile(onlineUser.getUsername(), "all/files/users.txt");
+                fileController.saveUserToFile(username, "all/files/users.txt");
             } else {
                 //retrieve contacts
-                ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", onlineUser.getUsername()); //retrieve contacts for user
+                ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", username); //retrieve contacts for user
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 //TODO: UNSENT MESSAGES NOT FUNCTIONAL YET. NOT FULLY IMPLEMENTED.
                 //retrieve possible unsent messages
-                //this.unsentMessagesMap = fileController.retrieveUnsentMessages();
-                //sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                //this.unsentMessagesMap = fileController.retrieveUnsentMessages(username);
+                //clientHandler.sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
