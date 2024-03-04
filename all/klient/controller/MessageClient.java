@@ -41,9 +41,21 @@ public class MessageClient extends Thread {
 
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
-            System.out.println("Received a message: " + receivedMessage.getText());
-            receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
-            mainFrame.tempStoreMessage(receivedMessage);
+            ArrayList<String> designatedReceivers = receivedMessage.getReceiverList(); //TODO: check if correct
+            boolean correctlySent = false;
+            for (String receiver : designatedReceivers) {
+                if (receiver.equals(user.getUsername())) { //if to me
+                    correctlySent = true;
+                    break;
+                }
+            }
+            if (correctlySent) { //if correct, display
+                System.out.println("Received a message: " + receivedMessage.getText());
+                receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
+                mainFrame.tempStoreMessage(receivedMessage);
+            } else {
+                System.out.println("wrongly sent message");
+            }
 
         } else if (receivedObject instanceof ContactsMessage) {
             ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
