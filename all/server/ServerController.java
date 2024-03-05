@@ -83,7 +83,10 @@ public class ServerController {
      * @param clientHandler ClientHandler instance associated with client sending object.
      */
 
-    public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) {
+    public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) throws IOException {
+        System.out.println("Arrived on server side");
+        System.out.println(receivedObj.toString());
+
         if(receivedObj instanceof Message){
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
@@ -116,10 +119,14 @@ public class ServerController {
                 //clientHandler.sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
+            System.out.println("Currently in receivedObj ContactsMessage part");
+
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
-            ArrayList<String> contactsList = updatedContacts.getContactsList();
-            //TODO: here write contactsList to file.
-            //TODO: mihail, help
+
+            HashMap<String, ArrayList<String>> contacts = new HashMap<>();
+            contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
+
+            fileController.rewriteContactsTextFileWithNewContacts(contacts);
 
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();

@@ -3,6 +3,7 @@ import all.jointEntity.*;
 import all.klient.boundary.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class MessageClient extends Thread {
             String modifiedMessage = message.replace(imgPath, imgFileString); //modify string message
 
             Message imageMessage = new ImageMessage(this.user, receivers, modifiedMessage,
-                    null, null, image);
+                    null, null, resizeImage(image));
 
             listener.sendMessage(imageMessage); //send message to client boundary
             mainFrame.tempStoreOwnMessage(imageMessage);
@@ -151,20 +152,28 @@ public class MessageClient extends Thread {
      */
     public synchronized void addToContacts(String userToAdd) {
         boolean alreadyContact = false;
-        for (String contact : contacts) {
-            if (contact.equals(userToAdd)) {
-                alreadyContact = true;
-                break;
-            }
-        }
 
-        if (alreadyContact) {
-            JOptionPane.showMessageDialog(null, "This user is already in your contacts");
-        } else {
-            user.addContact(userToAdd); //add to user's contacts list
-            contacts.add(userToAdd);
-            System.out.println("added " + userToAdd + " to contacts");
-            mainFrame.updateContactsList(contacts); //update on GUI
+        if (contacts != null ) {
+            for (String contact : contacts) {
+                if (contact.equals(userToAdd)) {
+                    alreadyContact = true;
+                    break;
+                }
+            }
+
+            if (alreadyContact) {
+                JOptionPane.showMessageDialog(null, "This user is already in your contacts");
+            } else {
+                user.addContact(userToAdd); //add to user's contacts list
+                contacts.add(userToAdd);
+                System.out.println("added " + userToAdd + " to contacts");
+                mainFrame.updateContactsList(contacts); //update on GUI
+            }
+        }else{
+            contacts = new ArrayList<>(); //create new one
+            contacts.add(userToAdd); //add to user's contacts list
+            mainFrame.updateContactsList(contacts);
+
         }
     }
 
@@ -182,10 +191,18 @@ public class MessageClient extends Thread {
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
+        System.out.println(user.getUsername());
+        System.out.println("Currently in MessageClient log out method");
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 
-
+    public static ImageIcon resizeImage(ImageIcon originalIcon) {
+        Image originalImage = originalIcon.getImage();
+        int width = 100; // specify the desired width and height
+        int height = 100;
+        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
+    }
 
 
     /**
@@ -235,6 +252,7 @@ public class MessageClient extends Thread {
          */
         public void sendUpdatedContacts(ContactsMessage updatedContacts) {
             try {
+                System.out.println("sendUpdatedContacts MessageClient");
                 oos.writeObject(updatedContacts);
                 oos.flush();
             } catch (IOException e) {
