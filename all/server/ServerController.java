@@ -117,16 +117,17 @@ public class ServerController {
                 //this.unsentMessagesMap = fileController.retrieveUnsentMessages(username);
                 //clientHandler.sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
-        } else if (receivedObj instanceof ContactsMessage) { //user logged out
+        } else if (receivedObj instanceof ContactsMessage) { //user added contact
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             HashMap<String, ArrayList<String>> contacts = new HashMap<>();
             contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
 
             fileController.rewriteContactsTextFileWithNewContacts(contacts);
+            clientHandler.sendContacts(updatedContacts); //send contacts to user
 
-            //register that user has logged out.
-            String loggedOutUser = updatedContacts.getOwner();
+        } else if(receivedObj instanceof String loggedOutUser){
+            //register that user has logged out by receiving its username as a string
             logOutUser(loggedOutUser); //update online clients
         }
 
@@ -166,6 +167,20 @@ public class ServerController {
             ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
             onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
         }
+    }
+
+    public synchronized ArrayList<String> updateContacts(ContactsMessage contactsMessage){
+        ArrayList<String> onlineUsers = new ArrayList<>();
+
+        for(User user : onlineClients.keySet()){ //loop through online clients hashmap
+           for (String contact : contactsMessage.getContactsList()) {
+               if(user.getUsername().equals(contact)){
+                   //TODO: this specific user's contacts need to be send in the parameter
+                   //onlineClients.get(user).sendContacts(new ContactsMessage());
+               }
+           }
+        }
+        return onlineUsers;
     }
 
     /**
