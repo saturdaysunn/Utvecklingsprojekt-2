@@ -63,7 +63,7 @@ public class LoginPanel extends JFrame {
         //action listener for when choose picture button is clicked
         choosePicture.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                /*JFileChooser fileChooser = new JFileChooser();
                 int returnValue = fileChooser.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
@@ -71,7 +71,9 @@ public class LoginPanel extends JFrame {
 
                     loadImage(selectedFile);
                     userPicture.setIcon(resizePreviewImage(icon));
-                }
+                }*/
+
+                userPicture.setIcon(resizePreviewImage(new ImageIcon("all/files/default-image.png")));
             }
         });
 
@@ -82,12 +84,8 @@ public class LoginPanel extends JFrame {
 
                 //check if image and username have been set
                 if (!username.isEmpty() && userPicture.getIcon() != null) {
-
                     System.out.println("Username: " + username); //test print
                     loginUser(username, (ImageIcon) userPicture.getIcon());
-
-
-
                     dispose(); //close window
                 } else if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
