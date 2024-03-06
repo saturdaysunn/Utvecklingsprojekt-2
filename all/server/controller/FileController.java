@@ -14,7 +14,7 @@ public class FileController {
 
     /**
      * checks if user has logged in previously.
-     * @param // username name of user
+     * @param username username name of user
      * @param filePath path of file to check
      * @return true if user exists, false if not
      */
@@ -57,88 +57,81 @@ public class FileController {
         }
     }
 
-
     /**
      * retrieves contacts of a given user
      * @param filePath path to file to read from
-     * @param userName name of user whose contacts we want to retrieve
+     * @param username name of user whose contacts we want to retrieve
      * @return list of contacts for given user.
      */
-    public ArrayList<String> getContactsOfUser(String filePath, String userName) {
-        ArrayList<String> result = new ArrayList<>();
-        boolean emptyRowFound = false;
+    public synchronized ArrayList<String> getContactsOfUser(String filePath, String username) {
+        ArrayList<String> contactsOfUser = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            boolean foundUsername = false;
             String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) {
-                    emptyRowFound = true;
 
-                } else if (emptyRowFound && line.contains(userName)) {
-                    //found the username with an empty row before it
-                    while ((line = reader.readLine()) != null && !line.trim().isEmpty()) {
-                        result.add(line);
-                    }
-                    break;
+            while ((line = reader.readLine()) != null) {
+                //check if the line contains the username with a dot above it
+                if (line.equals(".") && foundUsername) { //if both found
+                    break; //stop reading after encountering an empty row after the username
+                }
+                if (line.equals(username) && !foundUsername) {
+                    foundUsername = true;
+                } else if (foundUsername) {
+                    contactsOfUser.add(line);
+                    System.out.println(line);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return result;
+        return contactsOfUser;
     }
 
     /**
      * This method removes the target content from a text file while keeping the
      * remaining data intact.
      * @param fileName file path
-     * @param targetString search for this string in text file
+     * @param username search for this string in text file
      * @throws IOException error
      */
-    public static void removePreviousContactsInTextFileOfUser(String targetString, String fileName) {
-        try {
-            File inputFile = new File(fileName);
+    public synchronized static void removePreviousContactsInTextFileOfUser(String username, String fileName) {
+        File inputFile = new File(fileName);
+        File tempFile = new File("all/files/temp.txt");
 
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            StringBuilder modifiedContent = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
 
-            boolean foundTargetString = false;
+            boolean foundDot = false;
+            boolean foundString = false;
             String line;
 
             while ((line = reader.readLine()) != null) {
-                if (line.isEmpty() && foundTargetString) {
-                    //stop reading if an empty line is found after username. I.e the end of the block to be removed
-                    break;
+                if (line.trim().equals(".")) {
+                    if (foundString) {
+                        foundString = false;
+                    } else {
+                        foundDot = true;
+                    }
+                } else if (foundDot) {
+                    if (line.contains(username)) {
+                        foundString = true;
+                        foundDot = false;
+                    }
+                } else if (!foundString) {
+                    writer.write(line + System.lineSeparator());
                 }
-                if (foundTargetString) {
-                    //skip lines until an empty line is encountered
-                    continue;
-                }
-                if (line.equals(targetString)) {
-                    //mark the targetString as found
-                    foundTargetString = true;
-                    continue;
-                }
-                //append non-targetString lines to modified content
-                modifiedContent.append(line).append(System.lineSeparator());
             }
-
-            reader.close();
-
-            if (!foundTargetString) {
-                System.out.println("Target string not found with an empty row before it in the file.");
-                return;
-            }
-
-            //write modified content back to the original file
-            FileWriter writer = new FileWriter(inputFile);
-            writer.write(modifiedContent.toString());
-            writer.close();
-
         } catch (IOException e) {
-            System.out.println("Error reading or writing file: " + e.getMessage());
+            e.printStackTrace();
         }
+
+        // Delete the original file
+        inputFile.delete();
+
+        // Rename the temporary file to the original file name
+        tempFile.renameTo(inputFile);
     }
 
     public boolean checkIfUserAlreadyHasContacts(String filePath, String target) {
@@ -178,7 +171,7 @@ public class FileController {
         if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", keysArray[0])){
             System.out.println("User already has contacts...");
 
-            removePreviousContactsInTextFileOfUser(keysArray[0], "all/files/contacts.txt");
+            removePreviousContactsInTextFileOfUser(keysArray[0], "all/files/contacts.txt"); //TODO doesn't work
             writeHashMapToFile(hashMap);
 
         } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", keysArray[0])){ //else if the user doesn't have already have contacts then just append to the file
@@ -189,34 +182,24 @@ public class FileController {
     }
 
   
-    public static void writeHashMapToFile(HashMap<String, ArrayList<String>> hashMap) {
-
-        if (hashMap.isEmpty()) {
-            System.out.println("HashMap is empty. Nothing to write.");
-            return;
-        }
+    public static void writeHashMapToFile(HashMap<String, ArrayList<String>> contacts) {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/contacts.txt", true))) {
-            for (Map.Entry<String, ArrayList<String>> entry : hashMap.entrySet()) {
-                String key = entry.getKey();
-                ArrayList<String> arrayList = entry.getValue();
-
+            for (String key : contacts.keySet()) {
+                writer.write(".");
                 writer.newLine();
                 writer.write(key);
-                writer.newLine();//write the key on a new line
+                writer.newLine();
 
-                for (String element : arrayList) {
-                    writer.write(element);
-                    System.out.println(element);
-                    writer.newLine(); //write each element of ArrayList on a new line
+                ArrayList<String> values = contacts.get(key);
+                for (String value : values) {
+                    writer.write(value);
+                    writer.newLine();
                 }
 
-                writer.newLine(); //add an empty line after each arraylist/contact list
             }
-
-            System.out.println("HashMap contents written to file successfully.");
         } catch (IOException e) {
-            System.out.println("Error writing to file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -226,15 +209,18 @@ public class FileController {
      * @param unsentMessages hashmap containing unsent messages for different offline users.
      */ //TODO: NOT YET TESTED OR PROPERLY IMPLEMENTED
     public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
-            for (String receiver : unsentMessages.keySet()) {
-                oos.writeObject(receiver); //name of receiver
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
+            for (Map.Entry<String, ArrayList<Message>> entry : unsentMessages.entrySet()) {
+                String key = entry.getKey();
+                ArrayList<Message> values = entry.getValue();
 
-                ArrayList<Message> messages = unsentMessages.get(receiver);
-                for (Message message : messages) {
-                    oos.writeObject(message); //write message object to file
+                if (values != null) {
+                    outputStream.writeObject(key);
+                    for (Message value : values) {
+                        outputStream.writeObject(value);
+                    }
+                    outputStream.writeObject(new Message(null,null, "", null, null)); //writing an empty string to indicate the end
                 }
-                oos.writeObject(""); //add blank line
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -246,29 +232,27 @@ public class FileController {
      * @return HashMap containing unread messages for different users.
      */ //TODO: NOT YET TESTED
     public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
-        HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>();
-
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
+        HashMap<String, ArrayList<Message>> data = new HashMap<>();
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
             while (true) {
-                //TODO: not sure if correct approach or if it works
-                String receiver = (String) ois.readObject();
-                if (receiver.isEmpty()) {
-                    break;
-                }
+                String key = inputStream.readUTF();
                 ArrayList<Message> messages = new ArrayList<>();
-                while (true) {
-                    Message message = (Message) ois.readObject();
-                    if (message == null) {
-                        break;
+                boolean foundEmptyMessage = false;
+                while (!foundEmptyMessage) {
+                    Message message = (Message) inputStream.readObject();
+                    if (message.getSender().getUsername() == null && message.getText().isEmpty()) {
+                        foundEmptyMessage = true;
+                    } else {
+                        messages.add(message);
                     }
-                    messages.add(message);
                 }
-                unsentMessagesMap.put(receiver, messages);
+                data.put(key, messages);
             }
+        } catch (EOFException e) {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return unsentMessagesMap;
+        return data;
     }
 
 }
