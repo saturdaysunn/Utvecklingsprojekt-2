@@ -74,7 +74,6 @@ public class LPanel extends JPanel{
             }
         });
 
-
         viewChatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

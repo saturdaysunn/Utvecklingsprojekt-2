@@ -192,7 +192,6 @@ public class MessageClient extends Thread {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
         System.out.println(user.getUsername());
-        System.out.println("Currently in MessageClient log out method");
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 
@@ -252,7 +251,6 @@ public class MessageClient extends Thread {
          */
         public void sendUpdatedContacts(ContactsMessage updatedContacts) {
             try {
-                System.out.println("sendUpdatedContacts MessageClient");
                 oos.writeObject(updatedContacts);
                 oos.flush();
             } catch (IOException e) {

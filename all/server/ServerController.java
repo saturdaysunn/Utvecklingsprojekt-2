@@ -84,7 +84,6 @@ public class ServerController {
      */
 
     public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) throws IOException {
-        System.out.println("Arrived on server side");
         System.out.println(receivedObj.toString());
 
         if(receivedObj instanceof Message){
@@ -119,8 +118,6 @@ public class ServerController {
                 //clientHandler.sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
-            System.out.println("Currently in receivedObj ContactsMessage part");
-
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             HashMap<String, ArrayList<String>> contacts = new HashMap<>();
