@@ -3,4 +3,5 @@
 /workspace.xml
 /files/
 /sent_pictures/
-/user_images/
+/user_images/# GitHub Copilot persisted chat sessions
+/copilot/chatSessions
