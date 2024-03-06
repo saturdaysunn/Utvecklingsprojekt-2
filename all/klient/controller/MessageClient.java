@@ -168,13 +168,11 @@ public class MessageClient extends Thread {
                 contacts.add(userToAdd);
                 System.out.println("added " + userToAdd + " to contacts");
                 mainFrame.updateContactsList(contacts); //update on GUI
-                this.listener.sendUpdatedContacts(new ContactsMessage(contacts));
             }
         }else{
             contacts = new ArrayList<>(); //create new one
             contacts.add(userToAdd); //add to user's contacts list
             mainFrame.updateContactsList(contacts);
-            this.listener.sendUpdatedContacts(new ContactsMessage(contacts));
         }
 
     }
@@ -192,7 +190,10 @@ public class MessageClient extends Thread {
      */ //TODO: do i need to close connection too? if so, how?
 
     public synchronized void logOut() {
-        this.listener.sendLogoutMessage(user.getUsername());
+        ContactsMessage updatedContacts = new ContactsMessage(contacts);
+        updatedContacts.setOwner(user.getUsername());
+        System.out.println(user.getUsername());
+        this.listener.sendUpdatedContacts(updatedContacts);
     }
 
     public static ImageIcon resizeImage(ImageIcon originalIcon) {
@@ -266,15 +267,6 @@ public class MessageClient extends Thread {
         public void sendMessage(Message newMessage) {
             try {
                 oos.writeObject(newMessage);
-                oos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void sendLogoutMessage(String username) {
-            try {
-                oos.writeObject(username);
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
