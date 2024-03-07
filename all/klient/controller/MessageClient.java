@@ -74,6 +74,7 @@ public class MessageClient extends Thread {
         } else if (receivedObject instanceof UnsentMessages) {
             //TODO: handle unsent messages. what to do with them?
             //TODO: same as for other messages? send to mainframe to temp store?
+
         }
     }
 
