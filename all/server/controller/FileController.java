@@ -101,33 +101,35 @@ public class FileController {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            boolean foundDotRow = false;
+            boolean foundString = false;
             String line;
-            boolean skipLines = false;
 
             while ((line = reader.readLine()) != null) {
-                if (line.equals(".") && reader.readLine().equals(username)) {
-                    skipLines = true;
-                    reader.readLine();
-                    continue;
-                } else if (line.equals(".")) {
-                    skipLines = false;
-                }
-
-                if (!skipLines) {
-                    writer.write(line);
-                    writer.newLine();
+                if (line.trim().endsWith(".")) {
+                    foundDotRow = true;
+                } else if (foundDotRow) {
+                    if (line.contains(username)) {
+                        foundString = true;
+                        foundDotRow = false;
+                    } else {
+                        foundDotRow = false;
+                    }
+                } else if (!foundString) {
+                    writer.write(line + System.lineSeparator());
+                } else if (foundString && line.trim().endsWith(".")) {
+                    foundString = false;
                 }
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //Delete the original file
+        //delete the original file
         inputFile.delete();
 
-        //Rename the temporary file to the original file name
+        //rename the temporary file to the original file name
         tempFile.renameTo(inputFile);
     }
 
@@ -167,7 +169,7 @@ public class FileController {
             writeNewContactsToFile(owner, contacts);
 
         } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
-            System.out.println("User doesn't have contacts.");
+            System.out.println("User doesn't have contacts...");
             writeNewContactsToFile(owner, contacts); //TODO: works
 
         }
