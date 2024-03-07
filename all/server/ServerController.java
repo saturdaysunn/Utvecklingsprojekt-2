@@ -13,15 +13,14 @@ import java.util.Iterator;
 
 public class ServerController {
     private Connection connection;
-    private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
+    private HashMap<User, ClientHandler> onlineClients; //stores clients and their connections
     private HashMap<String, ArrayList<Message>> unsentMessagesMap;
     private FileController fileController;
     
     public ServerController(int port){
         this.fileController = new FileController();
-
         unsentMessagesMap = fileController.retrieveUnsentMessages();
-
+        onlineClients = new HashMap<>();
         connection = new Connection(port);
         connection.start();
     }
@@ -31,11 +30,12 @@ public class ServerController {
      * @param receiver user to send unsent messages to (the user that just went online).
      */
     public synchronized void sendUnsentMessages(User receiver){
-        if (unsentMessagesMap.containsKey(receiver)) {
-            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages from unsentmessagemap with correct receiver
+        String receiverName = receiver.getUsername();
+        if (unsentMessagesMap.containsKey(receiverName)) {
+            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiverName); //create arraylist of unsent messages with correct receiver
             UnsentMessages unsent = new UnsentMessages(unsentMessages);
             onlineClients.get(receiver).sendUnsent(unsent);
-            unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+            unsentMessagesMap.remove(receiverName); //remove from hashmap as they now should be sent
         }
     }
 
@@ -46,14 +46,18 @@ public class ServerController {
      */
     public synchronized void checkIfOnline(Message message){
         for (String receiver : message.getReceiverList()) {
-            for (User receiverUser : onlineClients.keySet()) { //check if registered as online
-                if (receiverUser.getUsername().equals(receiver)) { //if yes
-                    System.out.println("message to send to: " + receiver);
-                    onlineClients.get(receiverUser).forwardMessage(message); //send to receiver clientHandler
-                    break; //end search
-                } else { //if offline
-                    storeUnsentMessages(message, receiver);
+            boolean isOnline = false;
+            for (User onlineUser : onlineClients.keySet()) {
+                if (onlineUser.getUsername().equals(receiver)) {
+                    onlineClients.get(onlineUser).forwardMessage(message);
+                    isOnline = true;
+                    break;
                 }
+            }
+
+            if (!isOnline) {
+                System.out.println(receiver + " is offline, storing message now");
+                storeUnsentMessage(message, receiver);
             }
         }
     }
@@ -61,7 +65,7 @@ public class ServerController {
     /**
      * stores unsent messages in unsentMessagesMap
      */
-    public void storeUnsentMessages (Message message, String receiver){
+    public synchronized void storeUnsentMessage(Message message, String receiver){
         if (unsentMessagesMap.containsKey(receiver)) { //if receiver already has unsent messages
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //retrieve arraylist
             unsentMessages.add(message); //add new message to list
@@ -83,15 +87,13 @@ public class ServerController {
     public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) throws IOException {
 
         if(receivedObj instanceof Message){
-
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message);
 
-        } else if(receivedObj instanceof User){
+        } else if(receivedObj instanceof User){ //logged in
             User onlineUser = (User) receivedObj;
             String username = onlineUser.getUsername();
-            System.out.println(onlineUser.getUsername() + " has logged in, said by server");
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
@@ -147,7 +149,6 @@ public class ServerController {
      * @param username username of user that logged out.
      */
     public synchronized void logOutUser(String username){
-        System.out.println(username + " has logged out, server says");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();
