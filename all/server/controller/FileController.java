@@ -4,6 +4,9 @@ import all.jointEntity.Message;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -212,7 +215,7 @@ public class FileController {
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
      */
-    public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+    /*public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
         try (FileOutputStream fileOut = new FileOutputStream("all/files/unsentMessages.dat");
              ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
@@ -222,7 +225,7 @@ public class FileController {
         } catch (IOException e) {
             System.err.println("Error writing HashMap to file: " + e.getMessage());
         }
-    }
+    }*/
 
     /**
      * retrieves unsent messages from .dat file and inserts into HashMap.
@@ -245,5 +248,42 @@ public class FileController {
         }
         return hashMap;
     }
+
+    public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+
+        Path filePath = Paths.get("all/files/unsentMessages.dat");
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            System.err.println("Error deleting existing file: " + e.getMessage());
+        }
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile());
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+
+            objectOut.writeObject(unsentMessages);
+            System.out.println("HashMap has been successfully written to " + filePath);
+
+        } catch (IOException e) {
+            System.err.println("Error writing HashMap to file: " + e.getMessage());
+        }
+    }
+
+    public synchronized void updateUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+
+        Path filePath = Paths.get("all/files/unsentMessages.dat");
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile());
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+
+            objectOut.writeObject(unsentMessages);
+            System.out.println("HashMap has been successfully written to " + filePath);
+
+        } catch (IOException e) {
+            System.err.println("Error writing HashMap to file: " + e.getMessage());
+        }
+
+    }
+
 
 }
