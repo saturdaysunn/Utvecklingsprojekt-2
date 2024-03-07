@@ -1,51 +1,44 @@
 package all.server;
 
 import all.jointEntity.*;
-import all.server.boundary.*;
-import all.server.controller.*;
+import all.server.controller.FileController;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class ServerController {
     private Connection connection;
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
     private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //receiver, unsent messages
     private FileController fileController;
-    private ServerMainFrame mainFrame;
     
     public ServerController(int port){
         this.fileController = new FileController();
-        unsentMessagesMap = fileController.retrieveUnsentMessages();
-        onlineClients = new HashMap<>();
-        mainFrame = new ServerMainFrame(800, 600);
         connection = new Connection(port);
         connection.start();
     }
 
     /**
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
+     * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
      * @param receiver user to send unsent messages to (the user that just went online).
      */
-    public synchronized void sendUnsentMessages(User receiver){
+    public synchronized void sendUnsentMessages(HashMap <String, ArrayList <Message>>unsentMessagesMap, User receiver){
+        if (unsentMessagesMap.containsKey(receiver)) {
+            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages from unsentmessagemap with correct receiver
+            UnsentMessages unsent = new UnsentMessages(unsentMessages);
+            onlineClients.get(receiver).sendUnsent(unsent);
+            unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
 
-        System.out.println("going to send unsent to " + receiver.getUsername());
-        for(User user : onlineClients.keySet()){
-            System.out.println(user.getUsername());
-        }
-        try{
-            if (unsentMessagesMap.containsKey(receiver.getUsername())) {
-                ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver.getUsername()); //create arraylist of unsent messages from unsentmessagemap with correct receiver
-                UnsentMessages unsent = new UnsentMessages(unsentMessages);
-                onlineClients.get(receiver).sendUnsent(unsent);
-                unsentMessagesMap.remove(receiver.getUsername()); //remove from hashmap as they now should be sent
-            }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-        }
 
+            //TODO: and then write updated unsentMessages hashmap to file, through fileController.
+            //fileController.updateUnsent();
+        }
     }
 
     /**
@@ -53,29 +46,14 @@ public class ServerController {
      * If yes, call to forward message. If no, call to store message in file
      * @param message message to send
      */
-    public synchronized void checkIfOnline(Message message, boolean groupChat) {
-
-        if (groupChat) { //only have to send once if group is included in receivers
-            String senderName = message.getSender().getUsername();
-            for (User onlineUser : onlineClients.keySet()) { //send to everyone except sender
-                if (!onlineUser.getUsername().equals(senderName)) {
-                    onlineClients.get(onlineUser).forwardMessage(message);
-                }
-            }
-        } else {
-            for (String receiver : message.getReceiverList()) {
-                boolean isOnline = false;
-                for (User onlineUser : onlineClients.keySet()) { //check if registered as online
-                    if (onlineUser.getUsername().equals(receiver)) { //if yes
-                        System.out.println(receiver + " is online, sending message now");
-                        onlineClients.get(onlineUser).forwardMessage(message);
-                        isOnline = true;
-                        break;
-                    }
-                }
-
-                if (!isOnline) {
-                    System.out.println(receiver + " is offline, storing message now");
+    public synchronized void checkIfOnline(Message message){
+        for (String receiver : message.getReceiverList()) {
+            for (User receiverUser : onlineClients.keySet()) { //check if registered as online
+                if (receiverUser.getUsername().equals(receiver)) { //if yes
+                    System.out.println("message to send to: " + receiver);
+                    onlineClients.get(receiverUser).forwardMessage(message); //send to receiver clientHandler
+                    break; //end search
+                } else { //if offline
                     storeUnsentMessages(message, receiver);
                 }
             }
@@ -90,13 +68,13 @@ public class ServerController {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //retrieve arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //update hashmap
-            fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         } else {
             ArrayList<Message> unsentMessages = new ArrayList<>(); //create new arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
-            fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         }
+        //TODO: has not been implemented yet.
+        fileController.storeUnsentMessages(unsentMessagesMap); //store unsent messages in file through fileController
     }
 
     /**
@@ -108,23 +86,21 @@ public class ServerController {
     public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) throws IOException {
 
         if(receivedObj instanceof Message){
+
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
-            boolean groupChat = checkIfGroupChat(message.getReceiverList());
-            checkIfOnline(message, groupChat);
-            fileController.saveLogToFile("Message from: " + message.getSender().getUsername() + ", To: " + message.getReceiverList() + ", Content: " + message.getText() + ", Received Time : " + message.getReceivedTime() +", Delivered Time : " + message.getDeliveredTime(), new Date(),"all/files/log.txt");
+            checkIfOnline(message);
+
         } else if(receivedObj instanceof User){
-            User loggedInUser = (User) receivedObj;
-            String username = loggedInUser.getUsername();
-            System.out.println("User logged in: " + username);
-            onlineClients.put(loggedInUser, clientHandler);
-            fileController.saveLogToFile(username + " has logged in", new Date(), "all/files/log.txt");
+            User onlineUser = (User) receivedObj;
+            String username = onlineUser.getUsername();
+            System.out.println(onlineUser.getUsername() + " has logged in, said by server");
+            onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
-            for(User onlineUser : onlineClients.keySet()){ //for each currently online user
-                String currUsername = onlineUser.getUsername();
-                ArrayList<String> userList = updateOnlineStatus(currUsername); //retrieve list of other online users
-                onlineClients.get(onlineUser).updateOnlineList(userList); //send updated onlineList to their clientHandler
+            for(User user : onlineClients.keySet()){ //for each currently online user
+                ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
+                onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
             //check if new or old user.
@@ -136,39 +112,23 @@ public class ServerController {
                 ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", username); //retrieve contacts for user
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
-                sendUnsentMessages(loggedInUser); //send unsent messages to now online user
+
+                //TODO: UNSENT MESSAGES NOT FUNCTIONAL YET. NOT FULLY IMPLEMENTED.
+                //retrieve possible unsent messages
+                this.unsentMessagesMap = fileController.retrieveUnsentMessages();
+                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
-        } else if (receivedObj instanceof ContactsMessage) { //user logs out
+        } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             ArrayList<String> contacts = updatedContacts.getContactsList();
-            if(contacts != null) {
-                fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
-            }
-
-            fileController.saveLogToFile("Contacts updated for: " + updatedContacts.getOwner(), new Date(), "all/files/log.txt");
+            fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
 
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();
             logOutUser(loggedOutUser); //update online clients
         }
 
-        fileController.updateUnsentMessages(unsentMessagesMap);
-
-    }
-
-    /**
-     * checks if receiver list contains group chat.
-     * @param receivers list of receivers
-     * @return true if group chat, else false
-     */
-    public boolean checkIfGroupChat(ArrayList<String> receivers) {
-        for (String receiver : receivers) {
-            if (receiver.equals("GroupChat")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -193,7 +153,7 @@ public class ServerController {
      * @param username username of user that logged out.
      */
     public synchronized void logOutUser(String username){
-        fileController.saveLogToFile(username + " has logged out",new Date(),"all/files/log.txt");
+        System.out.println(username + " has logged out, server says");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();
@@ -220,13 +180,12 @@ public class ServerController {
 
         public void run(){
             Socket socket = null;
-            fileController.saveLogToFile("Server started", new Date(),"all/files/log.txt");
+            System.out.println("Server started");
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     try {
                         socket = serverSocket.accept();
                         System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
-                        fileController.saveLogToFile("New client connected: " + socket.getInetAddress().getHostAddress(),new Date() ,"all/files/log.txt");
                         clientHandler = new ClientHandler(socket); //create clientHandler for individual client
                     } catch (IOException e) {
                         System.err.println(e);
@@ -278,7 +237,6 @@ public class ServerController {
         public void updateOnlineList(ArrayList<String> userList){
             try {
                 oos.writeObject(userList);
-                fileController.saveLogToFile("Online list updated", new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -291,7 +249,6 @@ public class ServerController {
         public void forwardMessage (Message message){
             try {
                 oos.writeObject(message);
-                fileController.saveLogToFile("Message forwarded to: " + message.getReceiverList(), new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -303,9 +260,15 @@ public class ServerController {
          * @param contactsMessage message containing list of contacts
          */
         public void sendContacts(ContactsMessage contactsMessage) {
+
+            for (String user : contactsMessage.getContactsList()){
+
+                System.out.println("Owner: " + contactsMessage.getOwner() + " is contacts with " + user);
+
+            }
+
             try {
                 oos.writeObject(contactsMessage);
-                fileController.saveLogToFile("Contacts sent to: " + contactsMessage.getOwner(), new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -319,7 +282,6 @@ public class ServerController {
         public void sendUnsent(UnsentMessages unsent) {
             try {
                 oos.writeObject(unsent);
-                fileController.saveLogToFile("Unsent messages sent to: " + unsent.getUnsentList().get(0).getReceiverList(), new Date(),"all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -328,15 +290,14 @@ public class ServerController {
 
      }
 
-
     /**
      * starts instance of server on port 724
      * @param args
      */
     public static void main(String[] args) {
         new ServerController(724);
-
     }
+
 
 }
 

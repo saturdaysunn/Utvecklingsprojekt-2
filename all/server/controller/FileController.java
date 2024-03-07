@@ -3,13 +3,8 @@ package all.server.controller;
 import all.jointEntity.Message;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.lang.reflect.Array;
 import java.util.*;
-import java.util.Date;
-
 
 /**
  * takes care of reading from and writing to files (contacts, messages, users)
@@ -31,12 +26,6 @@ public class FileController {
         }
         return false;
     }
-
-    /**
-     * retrieves list of all users from file
-     * @param filePath path to file
-     * @return list of usernames
-     */
 
     public synchronized LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
@@ -68,29 +57,10 @@ public class FileController {
     }
 
     /**
-     *
-     * @param message
-     * @param timestamp
-     * @param filePath
-     */
-
-    public synchronized void saveLogToFile(String message, Date timestamp, String filePath) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-        String formattedTimestamp = dateFormat.format(timestamp);
-        try (FileWriter fw = new FileWriter(filePath, true);
-             BufferedWriter bw = new BufferedWriter(fw)) {
-            bw.write(formattedTimestamp + " - " + message);
-            bw.newLine();
-        } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
-        }
-    }
-
-    /**
      * retrieves contacts of a given user
      * @param filePath path to file to read from
      * @param username name of user whose contacts we want to retrieve
-     * @return list of contacts for given user.
+     * @return list of contacts for given user. //TODO: this seems to work fine
      */
     public synchronized ArrayList<String> getContactsOfUser(String filePath, String username) {
         ArrayList<String> contactsOfUser = new ArrayList<>();
@@ -125,38 +95,40 @@ public class FileController {
      * @param fileName file path
      * @param username search for this string in text file
      */
-    public synchronized static void removePreviousContactsInTextFileOfUser(String username, String fileName) {
-        List<String> lines = new ArrayList<>();
+    public synchronized static void removePreviousContactsOfUser(String username, String fileName) {
+        File inputFile = new File(fileName);
+        File tempFile = new File("all/files/temp.txt");
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
             String line;
-            String prevLine = null;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-                if (line.equals(username) && prevLine != null && prevLine.equals(".") || line.equals(username) && prevLine.isEmpty()){
-                    //skip the user and their contacts
-                    while ((line = br.readLine()) != null && !line.isEmpty() && !line.equals(".")) {
-                        //skip
-                    }
-                    //skip the dot line
-                    if (line != null && line.equals(".")) {
-                        lines.remove(lines.size() - 1);
-                    }
+            boolean skipLines = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.equals(".") && reader.readLine().equals(username)) {
+                    skipLines = true;
+                    reader.readLine();
+                    continue;
+                } else if (line.equals(".")) {
+                    skipLines = false;
                 }
-                prevLine = line;
+
+                if (!skipLines) {
+                    writer.write(line);
+                    writer.newLine();
+                }
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //write the modified content back to the file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (String line : lines) {
-                writer.write(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //Delete the original file
+        inputFile.delete();
+
+        //Rename the temporary file to the original file name
+        tempFile.renameTo(inputFile);
     }
 
     /**
@@ -186,32 +158,27 @@ public class FileController {
         }
     }
 
-    /**
-     * rewrites contacts.txt file with new contacts for users.
-     * @param owner owner of contacts
-     * @param contacts list of contacts names
-     */
-    public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
 
-        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){
+    public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
+        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //TODO: works
             System.out.println("User already has contacts...");
-            System.out.println(owner);
-            removePreviousContactsInTextFileOfUser(owner, "all/files/contacts.txt");
+
+            removePreviousContactsOfUser(owner, "all/files/contacts.txt"); //TODO: DOESN'T WORK
             writeNewContactsToFile(owner, contacts);
-        } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //else if the user doesn't have already have contacts then just append to the file
+
+        } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
             System.out.println("User doesn't have contacts.");
-            writeNewContactsToFile(owner, contacts);
-        } else if (contacts.isEmpty()){
-            System.out.println("No contacts to add...");
+            writeNewContactsToFile(owner, contacts); //TODO: works
+
         }
     }
+
 
     /**
      * appends contacts list for a user to contacts.txt
      * @param owner owner of contacts
      * @param contacts list of contacts names
      */
-
     public synchronized static void writeNewContactsToFile(String owner, ArrayList<String> contacts) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/contacts.txt", true))) {
             writer.write(".");
@@ -229,84 +196,57 @@ public class FileController {
         }
     }
 
-    /**
-     * retrieves unsent messages from .dat file and inserts into HashMap.
-     * @return HashMap containing unread messages for different users.
-     */
-    @SuppressWarnings("unchecked")
-    public synchronized HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
-        HashMap<String, ArrayList<Message>> hashMap = new HashMap<>();
-        try (FileInputStream fileIn = new FileInputStream("all/files/unsentMessages.dat");
-             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
 
-            Object obj = objectIn.readObject();
-            if (obj instanceof HashMap) {
-                hashMap = (HashMap<String, ArrayList<Message>>) obj;
-                System.out.println("HashMap has been successfully read from " + "all/files/unsentMessages.dat");
-            }
-
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error reading HashMap from file: " + e.getMessage());
-        }
-        return hashMap;
-    }
-
-    /**
+    /** //
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
-     */
-    public synchronized void updateUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-        Path filePath = Paths.get("all/files/unsentMessages.dat");
+     */ //TODO: NOT YET TESTED OR PROPERLY IMPLEMENTED
+    public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
+            for (Map.Entry<String, ArrayList<Message>> entry : unsentMessages.entrySet()) {
+                String key = entry.getKey();
+                ArrayList<Message> values = entry.getValue();
 
-        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile());
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-
-            objectOut.writeObject(unsentMessages);
-            System.out.println("HashMap has been successfully written to " + filePath);
-
-        } catch (IOException e) {
-            System.err.println("Error writing HashMap to file: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Retrieves log messages from a log file that fall within the specified time range.
-     *
-     * @param startTime   The start time in the format "yyyy/MM/dd HH:mm:ss".
-     * @param endTime     The end time in the format "yyyy/MM/dd HH:mm:ss".
-     * @param logFilePath The path to the log file from which messages will be retrieved.
-     * @return A list of log messages that were logged between the specified start and end times.
-     *         If no messages are found or an error occurs during file reading or parsing, an empty list is returned.
-     */
-    public synchronized List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-        List<String> messages = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(logFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" - ", 2);
-                if (parts.length >= 2) {
-                    String timestampString = parts[0];
-                    String message = parts[1];
-                    try {
-                        Date timestamp = dateFormat.parse(timestampString);
-                        Date start = dateFormat.parse(startTime);
-                        Date end = dateFormat.parse(endTime);
-                        if (timestamp.after(start) && timestamp.before(end)) {
-                            messages.add(message);
-                        }
-                    } catch (ParseException e) {
-                        System.err.println("Error parsing timestamp: " + e.getMessage());
+                if (values != null) {
+                    outputStream.writeObject(key);
+                    for (Message value : values) {
+                        outputStream.writeObject(value);
                     }
+                    //TODO: What in the world is happening here?
+                    outputStream.writeObject(new Message(null,null, "", null, null)); //writing an empty string to indicate the end
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading log file: " + e.getMessage());
+            e.printStackTrace();
         }
-        return messages;
     }
 
+    /**
+     * retrieves unsent messages from .dat file and inserts into HashMap.
+     * @return HashMap containing unread messages for different users.
+     */ //TODO: NOT YET TESTED
+    public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
+        HashMap<String, ArrayList<Message>> data = new HashMap<>();
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
+            while (true) {
+                String key = inputStream.readUTF();
+                ArrayList<Message> messages = new ArrayList<>();
+                boolean foundEmptyMessage = false;
+                while (!foundEmptyMessage) {
+                    Message message = (Message) inputStream.readObject();
+                    if (message.getSender().getUsername() == null && message.getText().isEmpty()) {
+                        foundEmptyMessage = true;
+                    } else {
+                        messages.add(message);
+                    }
+                }
+                data.put(key, messages);
+            }
+        } catch (EOFException e) {
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
 
 }
-
-
