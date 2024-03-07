@@ -261,12 +261,6 @@ public class ServerController {
          */
         public void sendContacts(ContactsMessage contactsMessage) {
 
-            for (String user : contactsMessage.getContactsList()){
-
-                System.out.println("Owner: " + contactsMessage.getOwner() + " is contacts with " + user);
-
-            }
-
             try {
                 oos.writeObject(contactsMessage);
                 oos.flush();

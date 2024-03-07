@@ -96,41 +96,37 @@ public class FileController {
      * @param username search for this string in text file
      */
     public synchronized static void removePreviousContactsOfUser(String username, String fileName) {
-        File inputFile = new File(fileName);
-        File tempFile = new File("all/files/temp.txt");
+        List<String> lines = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            boolean foundDotRow = false;
-            boolean foundString = false;
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().endsWith(".")) {
-                    foundDotRow = true;
-                } else if (foundDotRow) {
-                    if (line.contains(username)) {
-                        foundString = true;
-                        foundDotRow = false;
-                    } else {
-                        foundDotRow = false;
+            String prevLine = null;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+                if (line.equals(username) && prevLine != null && prevLine.equals(".") || line.equals(username) && prevLine.isEmpty()){
+                    // Skip the user and their contacts
+                    while ((line = br.readLine()) != null && !line.isEmpty() && !line.equals(".")) {
+                        // Do nothing, skipping the user's contacts
                     }
-                } else if (!foundString) {
-                    writer.write(line + System.lineSeparator());
-                } else if (foundString && line.trim().endsWith(".")) {
-                    foundString = false;
+                    // Skip the dot line
+                    if (line != null && line.equals(".")) {
+                        lines.remove(lines.size() - 1);
+                    }
                 }
+                prevLine = line;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //delete the original file
-        inputFile.delete();
-
-        //rename the temporary file to the original file name
-        tempFile.renameTo(inputFile);
+        //write the modified content back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : lines) {
+                writer.write(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -165,6 +161,7 @@ public class FileController {
         if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //TODO: works
             System.out.println("User already has contacts...");
 
+            System.out.println(owner);
             removePreviousContactsOfUser(owner, "all/files/contacts.txt"); //TODO: DOESN'T WORK
             writeNewContactsToFile(owner, contacts);
 
@@ -172,6 +169,8 @@ public class FileController {
             System.out.println("User doesn't have contacts...");
             writeNewContactsToFile(owner, contacts); //TODO: works
 
+        } else if (contacts.isEmpty()) {
+            System.out.println("No new contacts to add...");
         }
     }
 
