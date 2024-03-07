@@ -86,7 +86,8 @@ public class LoginPanel extends JFrame {
                 if (!username.isEmpty() && userPicture.getIcon() != null) {
                     System.out.println("Username: " + username); //test print
                     loginUser(username, (ImageIcon) userPicture.getIcon());
-                    dispose(); //close window
+                    userPicture.setIcon(null);
+                    usernameField.setText("");
                 } else if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
                 }
