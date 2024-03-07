@@ -29,13 +29,12 @@ public class ServerController {
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
      * @param receiver user to send unsent messages to (the user that just went online).
      */
-    public synchronized void sendUnsentMessages(User receiver){
-        String receiverName = receiver.getUsername();
-        if (unsentMessagesMap.containsKey(receiverName)) {
-            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiverName); //create arraylist of unsent messages with correct receiver
+    public synchronized void sendUnsentMessages(String receiver){
+        if (unsentMessagesMap.containsKey(receiver)) {
+            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages with correct receiver
             UnsentMessages unsent = new UnsentMessages(unsentMessages);
             onlineClients.get(receiver).sendUnsent(unsent);
-            unsentMessagesMap.remove(receiverName); //remove from hashmap as they now should be sent
+            unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
         }
     }
 
@@ -113,7 +112,7 @@ public class ServerController {
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
-                sendUnsentMessages(onlineUser); //send unsent messages to now online user
+                sendUnsentMessages(username); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
