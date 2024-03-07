@@ -27,6 +27,11 @@ public class FileController {
         return false;
     }
 
+    /**
+     * retrieves list of all users from file
+     * @param filePath path to file
+     * @return list of usernames
+     */
     public synchronized LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
 
@@ -60,7 +65,7 @@ public class FileController {
      * retrieves contacts of a given user
      * @param filePath path to file to read from
      * @param username name of user whose contacts we want to retrieve
-     * @return list of contacts for given user. //TODO: this seems to work fine
+     * @return list of contacts for given user.
      */
     public synchronized ArrayList<String> getContactsOfUser(String filePath, String username) {
         ArrayList<String> contactsOfUser = new ArrayList<>();
@@ -157,20 +162,25 @@ public class FileController {
     }
 
 
+    /**
+     * rewrites contacts.txt file with new contacts for users.
+     * @param owner owner of contacts
+     * @param contacts list of contacts names
+     */
     public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
-        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //TODO: works
-            System.out.println("User already has contacts...");
+        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){
+            //System.out.println("User already has contacts...");
 
             System.out.println(owner);
-            removePreviousContactsOfUser(owner, "all/files/contacts.txt"); //TODO: DOESN'T WORK
+            removePreviousContactsOfUser(owner, "all/files/contacts.txt");
             writeNewContactsToFile(owner, contacts);
 
         } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
-            System.out.println("User doesn't have contacts...");
-            writeNewContactsToFile(owner, contacts); //TODO: works
+            //System.out.println("User doesn't have contacts...");
+            writeNewContactsToFile(owner, contacts);
 
         } else if (contacts.isEmpty()) {
-            System.out.println("No new contacts to add...");
+            //System.out.println("No new contacts to add...");
         }
     }
 
@@ -202,7 +212,7 @@ public class FileController {
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
      */
-    public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+    public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
         try (FileOutputStream fileOut = new FileOutputStream("all/files/unsentMessages.dat");
              ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
@@ -219,7 +229,7 @@ public class FileController {
      * @return HashMap containing unread messages for different users.
      */
     @SuppressWarnings("unchecked")
-    public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
+    public synchronized HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
         HashMap<String, ArrayList<Message>> hashMap = new HashMap<>();
         try (FileInputStream fileIn = new FileInputStream("all/files/unsentMessages.dat");
              ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {

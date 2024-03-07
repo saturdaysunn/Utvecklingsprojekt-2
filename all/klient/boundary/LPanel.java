@@ -77,7 +77,6 @@ public class LPanel extends JPanel{
         viewChatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("view chat button as been called");
                 List<String> selectedObjects = leftPanelList.getSelectedValuesList();
 
                 if (selectedObjects.size() == 1) { //check so only one user has been selected
@@ -104,9 +103,7 @@ public class LPanel extends JPanel{
         for (String person : selectedValues) {
             String plainName = person.replaceAll("\\<.*?\\>", "");
             selectedUsers.add(plainName);
-            System.out.println("receiver is: " + plainName);
         }
-        System.out.println("the selected users are: " + selectedUsers);
         return selectedUsers;
     }
 
