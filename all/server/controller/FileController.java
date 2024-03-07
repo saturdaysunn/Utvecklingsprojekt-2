@@ -201,53 +201,39 @@ public class FileController {
     /** //
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
-     */ //TODO: NOT YET TESTED OR PROPERLY IMPLEMENTED
+     */
     public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
-            for (Map.Entry<String, ArrayList<Message>> entry : unsentMessages.entrySet()) {
-                String key = entry.getKey();
-                ArrayList<Message> values = entry.getValue();
+        try (FileOutputStream fileOut = new FileOutputStream("all/files/unsentMessages.dat");
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
-                if (values != null) {
-                    outputStream.writeObject(key);
-                    for (Message value : values) {
-                        outputStream.writeObject(value);
-                    }
-                    //TODO: What in the world is happening here?
-                    outputStream.writeObject(new Message(null,null, "", null, null)); //writing an empty string to indicate the end
-                }
-            }
+            objectOut.writeObject(unsentMessages);
+            System.out.println("HashMap has been successfully written to " + "all/files/unsentMessages.dat");
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error writing HashMap to file: " + e.getMessage());
         }
     }
 
     /**
      * retrieves unsent messages from .dat file and inserts into HashMap.
      * @return HashMap containing unread messages for different users.
-     */ //TODO: NOT YET TESTED
+     */
+    @SuppressWarnings("unchecked")
     public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
-        HashMap<String, ArrayList<Message>> data = new HashMap<>();
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
-            while (true) {
-                String key = inputStream.readUTF();
-                ArrayList<Message> messages = new ArrayList<>();
-                boolean foundEmptyMessage = false;
-                while (!foundEmptyMessage) {
-                    Message message = (Message) inputStream.readObject();
-                    if (message.getSender().getUsername() == null && message.getText().isEmpty()) {
-                        foundEmptyMessage = true;
-                    } else {
-                        messages.add(message);
-                    }
-                }
-                data.put(key, messages);
+        HashMap<String, ArrayList<Message>> hashMap = new HashMap<>();
+        try (FileInputStream fileIn = new FileInputStream("all/files/unsentMessages.dat");
+             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+
+            Object obj = objectIn.readObject();
+            if (obj instanceof HashMap) {
+                hashMap = (HashMap<String, ArrayList<Message>>) obj;
+                System.out.println("HashMap has been successfully read from " + "all/files/unsentMessages.dat");
             }
-        } catch (EOFException e) {
+
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Error reading HashMap from file: " + e.getMessage());
         }
-        return data;
+        return hashMap;
     }
 
 }

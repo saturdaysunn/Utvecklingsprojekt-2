@@ -14,30 +14,28 @@ import java.util.Iterator;
 public class ServerController {
     private Connection connection;
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
-    private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //receiver, unsent messages
+    private HashMap<String, ArrayList<Message>> unsentMessagesMap;
     private FileController fileController;
     
     public ServerController(int port){
         this.fileController = new FileController();
+
+        unsentMessagesMap = fileController.retrieveUnsentMessages();
+
         connection = new Connection(port);
         connection.start();
     }
 
     /**
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
-     * @param unsentMessagesMap hashmap containing unsent messages for all offline users.
      * @param receiver user to send unsent messages to (the user that just went online).
      */
-    public synchronized void sendUnsentMessages(HashMap <String, ArrayList <Message>>unsentMessagesMap, User receiver){
+    public synchronized void sendUnsentMessages(User receiver){
         if (unsentMessagesMap.containsKey(receiver)) {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages from unsentmessagemap with correct receiver
             UnsentMessages unsent = new UnsentMessages(unsentMessages);
             onlineClients.get(receiver).sendUnsent(unsent);
             unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
-
-
-            //TODO: and then write updated unsentMessages hashmap to file, through fileController.
-            //fileController.updateUnsent();
         }
     }
 
@@ -73,7 +71,6 @@ public class ServerController {
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
         }
-        //TODO: has not been implemented yet.
         fileController.storeUnsentMessages(unsentMessagesMap); //store unsent messages in file through fileController
     }
 
@@ -113,10 +110,7 @@ public class ServerController {
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
-                //TODO: UNSENT MESSAGES NOT FUNCTIONAL YET. NOT FULLY IMPLEMENTED.
-                //retrieve possible unsent messages
-                this.unsentMessagesMap = fileController.retrieveUnsentMessages();
-                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                sendUnsentMessages(onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
