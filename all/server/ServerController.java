@@ -60,6 +60,7 @@ public class ServerController {
      * @param message message to send
      */
     public synchronized void checkIfOnline(Message message){
+
         for (String receiver : message.getReceiverList()) {
             boolean isOnline = false;
             for (User onlineUser : onlineClients.keySet()) {
@@ -142,6 +143,8 @@ public class ServerController {
             String loggedOutUser = updatedContacts.getOwner();
             logOutUser(loggedOutUser); //update online clients
         }
+
+        fileController.updateUnsentMessages(unsentMessagesMap);
 
     }
 

@@ -73,13 +73,11 @@ ringo
 hej
 slay
 .
-bruna
+mihail
+tiffany
 .
 tiffany
 mihail
 bruna
 .
-mihail
-.
-mihail
-tiffany
+bruna
