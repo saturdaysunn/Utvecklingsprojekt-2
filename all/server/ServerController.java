@@ -98,7 +98,8 @@ public class ServerController {
 
             //retrieve online users
             for(User user : onlineClients.keySet()){ //for each currently online user
-                ArrayList<String> userList = updateOnlineStatus(user.getUsername()); //retrieve list of other online users
+                String currUsername = user.getUsername();
+                ArrayList<String> userList = updateOnlineStatus(currUsername); //retrieve list of other online users
                 onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
