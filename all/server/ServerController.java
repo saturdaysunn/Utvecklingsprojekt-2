@@ -1,6 +1,9 @@
 package all.server;
 
 import all.jointEntity.*;
+import all.server.boundary.ServerLeftPanel;
+import all.server.boundary.ServerMainFrame;
+import all.server.boundary.ServerMainPanel;
 import all.server.controller.FileController;
 
 import java.io.*;
@@ -11,15 +14,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 public class ServerController {
     private Connection connection;
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
     private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //receiver, unsent messages
     private FileController fileController;
+
+    private ServerMainFrame mainFrame;
     
     public ServerController(int port){
         this.fileController = new FileController();
         connection = new Connection(port);
+       mainFrame= new ServerMainFrame(800, 600);
         connection.start();
     }
 
@@ -89,11 +96,16 @@ public class ServerController {
         if(receivedObj instanceof Message){
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
-            checkIfOnline(message);
+            checkIfOnline(message); //check if online
+            mainFrame.getMainPanel().getlPanel().logMessage("Message from: " + message.getSender().getUsername() + ", To: " + message.getReceiverList() + ", Content: " + message.getText() + ", Received Time : " + message.getReceivedTime() +", Received Time : " + message.getDeliveredTime());
+            LogMessage logMessage= new LogMessage(new Message(message.getSender(), message.getReceiverList(), message.getText(), message.getReceivedTime(), message.getDeliveredTime()));
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
             String username = onlineUser.getUsername();
             System.out.println(onlineUser.getUsername() + " has logged in, said by server");
+            mainFrame.getMainPanel().getlPanel().logMessage(onlineUser.getUsername() + " has logged in");
+            LogMessage logMessage= new LogMessage(new User(onlineUser.getUsername(), onlineUser.getIcon()));
+            fileController.saveLogToFile(logMessage, "all/files/log.txt");
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
@@ -121,6 +133,7 @@ public class ServerController {
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             HashMap<String, ArrayList<String>> contacts = new HashMap<>();
+            mainFrame.getMainPanel().getlPanel().logMessage("Contacts updated for: " + updatedContacts.getOwner());
             contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
             fileController.rewriteContactsTextFileWithNewContacts(contacts); //save to file
 
@@ -154,6 +167,7 @@ public class ServerController {
      */
     public synchronized void logOutUser(String username){
         System.out.println(username + " has logged out, server says");
+        mainFrame.getMainPanel().getlPanel().logMessage(username + " has logged out");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();
@@ -283,14 +297,15 @@ public class ServerController {
 
      }
 
+
     /**
      * starts instance of server on port 724
      * @param args
      */
     public static void main(String[] args) {
         new ServerController(724);
-    }
 
+    }
 
 }
 

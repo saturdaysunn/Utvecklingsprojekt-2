@@ -1,5 +1,6 @@
 package all.server.controller;
 
+import all.jointEntity.LogMessage;
 import all.jointEntity.Message;
 
 import java.io.*;
@@ -57,6 +58,15 @@ public class FileController {
         }
     }
 
+
+    public void saveLogToFile(LogMessage logMessage, String filePath) {
+        try (FileWriter fw = new FileWriter(filePath, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+            bw.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
 
     /**
      * retrieves contacts of a given user
