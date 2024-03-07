@@ -3,14 +3,13 @@ package all.server.controller;
 import all.jointEntity.Message;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
  * takes care of reading from and writing to files (contacts, messages, users)
  */
 public class FileController {
-    //TODO: should all these methods be synchronized?
-    //TODO: or synchronized where these are called.
 
     /**
      * checks if user has logged in previously.
@@ -18,7 +17,7 @@ public class FileController {
      * @param filePath path of file to check
      * @return true if user exists, false if not
      */
-    public boolean checkIfUserAlreadyExists(String username, String filePath) {
+    public synchronized boolean checkIfUserAlreadyExists(String username, String filePath) {
         LinkedList<String> users = retrieveAllUsersFromFile(filePath); //retrieve all stored usernames
         for (String user : users){
             if (user.equals(username)){ //if user has logged in before
@@ -28,7 +27,7 @@ public class FileController {
         return false;
     }
 
-    public LinkedList<String> retrieveAllUsersFromFile(String filePath) {
+    public synchronized LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -47,7 +46,7 @@ public class FileController {
      * @param userName name of user
      * @param filePath path of file to write to
      */
-    public void saveUserToFile(String userName, String filePath) {
+    public synchronized void saveUserToFile(String userName, String filePath) {
         try (FileWriter fw = new FileWriter(filePath, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
             bw.write(userName);
@@ -61,27 +60,28 @@ public class FileController {
      * retrieves contacts of a given user
      * @param filePath path to file to read from
      * @param username name of user whose contacts we want to retrieve
-     * @return list of contacts for given user.
+     * @return list of contacts for given user. //TODO: this seems to work fine
      */
     public synchronized ArrayList<String> getContactsOfUser(String filePath, String username) {
         ArrayList<String> contactsOfUser = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            boolean foundUsername = false;
             String line;
+            boolean foundUsername = false;
 
             while ((line = reader.readLine()) != null) {
-                //check if the line contains the username with a dot above it
-                if (line.equals(".") && foundUsername) { //if both found
-                    break; //stop reading after encountering an empty row after the username
-                }
-                if (line.equals(username) && !foundUsername) {
+                if (line.equals(".") && reader.readLine().equals(username)) {
                     foundUsername = true;
-                } else if (foundUsername) {
-                    contactsOfUser.add(line);
-                    System.out.println(line);
+                    continue;
+                }
+
+                if (foundUsername && !line.equals(".")) {
+                    contactsOfUser.add(line); //read contact until next dot is found
+                } else if (foundUsername && line.equals(".")) {
+                    break; //stop when next dot is found
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,110 +94,103 @@ public class FileController {
      * remaining data intact.
      * @param fileName file path
      * @param username search for this string in text file
-     * @throws IOException error
      */
-    public synchronized static void removePreviousContactsInTextFileOfUser(String username, String fileName) {
+    public synchronized static void removePreviousContactsOfUser(String username, String fileName) {
         File inputFile = new File(fileName);
         File tempFile = new File("all/files/temp.txt");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            boolean foundDot = false;
-            boolean foundString = false;
             String line;
+            boolean skipLines = false;
 
             while ((line = reader.readLine()) != null) {
-                if (line.trim().equals(".")) {
-                    if (foundString) {
-                        foundString = false;
-                    } else {
-                        foundDot = true;
-                    }
-                } else if (foundDot) {
-                    if (line.contains(username)) {
-                        foundString = true;
-                        foundDot = false;
-                    }
-                } else if (!foundString) {
-                    writer.write(line + System.lineSeparator());
+                if (line.equals(".") && reader.readLine().equals(username)) {
+                    skipLines = true;
+                    reader.readLine();
+                    continue;
+                } else if (line.equals(".")) {
+                    skipLines = false;
+                }
+
+                if (!skipLines) {
+                    writer.write(line);
+                    writer.newLine();
                 }
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Delete the original file
+        //Delete the original file
         inputFile.delete();
 
-        // Rename the temporary file to the original file name
+        //Rename the temporary file to the original file name
         tempFile.renameTo(inputFile);
     }
 
-    public boolean checkIfUserAlreadyHasContacts(String filePath, String target) {
+    /**
+     * checks if username already exists as contact owner in contacts.txt file.
+     * @param filePath path of file to read
+     * @param targetName //name to search for
+     * @return true if exists, false if not.
+     */
+    public synchronized boolean checkIfUserAlreadyHasContacts(String filePath, String targetName) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean found = false;
-            boolean previousLineEmpty = false;
+            boolean previousLineStop = false;
 
             while ((line = br.readLine()) != null) {
-                if (line.isEmpty()) {
-                    previousLineEmpty = true;//the line before the string is empty
-                } else if (line.equals(target) && previousLineEmpty) {
-                    found = true; //the target string is found, i.e. it equals the targetString and it has an empty row before it.
+                if (line.trim().equals(targetName) && previousLineStop) {
+                    found = true;
                     break;
-                } else {
-                    previousLineEmpty = false; //the line before the string is not empty
                 }
+                previousLineStop = line.trim().endsWith(".");
             }
 
-            if (found) {
-                return true; //user was found
-            } else {
-                return false; //user was not found
-            }
+            return found;
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
             return false;
         }
     }
 
-    public synchronized void rewriteContactsTextFileWithNewContacts(HashMap<String, ArrayList<String>> hashMap) throws IOException {
 
-        Set<String> keys = hashMap.keySet();
-        String[] keysArray = keys.toArray(new String[0]);
-        System.out.println("Keys Array pos 0: " + keysArray[0]);
-
-        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", keysArray[0])){
+    public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
+        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //TODO: works
             System.out.println("User already has contacts...");
 
-            removePreviousContactsInTextFileOfUser(keysArray[0], "all/files/contacts.txt"); //TODO doesn't work
-            writeHashMapToFile(hashMap);
+            removePreviousContactsOfUser(owner, "all/files/contacts.txt"); //TODO: DOESN'T WORK
+            writeNewContactsToFile(owner, contacts);
 
-        } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", keysArray[0])){ //else if the user doesn't have already have contacts then just append to the file
+        } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
             System.out.println("User doesn't have contacts.");
-            writeHashMapToFile(hashMap);
+            writeNewContactsToFile(owner, contacts); //TODO: works
 
         }
     }
 
-  
-    public static void writeHashMapToFile(HashMap<String, ArrayList<String>> contacts) {
 
+    /**
+     * appends contacts list for a user to contacts.txt
+     * @param owner owner of contacts
+     * @param contacts list of contacts names
+     */
+    public synchronized static void writeNewContactsToFile(String owner, ArrayList<String> contacts) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("all/files/contacts.txt", true))) {
-            for (String key : contacts.keySet()) {
-                writer.write(".");
-                writer.newLine();
-                writer.write(key);
-                writer.newLine();
+            writer.write(".");
+            writer.newLine();
+            writer.write(owner); //add owner name
+            writer.newLine();
 
-                ArrayList<String> values = contacts.get(key);
-                for (String value : values) {
-                    writer.write(value);
-                    writer.newLine();
-                }
-
+            for (String contact : contacts) { //add each contact in arraylist
+                writer.write(contact);
+                writer.newLine();
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -219,6 +212,7 @@ public class FileController {
                     for (Message value : values) {
                         outputStream.writeObject(value);
                     }
+                    //TODO: What in the world is happening here?
                     outputStream.writeObject(new Message(null,null, "", null, null)); //writing an empty string to indicate the end
                 }
             }

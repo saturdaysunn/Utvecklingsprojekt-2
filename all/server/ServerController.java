@@ -121,10 +121,8 @@ public class ServerController {
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
-            HashMap<String, ArrayList<String>> contacts = new HashMap<>();
-            contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
-
-            fileController.rewriteContactsTextFileWithNewContacts(contacts);
+            ArrayList<String> contacts = updatedContacts.getContactsList();
+            fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
 
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();
