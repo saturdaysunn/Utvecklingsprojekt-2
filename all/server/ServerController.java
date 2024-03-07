@@ -84,12 +84,13 @@ public class ServerController {
      */
 
     public synchronized void checkObjectStatus(Object receivedObj, ClientHandler clientHandler) throws IOException {
-        System.out.println(receivedObj.toString());
 
         if(receivedObj instanceof Message){
+
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message);
+
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
             String username = onlineUser.getUsername();
@@ -114,15 +115,14 @@ public class ServerController {
 
                 //TODO: UNSENT MESSAGES NOT FUNCTIONAL YET. NOT FULLY IMPLEMENTED.
                 //retrieve possible unsent messages
-                //this.unsentMessagesMap = fileController.retrieveUnsentMessages(username);
-                //clientHandler.sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
+                this.unsentMessagesMap = fileController.retrieveUnsentMessages();
+                sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logs out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
-            HashMap<String, ArrayList<String>> contacts = new HashMap<>();
-            contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
-            fileController.rewriteContactsTextFileWithNewContacts(contacts); //save to file
+            ArrayList<String> contacts = updatedContacts.getContactsList();
+            fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
 
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();
@@ -260,6 +260,7 @@ public class ServerController {
          * @param contactsMessage message containing list of contacts
          */
         public void sendContacts(ContactsMessage contactsMessage) {
+
             try {
                 oos.writeObject(contactsMessage);
                 oos.flush();

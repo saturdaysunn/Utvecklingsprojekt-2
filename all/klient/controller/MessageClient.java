@@ -192,7 +192,13 @@ public class MessageClient extends Thread {
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
-        System.out.println(user.getUsername());
+        if (updatedContacts.getContactsList() != null) {
+
+            System.out.println("Contacts of " + user.getUsername());
+            for (String contact : updatedContacts.getContactsList()) {
+                System.out.print(contact + ", ");
+            }
+        }
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 
