@@ -30,12 +30,28 @@ public class ServerController {
      * @param receiver user to send unsent messages to (the user that just went online).
      */
     public synchronized void sendUnsentMessages(String receiver){
-        if (unsentMessagesMap.containsKey(receiver)) {
-            ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages with correct receiver
-            UnsentMessages unsent = new UnsentMessages(unsentMessages);
-            onlineClients.get(receiver).sendUnsent(unsent);
-            unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+
+        for(User user : onlineClients.keySet()){
+            //System.out.println(user.getUsername());
+            System.out.println(onlineClients.get(user));
         }
+
+        try{
+            if (unsentMessagesMap.containsKey(receiver)) {
+                ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages with correct receiver
+                UnsentMessages unsent = new UnsentMessages(unsentMessages);
+
+                for(User user : onlineClients.keySet()){
+                    if(user.getUsername().equals(receiver)){
+                        onlineClients.get(user).sendUnsent(unsent);
+                    }
+                }
+                unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -93,6 +109,7 @@ public class ServerController {
         } else if(receivedObj instanceof User){ //logged in
             User onlineUser = (User) receivedObj;
             String username = onlineUser.getUsername();
+            System.out.println("User logged in: " + username);
             onlineClients.put(onlineUser, clientHandler);
 
             //retrieve online users
@@ -112,6 +129,7 @@ public class ServerController {
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
+                System.out.println(username + "i else satsen innan sendUnsentMessages");
                 sendUnsentMessages(username); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logs out
