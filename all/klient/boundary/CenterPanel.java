@@ -80,7 +80,6 @@ public class CenterPanel extends JPanel{
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("send button pressed");
                 if (!messageInputField.getText().isEmpty()) { //if no message to send
                     sendMessage(messageInputField.getText()); //send contents of input field
                     messageInputField.setText(""); //clear input field
@@ -102,7 +101,6 @@ public class CenterPanel extends JPanel{
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile(); //retrieves path in computer
-                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 
                     String existingText = messageInputField.getText();
                     if (!existingText.isEmpty()) { //if already text in message input box
@@ -130,7 +128,6 @@ public class CenterPanel extends JPanel{
      * @param userName name of selected user
      */
     public void viewChat(String userName) {
-        System.out.println("i have been called to view chat for " + userName);
         setChatName(userName); //sets name of user chatting with
         populateChatWindow(userName);
     }
@@ -165,7 +162,6 @@ public class CenterPanel extends JPanel{
      * @param receivedMessage instance of Message
      */
     public synchronized void tempStoreMessage(Message receivedMessage) {
-        System.out.println("adding message to history map");
         String senderName = receivedMessage.getSender().getUsername();
         if (conversationMap.containsKey(senderName)) {
             ArrayList<Message> history = conversationMap.get(senderName);

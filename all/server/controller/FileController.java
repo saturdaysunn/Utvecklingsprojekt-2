@@ -27,6 +27,11 @@ public class FileController {
         return false;
     }
 
+    /**
+     * retrieves list of all users from file
+     * @param filePath path to file
+     * @return list of usernames
+     */
     public synchronized LinkedList<String> retrieveAllUsersFromFile(String filePath) {
         LinkedList<String> lines = new LinkedList<>();
 
@@ -60,7 +65,7 @@ public class FileController {
      * retrieves contacts of a given user
      * @param filePath path to file to read from
      * @param username name of user whose contacts we want to retrieve
-     * @return list of contacts for given user. //TODO: this seems to work fine
+     * @return list of contacts for given user.
      */
     public synchronized ArrayList<String> getContactsOfUser(String filePath, String username) {
         ArrayList<String> contactsOfUser = new ArrayList<>();
@@ -157,20 +162,25 @@ public class FileController {
     }
 
 
+    /**
+     * rewrites contacts.txt file with new contacts for users.
+     * @param owner owner of contacts
+     * @param contacts list of contacts names
+     */
     public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
-        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //TODO: works
-            System.out.println("User already has contacts...");
+        if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){
+            //System.out.println("User already has contacts...");
 
             System.out.println(owner);
-            removePreviousContactsOfUser(owner, "all/files/contacts.txt"); //TODO: DOESN'T WORK
+            removePreviousContactsOfUser(owner, "all/files/contacts.txt");
             writeNewContactsToFile(owner, contacts);
 
         } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
-            System.out.println("User doesn't have contacts...");
-            writeNewContactsToFile(owner, contacts); //TODO: works
+            //System.out.println("User doesn't have contacts...");
+            writeNewContactsToFile(owner, contacts);
 
         } else if (contacts.isEmpty()) {
-            System.out.println("No new contacts to add...");
+            //System.out.println("No new contacts to add...");
         }
     }
 
@@ -201,53 +211,39 @@ public class FileController {
     /** //
      * stores unsent messages in a .dat file for later retrieval.
      * @param unsentMessages hashmap containing unsent messages for different offline users.
-     */ //TODO: NOT YET TESTED OR PROPERLY IMPLEMENTED
-    public void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("all/files/unsentMessages.dat"))) {
-            for (Map.Entry<String, ArrayList<Message>> entry : unsentMessages.entrySet()) {
-                String key = entry.getKey();
-                ArrayList<Message> values = entry.getValue();
+     */
+    public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
+        try (FileOutputStream fileOut = new FileOutputStream("all/files/unsentMessages.dat");
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
-                if (values != null) {
-                    outputStream.writeObject(key);
-                    for (Message value : values) {
-                        outputStream.writeObject(value);
-                    }
-                    //TODO: What in the world is happening here?
-                    outputStream.writeObject(new Message(null,null, "", null, null)); //writing an empty string to indicate the end
-                }
-            }
+            objectOut.writeObject(unsentMessages);
+            System.out.println("HashMap has been successfully written to " + "all/files/unsentMessages.dat");
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error writing HashMap to file: " + e.getMessage());
         }
     }
 
     /**
      * retrieves unsent messages from .dat file and inserts into HashMap.
      * @return HashMap containing unread messages for different users.
-     */ //TODO: NOT YET TESTED
-    public HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
-        HashMap<String, ArrayList<Message>> data = new HashMap<>();
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("all/files/unsentMessages.dat"))) {
-            while (true) {
-                String key = inputStream.readUTF();
-                ArrayList<Message> messages = new ArrayList<>();
-                boolean foundEmptyMessage = false;
-                while (!foundEmptyMessage) {
-                    Message message = (Message) inputStream.readObject();
-                    if (message.getSender().getUsername() == null && message.getText().isEmpty()) {
-                        foundEmptyMessage = true;
-                    } else {
-                        messages.add(message);
-                    }
-                }
-                data.put(key, messages);
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized HashMap<String, ArrayList<Message>> retrieveUnsentMessages() {
+        HashMap<String, ArrayList<Message>> hashMap = new HashMap<>();
+        try (FileInputStream fileIn = new FileInputStream("all/files/unsentMessages.dat");
+             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+
+            Object obj = objectIn.readObject();
+            if (obj instanceof HashMap) {
+                hashMap = (HashMap<String, ArrayList<Message>>) obj;
+                System.out.println("HashMap has been successfully read from " + "all/files/unsentMessages.dat");
             }
-        } catch (EOFException e) {
+
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Error reading HashMap from file: " + e.getMessage());
         }
-        return data;
+        return hashMap;
     }
 
 }
