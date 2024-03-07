@@ -118,3 +118,8 @@ john
 lennon
 paul
 ringo
+bruna
+mihail
+slay
+test
+hej
