@@ -173,8 +173,8 @@ public class MessageClient extends Thread {
             contacts = new ArrayList<>(); //create new one
             contacts.add(userToAdd); //add to user's contacts list
             mainFrame.updateContactsList(contacts);
-
         }
+
     }
 
     /**
@@ -188,6 +188,7 @@ public class MessageClient extends Thread {
      * sends message containing name of user that logged out
      * and their updated list of contacts.
      */ //TODO: do i need to close connection too? if so, how?
+
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());

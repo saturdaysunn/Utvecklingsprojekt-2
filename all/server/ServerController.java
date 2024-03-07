@@ -118,7 +118,7 @@ public class ServerController {
                 this.unsentMessagesMap = fileController.retrieveUnsentMessages();
                 sendUnsentMessages(unsentMessagesMap, onlineUser); //send unsent messages to now online user
             }
-        } else if (receivedObj instanceof ContactsMessage) { //user logged out
+        } else if (receivedObj instanceof ContactsMessage) { //user logs out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             ArrayList<String> contacts = updatedContacts.getContactsList();
