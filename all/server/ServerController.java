@@ -29,24 +29,18 @@ public class ServerController {
      * retrieves unsent messages from unsentMessagesMap and sends them to now online user.
      * @param receiver user to send unsent messages to (the user that just went online).
      */
-    public synchronized void sendUnsentMessages(String receiver){
-
+    public synchronized void sendUnsentMessages(User receiver){
         for(User user : onlineClients.keySet()){
             //System.out.println(user.getUsername());
             System.out.println(onlineClients.get(user));
         }
 
         try{
-            if (unsentMessagesMap.containsKey(receiver)) {
-                ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //create arraylist of unsent messages with correct receiver
+            if (unsentMessagesMap.containsKey(receiver.getUsername())) {
+                ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver.getUsername()); //create arraylist of unsent messages with correct receiver
                 UnsentMessages unsent = new UnsentMessages(unsentMessages);
-
-                for(User user : onlineClients.keySet()){
-                    if(user.getUsername().equals(receiver)){
-                        onlineClients.get(user).sendUnsent(unsent);
-                    }
-                }
-                unsentMessagesMap.remove(receiver); //remove from hashmap as they now should be sent
+                onlineClients.get(receiver).sendUnsent(unsent);
+                unsentMessagesMap.remove(receiver.getUsername()); //remove from hashmap as they now should be sent
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -60,7 +54,6 @@ public class ServerController {
      * @param message message to send
      */
     public synchronized void checkIfOnline(Message message){
-
         for (String receiver : message.getReceiverList()) {
             boolean isOnline = false;
             for (User onlineUser : onlineClients.keySet()) {
@@ -91,7 +84,6 @@ public class ServerController {
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
         }
-        fileController.storeUnsentMessages(unsentMessagesMap); //store unsent messages in file through fileController
     }
 
     /**
@@ -131,7 +123,7 @@ public class ServerController {
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
 
                 System.out.println(username + "i else satsen innan sendUnsentMessages");
-                sendUnsentMessages(username); //send unsent messages to now online user
+                sendUnsentMessages(onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
