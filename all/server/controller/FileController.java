@@ -112,11 +112,11 @@ public class FileController {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
                 if (line.equals(username) && prevLine != null && prevLine.equals(".") || line.equals(username) && prevLine.isEmpty()){
-                    // Skip the user and their contacts
+                    //skip the user and their contacts
                     while ((line = br.readLine()) != null && !line.isEmpty() && !line.equals(".")) {
-                        // Do nothing, skipping the user's contacts
+                        //skip
                     }
-                    // Skip the dot line
+                    //skip the dot line
                     if (line != null && line.equals(".")) {
                         lines.remove(lines.size() - 1);
                     }
@@ -172,18 +172,18 @@ public class FileController {
      */
     public synchronized void rewriteContactsTextFileWithNewContacts(String owner, ArrayList<String> contacts) {
         if(checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){
-            //System.out.println("User already has contacts...");
+            System.out.println("User already has contacts...");
 
             System.out.println(owner);
             removePreviousContactsOfUser(owner, "all/files/contacts.txt");
             writeNewContactsToFile(owner, contacts);
 
         } else if (!checkIfUserAlreadyHasContacts("all/files/contacts.txt", owner)){ //only append if not
-            //System.out.println("User doesn't have contacts...");
+            System.out.println("User doesn't have contacts...");
             writeNewContactsToFile(owner, contacts);
 
         } else if (contacts.isEmpty()) {
-            //System.out.println("No new contacts to add...");
+            System.out.println("No new contacts to add...");
         }
     }
 
@@ -210,23 +210,6 @@ public class FileController {
         }
     }
 
-
-    /** //
-     * stores unsent messages in a .dat file for later retrieval.
-     * @param unsentMessages hashmap containing unsent messages for different offline users.
-     */
-    /*public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-        try (FileOutputStream fileOut = new FileOutputStream("all/files/unsentMessages.dat");
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-
-            objectOut.writeObject(unsentMessages);
-            System.out.println("HashMap has been successfully written to " + "all/files/unsentMessages.dat");
-
-        } catch (IOException e) {
-            System.err.println("Error writing HashMap to file: " + e.getMessage());
-        }
-    }*/
-
     /**
      * retrieves unsent messages from .dat file and inserts into HashMap.
      * @return HashMap containing unread messages for different users.
@@ -249,28 +232,11 @@ public class FileController {
         return hashMap;
     }
 
-    public synchronized void storeUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-
-        Path filePath = Paths.get("all/files/unsentMessages.dat");
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            System.err.println("Error deleting existing file: " + e.getMessage());
-        }
-
-        try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile());
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-
-            objectOut.writeObject(unsentMessages);
-            System.out.println("HashMap has been successfully written to " + filePath);
-
-        } catch (IOException e) {
-            System.err.println("Error writing HashMap to file: " + e.getMessage());
-        }
-    }
-
+    /**
+     * stores unsent messages in a .dat file for later retrieval.
+     * @param unsentMessages hashmap of unsent messages for different receiver users.
+     */
     public synchronized void updateUnsentMessages(HashMap<String, ArrayList<Message>> unsentMessages) {
-
         Path filePath = Paths.get("all/files/unsentMessages.dat");
 
         try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile());
@@ -282,7 +248,6 @@ public class FileController {
         } catch (IOException e) {
             System.err.println("Error writing HashMap to file: " + e.getMessage());
         }
-
     }
 
 
