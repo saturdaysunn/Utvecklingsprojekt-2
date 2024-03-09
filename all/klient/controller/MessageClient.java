@@ -48,11 +48,15 @@ public class MessageClient extends Thread {
                 if (receiver.equals(user.getUsername())) { //if to me
                     correctlySent = true;
                     break;
+                } else if (receiver.equals("GroupChat")) {
+                    receivedMessage.setDeliveredTime(new Date());
+                    mainFrame.tempStoreMessage(receivedMessage, true);
+                    break;
                 }
             }
             if (correctlySent) { //if correct, display
                 receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
-                mainFrame.tempStoreMessage(receivedMessage);
+                mainFrame.tempStoreMessage(receivedMessage, false);
             }
 
         } else if (receivedObject instanceof ContactsMessage) {
@@ -71,7 +75,7 @@ public class MessageClient extends Thread {
             ArrayList<Message> unsentMessages = ((UnsentMessages) receivedObject).getUnsentList();
             for (Message message : unsentMessages) {
                 message.setDeliveredTime(new Date());
-                mainFrame.tempStoreMessage(message);
+                mainFrame.tempStoreMessage(message, false);
             }
         }
     }
