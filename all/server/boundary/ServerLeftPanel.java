@@ -18,7 +18,14 @@ public class ServerLeftPanel extends JPanel {
         this.mainFrame = mainFrame;
 
         JTextArea textArea = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(textArea); // Lägger till en rullningsfält till textarean
+        textArea.setEditable(false); // Making the text area non-editable
+        textArea.setLineWrap(true); // Enabling line wrap to prevent horizontal scrolling
+        textArea.setWrapStyleWord(true); // Ensuring words won't be broken at line breaks
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
+        textArea.setPreferredSize(new Dimension(400, height));
+        // Setting preferred size to make the text area wider
+        scrollPane.setPreferredSize(new Dimension(300, height));
 
         this.add(scrollPane, BorderLayout.CENTER);
     }
@@ -27,5 +34,10 @@ public class ServerLeftPanel extends JPanel {
     public void logMessage(String message) {
         JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
         textArea.append(message + "\n");
+    }
+
+    public void clearLog() {
+        JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
+        textArea.setText("");
     }
 }

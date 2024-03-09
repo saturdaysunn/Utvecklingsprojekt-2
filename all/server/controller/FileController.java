@@ -4,6 +4,8 @@ import all.jointEntity.LogMessage;
 import all.jointEntity.Message;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -12,6 +14,9 @@ import java.util.*;
 public class FileController {
     //TODO: should all these methods be synchronized?
     //TODO: or synchronized where these are called.
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
 
     /**
      * checks if user has logged in previously.
@@ -59,9 +64,10 @@ public class FileController {
     }
 
 
-    public void saveLogToFile(LogMessage logMessage, String filePath) {
+    public void saveLogToFile(String message, Date timestamp, String filePath) {
         try (FileWriter fw = new FileWriter(filePath, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
+            bw.write(timestamp.toString() + " - " + message);
             bw.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
@@ -281,4 +287,32 @@ public class FileController {
         return unsentMessagesMap;
     }
 
+    public List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
+        List<String> messages = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(logFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" - ", 2);
+                if (parts.length >= 2) {
+                    String timestampString = parts[0];
+                    String message = parts[1];
+                    try {
+                        Date timestamp = dateFormat.parse(timestampString);
+                        Date start = dateFormat.parse(startTime);
+                        Date end = dateFormat.parse(endTime);
+                        if (timestamp.after(start) && timestamp.before(end)) {
+                            messages.add(message);
+                        }
+                    } catch (ParseException e) {
+                        System.err.println("Error parsing timestamp: " + e.getMessage());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading log file: " + e.getMessage());
+        }
+        return messages;
+    }
 }
+
+
