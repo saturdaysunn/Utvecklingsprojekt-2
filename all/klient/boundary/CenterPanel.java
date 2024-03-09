@@ -74,6 +74,13 @@ public class CenterPanel extends JPanel{
         messageInputPanel.add(buttonPanel);
         add(messageInputPanel, BorderLayout.SOUTH);
 
+        messageInputField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendButton.doClick();
+            }
+        });
+
         /**
          * listens to send button to register message to be sent
          */
