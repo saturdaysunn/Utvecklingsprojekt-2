@@ -74,8 +74,8 @@ public class MainFrame extends JFrame {
      * sends message further to center panel.
      * @param receivedMessage message received from client.
      */
-    public void tempStoreMessage(Message receivedMessage) {
-        panel.getcPanel().tempStoreMessage(receivedMessage);
+    public void tempStoreMessage(Message receivedMessage, boolean groupChat) {
+        panel.getcPanel().tempStoreMessage(receivedMessage, groupChat);
     }
 
     public void tempStoreOwnMessage(Message sendingMessage) {

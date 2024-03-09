@@ -129,6 +129,9 @@ public class LPanel extends JPanel{
 
         // Add online users
         if (onlineUsersList != null) {
+            if (onlineUsersList.size() >= 2) {
+                listModel.addElement("<html><font color='green'>GroupChat</font></html>"); //if more than two users online
+            }
             for (String user : onlineUsersList) {
                 listModel.addElement("<html><font color='green'>" + user + "</font></html>");
             }
