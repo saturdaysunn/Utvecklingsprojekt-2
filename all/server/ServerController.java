@@ -31,8 +31,7 @@ public class ServerController {
      */
     public synchronized void sendUnsentMessages(User receiver){
         for(User user : onlineClients.keySet()){
-            //System.out.println(user.getUsername());
-            System.out.println(onlineClients.get(user));
+            System.out.println(user.getUsername());
         }
 
         try{
@@ -56,17 +55,27 @@ public class ServerController {
     public synchronized void checkIfOnline(Message message){
         for (String receiver : message.getReceiverList()) {
             boolean isOnline = false;
-            for (User onlineUser : onlineClients.keySet()) {
-                if (onlineUser.getUsername().equals(receiver)) {
-                    onlineClients.get(onlineUser).forwardMessage(message);
-                    isOnline = true;
-                    break;
+            if (receiver.equals("GroupChat")) {
+                String senderName = message.getSender().getUsername();
+                for (User onlineUser : onlineClients.keySet()) { //send to everyone except sender
+                    if (!onlineUser.getUsername().equals(senderName)) {
+                        onlineClients.get(onlineUser).forwardMessage(message);
+                    }
                 }
-            }
+            } else {
+                System.out.println("sending to non-groupchat");
+                for (User onlineUser : onlineClients.keySet()) {
+                    if (onlineUser.getUsername().equals(receiver)) {
+                        onlineClients.get(onlineUser).forwardMessage(message);
+                        isOnline = true;
+                        break;
+                    }
+                }
 
-            if (!isOnline) {
-                System.out.println(receiver + " is offline, storing message now");
-                storeUnsentMessage(message, receiver);
+                if (!isOnline) {
+                    System.out.println(receiver + " is offline, storing message now");
+                    storeUnsentMessage(message, receiver);
+                }
             }
         }
     }
@@ -129,8 +138,9 @@ public class ServerController {
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             ArrayList<String> contacts = updatedContacts.getContactsList();
-            fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
-
+            if(contacts != null) {
+                fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
+            }
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();
             logOutUser(loggedOutUser); //update online clients
