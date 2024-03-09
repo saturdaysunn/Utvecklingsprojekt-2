@@ -19,7 +19,7 @@ public class RPanel extends JPanel {
     private JLabel currentUserPictureLabel;
     private JButton logoutButton;
     private ImageIcon image = new ImageIcon("all/files/default-image.png");
-    private ArrayList<String> notifications = new ArrayList<String>();
+    private JTextArea notificationCenter;
 
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -37,14 +37,20 @@ public class RPanel extends JPanel {
         contactsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(contactsLabel, BorderLayout.NORTH);
 
-        rightPanelList = new JList<String>();
+        /*rightPanelList = new JList<String>();
         rightPanelList.setLocation(105, 200);
         rightPanelList.setSize(width, height - 100);
         rightPanelList.setBackground(new Color(218, 218, 218));
         rightPanelList.setFont(new Font("Helvetica", Font.PLAIN, 16));
         rightPanelList.setEnabled(false);
         JScrollPane scrollPane = new JScrollPane(rightPanelList); //should be scrollable when many users online
-        add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);*/
+
+        notificationCenter = new JTextArea();
+        notificationCenter.setLineWrap(true);
+        notificationCenter.setWrapStyleWord(true);
+        notificationCenter.setEditable(false);
+        add(notificationCenter, BorderLayout.CENTER);
 
         JPanel currentUserPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         currentUserLabel = new JLabel();
@@ -86,14 +92,12 @@ public class RPanel extends JPanel {
         return (ImageIcon) currentUserPictureLabel.getIcon(); //TODO: correct?
     }
 
-
     /**
      * populates right panel with contacts
      * @param notification notification to be added
      */
-    public void populateRPanel(String notification){
-        notifications.add(notification);
-        rightPanelList.setListData(notifications.toArray(new String[0]));
+    public synchronized void populateRPanel(String notification){
+        notificationCenter.setText(notification);
     }
 
     public static ImageIcon resizeImage(ImageIcon originalIcon) {
