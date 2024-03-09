@@ -7,6 +7,9 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * takes care of reading from and writing to files (contacts, messages, users)
@@ -65,14 +68,17 @@ public class FileController {
 
 
     public void saveLogToFile(String message, Date timestamp, String filePath) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        String formattedTimestamp = dateFormat.format(timestamp);
         try (FileWriter fw = new FileWriter(filePath, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
-            bw.write(timestamp.toString() + " - " + message);
+            bw.write(formattedTimestamp + " - " + message);
             bw.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
+
 
     /**
      * retrieves contacts of a given user
@@ -287,7 +293,19 @@ public class FileController {
         return unsentMessagesMap;
     }
 
+
+    /**
+     * Retrieves log messages from a log file that fall within the specified time range.
+     *
+     * @param startTime   The start time in the format "yyyy/MM/dd HH:mm:ss".
+     * @param endTime     The end time in the format "yyyy/MM/dd HH:mm:ss".
+     * @param logFilePath The path to the log file from which messages will be retrieved.
+     * @return A list of log messages that were logged between the specified start and end times.
+     *         If no messages are found or an error occurs during file reading or parsing, an empty list is returned.
+     */
+
     public List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         List<String> messages = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(logFilePath))) {
             String line;
@@ -313,6 +331,8 @@ public class FileController {
         }
         return messages;
     }
+
+
 }
 
 

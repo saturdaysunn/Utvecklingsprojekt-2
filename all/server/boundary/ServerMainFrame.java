@@ -21,6 +21,7 @@
             this.setVisible(true);
             this.setBounds(100, 100, width, height);
             this.setDefaultCloseOperation(3);
+            this.leftPanel= new ServerLeftPanel(width-600, height, this);
         }
 
 
@@ -28,7 +29,7 @@
             return mainPanel;
         }
 
-        public ServerLeftPanel getLeftPanel() {
+        public ServerLeftPanel getleftPanel() {
             return leftPanel;
         }
     }

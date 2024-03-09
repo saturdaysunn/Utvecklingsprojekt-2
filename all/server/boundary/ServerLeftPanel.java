@@ -30,7 +30,7 @@ public class ServerLeftPanel extends JPanel {
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Metod för att lägga till meddelanden till textområdet
+    //  lägga till meddelanden till textområdet
     public void logMessage(String message) {
         JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
         textArea.append(message + "\n");

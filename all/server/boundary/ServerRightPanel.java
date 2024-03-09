@@ -25,8 +25,8 @@
                 this.height = height;
                 this.mainFrame = mainFrame;
 
-                JLabel instructionsLabel = new JLabel("Ange tider för att ta ut det i textarean", SwingConstants.CENTER);
-                instructionsLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14)); // Välj en rolig font
+                JLabel instructionsLabel = new JLabel("Ange tider på detta sätt yyyy/MM/dd HH:mm:ss", SwingConstants.CENTER);
+                instructionsLabel.setFont(new Font("Arial", Font.PLAIN, 10)); // Välj en rolig font
                 instructionsLabel.setBorder(BorderFactory.createEmptyBorder(300, 0, 0, 0)); // Lägg till mellanrum runt texten
                 add(instructionsLabel, BorderLayout.NORTH);
 
@@ -78,15 +78,33 @@
                 rightPanel.add(buttonPanel, BorderLayout.SOUTH);
 
                 this.add(rightPanel, BorderLayout.EAST);
+
                 submitButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String startTime = textField1.getText();
                         String endTime = textField2.getText();
+
+                        // Kontrollera om tiden övergår över midnatt, justera slutet i så fall
+                        if (startTime.compareTo(endTime) > 0) {
+                            endTime = "23:59:59"; // Sätt slutet till sista möjliga tidpunkt på dagen
+                        }
+
+                        // Hämta meddelandena mellan de angivna tiderna
                         List<String> messages = fileController.getLogMessagesBetweenTimes(startTime, endTime, "all/files/log.txt");
-                        mainFrame.getLeftPanel().clearLog(); // Clear existing log
+
+                        if (messages.isEmpty()) {
+                            System.out.println("Inga meddelanden hittades mellan de angivna tiderna.");
+                        } else {
+                            System.out.println("Följande meddelanden hittades mellan de angivna tiderna:");
+                            for (String message : messages) {
+                                System.out.println(message);
+                            }
+                        }
+
+                        // Visa upp meddelandena i leftpanelen
                         for (String message : messages) {
-                            mainFrame.getLeftPanel().logMessage(message);
+                            mainFrame.getMainPanel().getlPanel().logMessage(message);
                         }
                     }
                 });
