@@ -30,6 +30,7 @@ public class ServerController {
      * @param receiver user to send unsent messages to (the user that just went online).
      */
     public synchronized void sendUnsentMessages(User receiver){
+        System.out.println("going to send unsent to " + receiver.getUsername());
         for(User user : onlineClients.keySet()){
             System.out.println(user.getUsername());
         }
@@ -52,20 +53,20 @@ public class ServerController {
      * If yes, call to forward message. If no, call to store message in file
      * @param message message to send
      */
-    public synchronized void checkIfOnline(Message message){
-        for (String receiver : message.getReceiverList()) {
-            boolean isOnline = false;
-            if (receiver.equals("GroupChat")) {
-                String senderName = message.getSender().getUsername();
-                for (User onlineUser : onlineClients.keySet()) { //send to everyone except sender
-                    if (!onlineUser.getUsername().equals(senderName)) {
-                        onlineClients.get(onlineUser).forwardMessage(message);
-                    }
+    public synchronized void checkIfOnline(Message message, boolean groupChat){
+        if (groupChat) { //only have to send once if group is included in receivers
+            String senderName = message.getSender().getUsername();
+            for (User onlineUser : onlineClients.keySet()) { //send to everyone except sender
+                if (!onlineUser.getUsername().equals(senderName)) {
+                    onlineClients.get(onlineUser).forwardMessage(message);
                 }
-            } else {
-                System.out.println("sending to non-groupchat");
+            }
+        } else { //send to each individual receiver
+            for (String receiver : message.getReceiverList()) {
+                boolean isOnline = false;
                 for (User onlineUser : onlineClients.keySet()) {
                     if (onlineUser.getUsername().equals(receiver)) {
+                        System.out.println(receiver + " is online, sending message now");
                         onlineClients.get(onlineUser).forwardMessage(message);
                         isOnline = true;
                         break;
@@ -106,7 +107,8 @@ public class ServerController {
         if(receivedObj instanceof Message){
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
-            checkIfOnline(message);
+            boolean groupChat = checkIfGroupChat(message.getReceiverList());
+            checkIfOnline(message, groupChat);
 
         } else if(receivedObj instanceof User){ //logged in
             User onlineUser = (User) receivedObj;
@@ -130,8 +132,6 @@ public class ServerController {
                 ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", username); //retrieve contacts for user
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
-
-                System.out.println(username + "i else satsen innan sendUnsentMessages");
                 sendUnsentMessages(onlineUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logs out
@@ -148,6 +148,20 @@ public class ServerController {
 
         fileController.updateUnsentMessages(unsentMessagesMap);
 
+    }
+
+    /**
+     * checks if receiver list contains group chat.
+     * @param receivers list of receivers
+     * @return true if group chat, else false
+     */
+    public boolean checkIfGroupChat(ArrayList<String> receivers) {
+        for (String receiver : receivers) {
+            if (receiver.equals("GroupChat")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
