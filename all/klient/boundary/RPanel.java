@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class RPanel extends JPanel {
     private JLabel currentUserPictureLabel;
     private JButton logoutButton;
     private ImageIcon image = new ImageIcon("all/files/default-image.png");
+    private ArrayList<String> notifications = new ArrayList<String>();
 
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -31,7 +33,7 @@ public class RPanel extends JPanel {
     }
 
     public void setUp(){
-        JLabel contactsLabel = new JLabel("Contacts");
+        JLabel contactsLabel = new JLabel("Notifications");
         contactsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(contactsLabel, BorderLayout.NORTH);
 
@@ -87,12 +89,11 @@ public class RPanel extends JPanel {
 
     /**
      * populates right panel with contacts
-     * @param contactsList list of contacts
+     * @param notification notification to be added
      */
-    public void populateRPanel(List<String> contactsList){
-        rightPanelList.removeAll(); //clears panel first
-        String[] contactsArray = contactsList.toArray(String[]::new);
-        rightPanelList.setListData(contactsArray);
+    public void populateRPanel(String notification){
+        notifications.add(notification);
+        rightPanelList.setListData(notifications.toArray(new String[0]));
     }
 
     public static ImageIcon resizeImage(ImageIcon originalIcon) {

@@ -49,10 +49,12 @@ public class MessageClient extends Thread {
                     System.out.println("to me");
                     receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
                     mainFrame.tempStoreMessage(receivedMessage, false);
+                    sendNotification("You have a new message from " + receivedMessage.getSender().getUsername() + "!");
                 } else if (receiver.equals("GroupChat")) { //if to group
                     System.out.println("to group");
                     receivedMessage.setDeliveredTime(new Date());
                     mainFrame.tempStoreMessage(receivedMessage, true);
+                    sendNotification("You have a new message from the group chat!");
                 }
             }
 
@@ -73,6 +75,7 @@ public class MessageClient extends Thread {
             for (Message message : unsentMessages) {
                 message.setDeliveredTime(new Date());
                 mainFrame.tempStoreMessage(message, false);
+                sendNotification("You have an unsent message from " + message.getSender().getUsername() + "!");
             }
         }
     }
@@ -203,6 +206,10 @@ public class MessageClient extends Thread {
         int height = 100;
         Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
+    }
+
+    public void sendNotification(String notification) {
+        mainFrame.sendNotification(notification);
     }
 
 
