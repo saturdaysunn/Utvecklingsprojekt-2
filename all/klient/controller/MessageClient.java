@@ -43,20 +43,17 @@ public class MessageClient extends Thread {
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
             ArrayList<String> designatedReceivers = receivedMessage.getReceiverList();
-            boolean correctlySent = false;
             for (String receiver : designatedReceivers) {
+                System.out.println("receiver is: " + receiver);
                 if (receiver.equals(user.getUsername())) { //if to me
-                    correctlySent = true;
-                    break;
-                } else if (receiver.equals("GroupChat")) {
+                    System.out.println("to me");
+                    receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
+                    mainFrame.tempStoreMessage(receivedMessage, false);
+                } else if (receiver.equals("GroupChat")) { //if to group
+                    System.out.println("to group");
                     receivedMessage.setDeliveredTime(new Date());
                     mainFrame.tempStoreMessage(receivedMessage, true);
-                    break;
                 }
-            }
-            if (correctlySent) { //if correct, display
-                receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
-                mainFrame.tempStoreMessage(receivedMessage, false);
             }
 
         } else if (receivedObject instanceof ContactsMessage) {
