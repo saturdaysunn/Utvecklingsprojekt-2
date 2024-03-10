@@ -192,11 +192,6 @@ public class MessageClient extends Thread {
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
-        if (updatedContacts.getContactsList() != null) {
-
-            for (String contact : updatedContacts.getContactsList()) {
-            }
-        }
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 
@@ -208,7 +203,7 @@ public class MessageClient extends Thread {
         return new ImageIcon(resizedImage);
     }
 
-    public void sendNotification(String notification) {
+    public synchronized void sendNotification(String notification) {
         mainFrame.sendNotification(notification);
     }
 

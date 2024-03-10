@@ -135,3 +135,6 @@ ri
 hihi
 dudu
 tutu
+susu
+fufu
+yuyu
