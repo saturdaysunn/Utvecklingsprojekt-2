@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
     private MainPanel panel;
-    private FileController fileController = new FileController(); //TODO: shouldn't exist here
     private MessageClient messageClient;
 
     public MainFrame(int width, int height, MessageClient messageClient) {
@@ -30,7 +29,6 @@ public class MainFrame extends JFrame {
      * @param message message in string format
      */
     public void sendMessage(String message) {
-        System.out.println("message arrived in mainframe");
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
 
         if (receivers.isEmpty()) { //if no receiver has been selected
@@ -76,8 +74,8 @@ public class MainFrame extends JFrame {
      * sends message further to center panel.
      * @param receivedMessage message received from client.
      */
-    public void tempStoreMessage(Message receivedMessage) {
-        panel.getcPanel().tempStoreMessage(receivedMessage);
+    public void tempStoreMessage(Message receivedMessage, boolean groupChat) {
+        panel.getcPanel().tempStoreMessage(receivedMessage, groupChat);
     }
 
     public void tempStoreOwnMessage(Message sendingMessage) {
@@ -86,5 +84,9 @@ public class MainFrame extends JFrame {
 
     public void logOut() {
         messageClient.logOut();
+    }
+
+    public void sendNotification(String notification) {
+        setTitle(notification);
     }
 }

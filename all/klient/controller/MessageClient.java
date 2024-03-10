@@ -42,39 +42,46 @@ public class MessageClient extends Thread {
 
         if (receivedObject instanceof Message) {
             Message receivedMessage = (Message) receivedObject;
-            ArrayList<String> designatedReceivers = receivedMessage.getReceiverList(); //TODO: check if correct
-            boolean correctlySent = false;
+            ArrayList<String> designatedReceivers = receivedMessage.getReceiverList();
             for (String receiver : designatedReceivers) {
+                System.out.println("receiver is: " + receiver);
                 if (receiver.equals(user.getUsername())) { //if to me
-                    correctlySent = true;
-                    break;
+                    System.out.println("to me");
+                    receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
+                    mainFrame.tempStoreMessage(receivedMessage, false);
+                } else if (receiver.equals("GroupChat")) { //if to group
+                    System.out.println("to group");
+                    receivedMessage.setDeliveredTime(new Date());
+                    mainFrame.tempStoreMessage(receivedMessage, true);
                 }
-            }
-            if (correctlySent) { //if correct, display
-                System.out.println("Received a message: " + receivedMessage.getText());
-                receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
-                mainFrame.tempStoreMessage(receivedMessage);
-            } else {
-                System.out.println("wrongly sent message");
+                sendNotification(receivedMessage.getSender().getUsername());
             }
 
         } else if (receivedObject instanceof ContactsMessage) {
             ContactsMessage contactsMessage = (ContactsMessage) receivedObject;
             contacts = contactsMessage.getContactsList();
             if (contacts == null) {
-                System.out.println("received contacts list is null, creating new one");
                 contacts = new ArrayList<>(); //create new one
             }
             mainFrame.updateContactsList(contacts);
 
-        } else if (receivedObject instanceof ArrayList<?>) {
+        } else if (receivedObject instanceof ArrayList<?>) { //list of online users
             onlineUsers = (ArrayList<String>) receivedObject;
             mainFrame.updateOnlineList(onlineUsers);
 
-        } else if (receivedObject instanceof UnsentMessages) {
-            //TODO: handle unsent messages. what to do with them?
-            //TODO: same as for other messages? send to mainframe to temp store?
+        } else if (receivedObject instanceof UnsentMessages) { //list of unsent messages
+            ArrayList<Message> unsentMessages = ((UnsentMessages) receivedObject).getUnsentList();
+            for (Message message : unsentMessages) {
+                message.setDeliveredTime(new Date());
+                sendNotification(message.getSender().getUsername());
+                mainFrame.tempStoreMessage(message, false);
+            }
         }
+    }
+
+
+    public synchronized void sendNotification(String sender) {
+        mainFrame.sendNotification("New message from " + sender + "!");
     }
 
     /**
@@ -85,8 +92,6 @@ public class MessageClient extends Thread {
         this.listener.sendLoginMessage(this.user);
     }
 
-    //TODO: handle checks so it's sent to the correct person.
-    //TODO: also store own message in history map.
     /**
      * handles logic for creating instance of message to send to server
      * @param message full text message
@@ -166,7 +171,6 @@ public class MessageClient extends Thread {
             } else {
                 user.addContact(userToAdd); //add to user's contacts list
                 contacts.add(userToAdd);
-                System.out.println("added " + userToAdd + " to contacts");
                 mainFrame.updateContactsList(contacts); //update on GUI
             }
         }else{
@@ -187,12 +191,16 @@ public class MessageClient extends Thread {
     /**
      * sends message containing name of user that logged out
      * and their updated list of contacts.
-     */ //TODO: do i need to close connection too? if so, how?
+     */
 
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
-        System.out.println(user.getUsername());
+        if (updatedContacts.getContactsList() != null) {
+
+            for (String contact : updatedContacts.getContactsList()) {
+            }
+        }
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 
