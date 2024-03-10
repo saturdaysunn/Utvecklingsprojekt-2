@@ -19,6 +19,7 @@ public class RPanel extends JPanel {
     private JButton logoutButton;
     private ImageIcon image = new ImageIcon("all/files/default-image.png");
 
+
     public RPanel(int width, int height, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.setLayout(new BorderLayout());
@@ -59,6 +60,7 @@ public class RPanel extends JPanel {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Logout button clicked");
                 mainFrame.logOut();
                 mainFrame.dispose(); //close window.
             }

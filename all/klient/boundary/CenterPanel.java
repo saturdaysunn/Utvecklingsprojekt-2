@@ -74,19 +74,13 @@ public class CenterPanel extends JPanel{
         messageInputPanel.add(buttonPanel);
         add(messageInputPanel, BorderLayout.SOUTH);
 
-        messageInputField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendButton.doClick();
-            }
-        });
-
         /**
          * listens to send button to register message to be sent
          */
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("send button pressed");
                 if (!messageInputField.getText().isEmpty()) { //if no message to send
                     sendMessage(messageInputField.getText()); //send contents of input field
                     messageInputField.setText(""); //clear input field
@@ -108,6 +102,7 @@ public class CenterPanel extends JPanel{
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile(); //retrieves path in computer
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 
                     String existingText = messageInputField.getText();
                     if (!existingText.isEmpty()) { //if already text in message input box
@@ -135,6 +130,7 @@ public class CenterPanel extends JPanel{
      * @param userName name of selected user
      */
     public void viewChat(String userName) {
+        System.out.println("i have been called to view chat for " + userName);
         setChatName(userName); //sets name of user chatting with
         populateChatWindow(userName);
     }
@@ -168,39 +164,22 @@ public class CenterPanel extends JPanel{
      * stored under key = sender of message.
      * @param receivedMessage instance of Message
      */
-    public synchronized void tempStoreMessage(Message receivedMessage, boolean groupChat) {
+    public synchronized void tempStoreMessage(Message receivedMessage) {
+        System.out.println("adding message to history map");
         String senderName = receivedMessage.getSender().getUsername();
-        if (!groupChat) {
-            if (conversationMap.containsKey(senderName)) {
-                ArrayList<Message> history = conversationMap.get(senderName);
-                history.add(receivedMessage);
-                conversationMap.put(senderName, history);
-            } else {
-                ArrayList<Message> history = new ArrayList<>();
-                history.add(receivedMessage);
-                conversationMap.put(senderName, history);
-            }
-
-            //if already viewing chat with this person, populate chat window
-            if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With " + senderName)) {
-                populateChatWindow(senderName);
-            }
+        if (conversationMap.containsKey(senderName)) {
+            ArrayList<Message> history = conversationMap.get(senderName);
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
         } else {
-            if (conversationMap.containsKey("GroupChat")) {
-                ArrayList<Message> history = conversationMap.get("GroupChat");
-                history.add(receivedMessage);
-                conversationMap.put("GroupChat", history);
-            } else {
-                ArrayList<Message> history = new ArrayList<>();
-                history.add(receivedMessage);
-                conversationMap.put("GroupChat", history);
-            }
+            ArrayList<Message> history = new ArrayList<>();
+            history.add(receivedMessage);
+            conversationMap.put(senderName, history);
+        }
 
-            //if already viewing chat with this person, populate chat window
-            if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With GroupChat")) {
-                populateChatWindow("GroupChat");
-            }
-
+        //if already viewing chat with this person, populate chat window
+        if (userChatLabel != null && userChatLabel.getText().equals("Showing Chat With " + senderName)) {
+            populateChatWindow(senderName);
         }
     }
 
