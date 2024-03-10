@@ -1,0 +1,114 @@
+2024/03/10 00:05:18 - Server started
+2024/03/10 00:05:25 - New client connected: 127.0.0.1
+2024/03/10 00:05:25 - mihail has logged in
+2024/03/10 00:05:25 - Online list updated
+2024/03/10 00:05:25 - Contacts sent to: null
+2024/03/10 00:05:34 - New client connected: 127.0.0.1
+2024/03/10 00:05:34 - oliver has logged in
+2024/03/10 00:05:34 - Online list updated
+2024/03/10 00:05:34 - Online list updated
+2024/03/10 00:05:34 - Contacts sent to: null
+2024/03/10 00:08:16 - Server started
+2024/03/10 00:08:24 - New client connected: 127.0.0.1
+2024/03/10 00:08:25 - mihail has logged in
+2024/03/10 00:08:25 - Online list updated
+2024/03/10 00:08:25 - Contacts sent to: null
+2024/03/10 00:08:32 - New client connected: 127.0.0.1
+2024/03/10 00:08:32 - oliver has logged in
+2024/03/10 00:08:32 - Online list updated
+2024/03/10 00:08:32 - Online list updated
+2024/03/10 00:08:32 - Contacts sent to: null
+2024/03/10 00:17:19 - Server started
+2024/03/10 00:19:42 - Server started
+2024/03/10 00:19:49 - New client connected: 127.0.0.1
+2024/03/10 00:19:49 - mihail has logged in
+2024/03/10 00:19:49 - Online list updated
+2024/03/10 00:19:49 - Contacts sent to: null
+2024/03/10 00:19:57 - New client connected: 127.0.0.1
+2024/03/10 00:19:57 - oliver has logged in
+2024/03/10 00:19:57 - Online list updated
+2024/03/10 00:19:57 - Online list updated
+2024/03/10 00:19:57 - Contacts sent to: null
+2024/03/10 00:22:01 - Server started
+2024/03/10 00:22:08 - New client connected: 127.0.0.1
+2024/03/10 00:22:09 - oliver has logged in
+2024/03/10 00:22:09 - Online list updated
+2024/03/10 00:22:09 - Contacts sent to: null
+2024/03/10 00:22:16 - New client connected: 127.0.0.1
+2024/03/10 00:22:16 - mihail has logged in
+2024/03/10 00:22:16 - Online list updated
+2024/03/10 00:22:16 - Online list updated
+2024/03/10 00:22:16 - Contacts sent to: null
+2024/03/10 00:32:45 - Server started
+2024/03/10 00:36:44 - Server started
+2024/03/10 00:36:54 - New client connected: 127.0.0.1
+2024/03/10 00:36:54 - mihail has logged in
+2024/03/10 00:36:54 - Online list updated
+2024/03/10 00:36:54 - Contacts sent to: null
+2024/03/10 00:37:00 - New client connected: 127.0.0.1
+2024/03/10 00:37:00 - oliver has logged in
+2024/03/10 00:37:00 - Online list updated
+2024/03/10 00:37:00 - Online list updated
+2024/03/10 00:37:00 - Contacts sent to: null
+2024/03/10 00:40:48 - Server started
+2024/03/10 00:41:09 - Server started
+2024/03/10 00:41:15 - New client connected: 127.0.0.1
+2024/03/10 00:41:15 - oliver has logged in
+2024/03/10 00:41:15 - Online list updated
+2024/03/10 00:41:15 - Contacts sent to: null
+2024/03/10 00:41:21 - New client connected: 127.0.0.1
+2024/03/10 00:41:21 - mihail has logged in
+2024/03/10 00:41:21 - Online list updated
+2024/03/10 00:41:21 - Online list updated
+2024/03/10 00:41:21 - Contacts sent to: null
+2024/03/10 00:45:28 - Server started
+2024/03/10 00:48:47 - Server started
+2024/03/10 00:48:59 - Server started
+2024/03/10 00:49:17 - Server started
+2024/03/10 00:49:26 - Server started
+2024/03/10 00:49:36 - Server started
+2024/03/10 00:49:47 - Server started
+2024/03/10 00:50:05 - Server started
+2024/03/10 00:51:07 - Server started
+2024/03/10 00:51:14 - Server started
+2024/03/10 00:51:40 - Server started
+2024/03/10 00:52:19 - Server started
+2024/03/10 00:52:29 - Server started
+2024/03/10 00:53:09 - Server started
+2024/03/10 01:09:53 - Server started
+2024/03/10 01:10:06 - New client connected: 127.0.0.1
+2024/03/10 01:10:07 - oliver has logged in
+2024/03/10 01:10:07 - Online list updated
+2024/03/10 01:10:07 - Contacts sent to: null
+2024/03/10 01:10:16 - New client connected: 127.0.0.1
+2024/03/10 01:10:16 - mihail has logged in
+2024/03/10 01:10:16 - Online list updated
+2024/03/10 01:10:16 - Online list updated
+2024/03/10 01:10:16 - Contacts sent to: null
+2024/03/10 15:07:44 - Server started
+2024/03/10 15:07:56 - New client connected: 127.0.0.1
+2024/03/10 15:07:56 - bruna has logged in
+2024/03/10 15:07:56 - Online list updated
+2024/03/10 15:07:56 - Contacts sent to: null
+2024/03/10 15:08:01 - New client connected: 127.0.0.1
+2024/03/10 15:08:01 - tiffany has logged in
+2024/03/10 15:08:01 - Online list updated
+2024/03/10 15:08:01 - Online list updated
+2024/03/10 15:08:01 - Contacts sent to: null
+2024/03/10 15:08:05 - Message forwarded to: [bruna]
+2024/03/10 15:08:05 - Message from: tiffany, To: [bruna], Content: hej, Received Time : Sun Mar 10 15:08:05 CET 2024, Delivered Time : null
+2024/03/10 15:12:10 - New client connected: 127.0.0.1
+2024/03/10 15:12:10 - mihail has logged in
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Contacts sent to: null
+2024/03/10 15:12:16 - Contacts updated for: tiffany
+2024/03/10 15:12:16 - tiffany has logged out
+2024/03/10 15:12:16 - Online list updated
+2024/03/10 15:12:16 - Online list updated
+2024/03/10 15:12:19 - Contacts updated for: mihail
+2024/03/10 15:12:19 - mihail has logged out
+2024/03/10 15:12:19 - Online list updated
+2024/03/10 15:12:20 - Contacts updated for: bruna
+2024/03/10 15:12:20 - bruna has logged out

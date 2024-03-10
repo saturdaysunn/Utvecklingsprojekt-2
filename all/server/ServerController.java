@@ -134,7 +134,7 @@ public class ServerController {
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
                 sendUnsentMessages(loggedInUser); //send unsent messages to now online user
             }
-        } else if (receivedObj instanceof ContactsMessage) { //user logs out
+        } else if (receivedObj instanceof ContactsMessage) { //user logged out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             ArrayList<String> contacts = updatedContacts.getContactsList();
