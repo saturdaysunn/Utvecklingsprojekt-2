@@ -1,10 +1,8 @@
 package all.server;
 
 import all.jointEntity.*;
-import all.server.boundary.ServerLeftPanel;
-import all.server.boundary.ServerMainFrame;
-import all.server.boundary.ServerMainPanel;
-import all.server.controller.FileController;
+import all.server.boundary.*;
+import all.server.controller.*;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -71,13 +69,11 @@ public class ServerController {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //retrieve arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //update hashmap
-           // mainFrame.getMainPanel().getlPanel().logMessage("Message to: " + receiver + " has been stored as unsent");
             fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         } else {
             ArrayList<Message> unsentMessages = new ArrayList<>(); //create new arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
-            //mainFrame.getMainPanel().getlPanel().logMessage("Message to: " + receiver + " has been stored as unsent");
             fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         }
         //TODO: has not been implemented yet.
@@ -97,14 +93,11 @@ public class ServerController {
             Message message = (Message) receivedObj;
             message.setReceivedTime(new Date()); //set time received by server
             checkIfOnline(message); //check if online
-            //mainFrame.getMainPanel().getlPanel().logMessage("Message from: " + message.getSender().getUsername() + ", To: " + message.getReceiverList() + ", Content: " + message.getText() + ", Received Time : " + message.getReceivedTime() +", Delivered Time : " + message.getDeliveredTime());
             fileController.saveLogToFile("Message from: " + message.getSender().getUsername() + ", To: " + message.getReceiverList() + ", Content: " + message.getText() + ", Received Time : " + message.getReceivedTime() +", Delivered Time : " + message.getDeliveredTime(),new Date(),"all/files/log.txt");
-            LogMessage logMessage= new LogMessage(new Message(message.getSender(), message.getReceiverList(), message.getText(), message.getReceivedTime(), message.getDeliveredTime()));
         } else if(receivedObj instanceof User){
             User onlineUser = (User) receivedObj;
             String username = onlineUser.getUsername();
             System.out.println(onlineUser.getUsername() + " has logged in, said by server");
-           // mainFrame.getMainPanel().getlPanel().logMessage(onlineUser.getUsername() + " has logged in");
             fileController.saveLogToFile(onlineUser.getUsername() + " has logged in", new Date(), "all/files/log.txt");
             onlineClients.put(onlineUser, clientHandler);
 
@@ -133,7 +126,6 @@ public class ServerController {
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;
 
             HashMap<String, ArrayList<String>> contacts = new HashMap<>();
-            //mainFrame.getMainPanel().getlPanel().logMessage("Contacts updated for: " + updatedContacts.getOwner());
             fileController.saveLogToFile("Contacts updated for: " + updatedContacts.getOwner(), new Date(), "all/files/log.txt");
             contacts.put(updatedContacts.getOwner(), updatedContacts.getContactsList()); //add new key-value index
             fileController.rewriteContactsTextFileWithNewContacts(contacts); //save to file
@@ -143,13 +135,6 @@ public class ServerController {
             logOutUser(loggedOutUser); //update online clients
         }
 
-    }
-
-    public synchronized void checkObjectStatusTime(Object receivedObj, ClientHandler clientHandler) throws IOException {
-        if(receivedObj instanceof TimeMessage){
-            TimeMessage timeMessage = (TimeMessage) receivedObj;
-            saveTimes(timeMessage.getTime1(), timeMessage.getTime2());
-        }
     }
 
     public synchronized void saveTimes(String time1, String time2) {
@@ -179,7 +164,6 @@ public class ServerController {
      */
     public synchronized void logOutUser(String username){
         System.out.println(username + " has logged out, server says");
-       // mainFrame.getMainPanel().getlPanel().logMessage(username + " has logged out");
         fileController.saveLogToFile(username + " has logged out",new Date(),"all/files/log.txt");
         Iterator<User> iterator = onlineClients.keySet().iterator();
         while (iterator.hasNext()) {
@@ -208,14 +192,12 @@ public class ServerController {
         public void run(){
             Socket socket = null;
             System.out.println("Server started");
-           // mainFrame.getMainPanel().getlPanel().logMessage("Server started");
             fileController.saveLogToFile("Server started", new Date(),"all/files/log.txt");
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     try {
                         socket = serverSocket.accept();
                         System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
-                       // mainFrame.getMainPanel().getlPanel().logMessage("New client connected: " + socket.getInetAddress().getHostAddress());
                         fileController.saveLogToFile("New client connected: " + socket.getInetAddress().getHostAddress(),new Date() ,"all/files/log.txt");
                         clientHandler = new ClientHandler(socket); //create clientHandler for individual client
                     } catch (IOException e) {
@@ -309,7 +291,6 @@ public class ServerController {
         public void sendUnsent(UnsentMessages unsent) {
             try {
                 oos.writeObject(unsent);
-                //mainFrame.getMainPanel().getlPanel().logMessage("Unsent messages sent to: " + unsent.getUnsentList().get(0).getReceiverList());
                 fileController.saveLogToFile("Unsent messages sent to: " + unsent.getUnsentList().get(0).getReceiverList(), new Date(),"all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
