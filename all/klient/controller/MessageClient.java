@@ -46,15 +46,14 @@ public class MessageClient extends Thread {
             for (String receiver : designatedReceivers) {
                 System.out.println("receiver is: " + receiver);
                 if (receiver.equals(user.getUsername())) { //if to me
-                    System.out.println("to me");
-                    receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
                     mainFrame.tempStoreMessage(receivedMessage, false);
+                    sendNotification(receivedMessage.getSender().getUsername());
                 } else if (receiver.equals("GroupChat")) { //if to group
                     System.out.println("to group");
                     receivedMessage.setDeliveredTime(new Date());
                     mainFrame.tempStoreMessage(receivedMessage, true);
+                    sendNotification("GroupChat");
                 }
-                sendNotification(receivedMessage.getSender().getUsername());
             }
 
         } else if (receivedObject instanceof ContactsMessage) {

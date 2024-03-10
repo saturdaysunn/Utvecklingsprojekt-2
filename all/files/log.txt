@@ -112,3 +112,127 @@
 2024/03/10 15:12:19 - Online list updated
 2024/03/10 15:12:20 - Contacts updated for: bruna
 2024/03/10 15:12:20 - bruna has logged out
+2024/03/10 17:41:33 - New client connected: 127.0.0.1
+2024/03/10 17:41:34 - mumu has logged in
+2024/03/10 17:41:34 - Online list updated
+2024/03/10 17:41:34 - Contacts sent to: null
+2024/03/10 17:41:38 - New client connected: 127.0.0.1
+2024/03/10 17:41:38 - huhu has logged in
+2024/03/10 17:41:38 - Online list updated
+2024/03/10 17:41:38 - Online list updated
+2024/03/10 17:41:38 - Contacts sent to: null
+2024/03/10 17:41:49 - Message forwarded to: [mumu]
+2024/03/10 17:41:49 - Message from: huhu, To: [mumu], Content: hi mumu, Received Time : Sun Mar 10 17:41:49 CET 2024, Delivered Time : null
+2024/03/10 17:41:55 - Message forwarded to: [huhu]
+2024/03/10 17:41:55 - Message from: mumu, To: [huhu], Content: hi huhu, Received Time : Sun Mar 10 17:41:55 CET 2024, Delivered Time : null
+2024/03/10 17:42:03 - New client connected: 127.0.0.1
+2024/03/10 17:42:03 - tete has logged in
+2024/03/10 17:42:03 - Online list updated
+2024/03/10 17:42:03 - Online list updated
+2024/03/10 17:42:03 - Online list updated
+2024/03/10 17:42:22 - Message forwarded to: [GroupChat]
+2024/03/10 17:42:22 - Message forwarded to: [GroupChat]
+2024/03/10 17:42:22 - Message from: tete, To: [GroupChat], Content: hi group, Received Time : Sun Mar 10 17:42:22 CET 2024, Delivered Time : null
+2024/03/10 17:42:41 - Message forwarded to: [GroupChat]
+2024/03/10 17:42:41 - Message forwarded to: [GroupChat]
+2024/03/10 17:42:41 - Message from: tete, To: [GroupChat], Content: hi group, Received Time : Sun Mar 10 17:42:41 CET 2024, Delivered Time : null
+2024/03/10 17:46:15 - New client connected: 127.0.0.1
+2024/03/10 17:46:15 - mumu has logged in
+2024/03/10 17:46:15 - Online list updated
+2024/03/10 17:46:15 - Contacts sent to: null
+2024/03/10 17:46:20 - New client connected: 127.0.0.1
+2024/03/10 17:46:20 - huhu has logged in
+2024/03/10 17:46:20 - Online list updated
+2024/03/10 17:46:20 - Online list updated
+2024/03/10 17:46:20 - Contacts sent to: null
+2024/03/10 17:46:29 - New client connected: 127.0.0.1
+2024/03/10 17:46:29 - lele has logged in
+2024/03/10 17:46:29 - Online list updated
+2024/03/10 17:46:29 - Online list updated
+2024/03/10 17:46:29 - Online list updated
+2024/03/10 17:46:29 - Contacts sent to: null
+2024/03/10 17:46:36 - Message forwarded to: [GroupChat]
+2024/03/10 17:46:36 - Message forwarded to: [GroupChat]
+2024/03/10 17:46:36 - Message from: huhu, To: [GroupChat], Content: hi group, Received Time : Sun Mar 10 17:46:36 CET 2024, Delivered Time : null
+2024/03/10 18:16:15 - New client connected: 127.0.0.1
+2024/03/10 18:16:15 - mumu has logged in
+2024/03/10 18:16:15 - Online list updated
+2024/03/10 18:16:22 - New client connected: 127.0.0.1
+2024/03/10 18:16:22 - huhu has logged in
+2024/03/10 18:16:22 - Online list updated
+2024/03/10 18:16:22 - Online list updated
+2024/03/10 18:16:30 - Message from: huhu, To: [mumu], Content: hi mumu, Received Time: Sun Mar 10 18:16:30 CET 2024, Delivered Time: Sun Mar 10 18:16:30 CET 2024
+2024/03/10 18:16:37 - Message from: mumu, To: [huhu], Content: hi huhu, Received Time: Sun Mar 10 18:16:37 CET 2024, Delivered Time: Sun Mar 10 18:16:37 CET 2024
+2024/03/10 18:16:41 - Message from: huhu, To: [mumu], Content: i like it here, Received Time: Sun Mar 10 18:16:41 CET 2024, Delivered Time: Sun Mar 10 18:16:41 CET 2024
+2024/03/10 18:16:44 - Message from: mumu, To: [huhu], Content: me too, Received Time: Sun Mar 10 18:16:44 CET 2024, Delivered Time: Sun Mar 10 18:16:44 CET 2024
+2024/03/10 18:16:53 - Message from: all.jointEntity.User@310ada to: juju has been stored as unsent, Content: hi juju, come online 
+2024/03/10 18:16:53 - Message from: huhu, To: [juju], Content: hi juju, come online , Received Time: Sun Mar 10 18:16:53 CET 2024, Delivered Time: null
+2024/03/10 18:16:58 - New client connected: 127.0.0.1
+2024/03/10 18:16:58 - juju has logged in
+2024/03/10 18:16:58 - Online list updated
+2024/03/10 18:16:58 - Online list updated
+2024/03/10 18:16:58 - Online list updated
+2024/03/10 18:16:58 - Unsent message from: huhu, To: [juju]has been sent, Content: hi juju, come online , Received Time: Sun Mar 10 18:16:53 CET 2024, Delivered Time: Sun Mar 10 18:16:58 CET 2024
+2024/03/10 18:16:58 - Unsent messages sent to: [juju]
+2024/03/10 18:17:08 - Message from: juju, To: [huhu], Content: hi huhu, i am online now, Received Time: Sun Mar 10 18:17:08 CET 2024, Delivered Time: Sun Mar 10 18:17:08 CET 2024
+2024/03/10 18:17:18 - Message from: huhu, To: [juju], Content: ayyy, nice to see you!, Received Time: Sun Mar 10 18:17:18 CET 2024, Delivered Time: Sun Mar 10 18:17:18 CET 2024
+2024/03/10 18:17:24 - Message from: huhu, To: [GroupChat], Content: hi groupchat , Received Time: Sun Mar 10 18:17:24 CET 2024, Delivered Time: Sun Mar 10 18:17:24 CET 2024
+2024/03/10 18:17:33 - Message from: juju, To: [GroupChat], Content: hi group! , Received Time: Sun Mar 10 18:17:33 CET 2024, Delivered Time: Sun Mar 10 18:17:33 CET 2024
+2024/03/10 18:17:38 - Message from: mumu, To: [GroupChat], Content: nice to see everyone!, Received Time: Sun Mar 10 18:17:38 CET 2024, Delivered Time: Sun Mar 10 18:17:38 CET 2024
+2024/03/10 18:17:41 - Contacts updated for: huhu
+2024/03/10 18:17:41 - huhu has logged out
+2024/03/10 18:17:41 - Online list updated
+2024/03/10 18:17:41 - Online list updated
+2024/03/10 18:17:50 - Message from: all.jointEntity.User@335150 to: huhu has been stored as unsent, Content: why did you log out?
+2024/03/10 18:17:50 - Message from: mumu, To: [huhu], Content: why did you log out?, Received Time: Sun Mar 10 18:17:50 CET 2024, Delivered Time: null
+2024/03/10 18:17:54 - Message from: all.jointEntity.User@335150 to: huhu has been stored as unsent, Content: come back 
+2024/03/10 18:17:54 - Message from: mumu, To: [huhu], Content: come back , Received Time: Sun Mar 10 18:17:54 CET 2024, Delivered Time: null
+2024/03/10 18:17:58 - New client connected: 127.0.0.1
+2024/03/10 18:17:58 - huhu has logged in
+2024/03/10 18:17:58 - Online list updated
+2024/03/10 18:17:58 - Online list updated
+2024/03/10 18:17:58 - Online list updated
+2024/03/10 18:17:58 - Unsent message from: mumu, To: [huhu]has been sent, Content: why did you log out?, Received Time: Sun Mar 10 18:17:50 CET 2024, Delivered Time: Sun Mar 10 18:17:58 CET 2024
+2024/03/10 18:17:58 - Unsent message from: mumu, To: [huhu]has been sent, Content: come back , Received Time: Sun Mar 10 18:17:54 CET 2024, Delivered Time: Sun Mar 10 18:17:58 CET 2024
+2024/03/10 18:17:58 - Unsent messages sent to: [huhu]
+2024/03/10 18:18:03 - Message from: huhu, To: [mumu], Content: i'm back!, Received Time: Sun Mar 10 18:18:03 CET 2024, Delivered Time: Sun Mar 10 18:18:03 CET 2024
+2024/03/10 18:18:11 - Contacts updated for: huhu
+2024/03/10 18:18:11 - huhu has logged out
+2024/03/10 18:18:11 - Online list updated
+2024/03/10 18:18:11 - Online list updated
+2024/03/10 18:18:12 - Contacts updated for: mumu
+2024/03/10 18:18:12 - mumu has logged out
+2024/03/10 18:18:12 - Online list updated
+2024/03/10 18:18:13 - Contacts updated for: juju
+2024/03/10 18:18:13 - juju has logged out
+2024/03/10 18:30:33 - New client connected: 127.0.0.1
+2024/03/10 18:30:33 - [mumu] has logged in
+2024/03/10 18:30:33 - Online list updated
+2024/03/10 18:30:36 - New client connected: 127.0.0.1
+2024/03/10 18:30:36 - [huhu] has logged in
+2024/03/10 18:30:36 - Online list updated
+2024/03/10 18:30:36 - Online list updated
+2024/03/10 18:30:40 - Message from: [huhu], To: [mumu], Content: hi mumu, Received Time: Sun Mar 10 18:30:40 CET 2024, Delivered Time: Sun Mar 10 18:30:40 CET 2024
+2024/03/10 18:30:48 - Message from: [huhu], to: [juju] has been stored as unsent
+2024/03/10 18:30:48 - Message from: [huhu], To: [juju], Content: hi juju, Received Time: Sun Mar 10 18:30:48 CET 2024, Delivered Time: null
+2024/03/10 18:30:54 - New client connected: 127.0.0.1
+2024/03/10 18:30:54 - [juju] has logged in
+2024/03/10 18:30:54 - Online list updated
+2024/03/10 18:30:54 - Online list updated
+2024/03/10 18:30:54 - Online list updated
+2024/03/10 18:30:54 - Unsent message from: huhu, To: [juju]has been sent, Content: hi juju, Received Time: Sun Mar 10 18:30:48 CET 2024, Delivered Time: Sun Mar 10 18:30:54 CET 2024
+2024/03/10 18:30:54 - Unsent messages sent to: [juju]
+2024/03/10 18:30:58 - Message from: [juju], To: [huhu], Content: hi huhu, Received Time: Sun Mar 10 18:30:58 CET 2024, Delivered Time: Sun Mar 10 18:30:58 CET 2024
+2024/03/10 18:33:28 - New client connected: 127.0.0.1
+2024/03/10 18:33:28 - [mumu] has logged in
+2024/03/10 18:33:32 - New client connected: 127.0.0.1
+2024/03/10 18:33:32 - [huhu] has logged in
+2024/03/10 18:33:37 - Message from: [huhu], To: [mumu], Content: hi mumu, Received Time: Sun Mar 10 18:33:37 CET 2024, Delivered Time: Sun Mar 10 18:33:37 CET 2024
+2024/03/10 18:33:41 - Message from: [huhu], To: [juju] has been stored as unsent
+2024/03/10 18:33:41 - Message from: [huhu], To: [juju], Content: hi juju, Received Time: Sun Mar 10 18:33:41 CET 2024, Delivered Time: null
+2024/03/10 18:33:44 - New client connected: 127.0.0.1
+2024/03/10 18:33:44 - [juju] has logged in
+2024/03/10 18:33:44 - Unsent message from: [huhu], To: [juju]has been sent, Content: hi juju, Received Time: Sun Mar 10 18:33:41 CET 2024, Delivered Time: Sun Mar 10 18:33:44 CET 2024
+2024/03/10 18:33:49 - Message from: [juju], To: [huhu], Content: hi huhu, Received Time: Sun Mar 10 18:33:49 CET 2024, Delivered Time: Sun Mar 10 18:33:49 CET 2024
+2024/03/10 18:33:51 - Contacts updated for: [juju] 
+2024/03/10 18:33:51 - [juju] has logged out

@@ -22,21 +22,18 @@ public class ServerRightPanel extends JPanel {
         this.mainFrame = mainFrame;
 
         JLabel instructionsLabel = new JLabel("Ange tider på detta sätt yyyy/MM/dd HH:mm:ss", SwingConstants.CENTER);
-        instructionsLabel.setFont(new Font("Arial", Font.PLAIN, 10)); // Välj en rolig font
-        instructionsLabel.setBorder(BorderFactory.createEmptyBorder(300, 0, 0, 0)); // Lägg till mellanrum runt texten
+        instructionsLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+        instructionsLabel.setBorder(BorderFactory.createEmptyBorder(300, 0, 0, 0)); //mellanrum
         add(instructionsLabel, BorderLayout.NORTH);
 
-        // Skapa etiketter
         JLabel label1 = new JLabel("Ange första tiden:");
         JLabel label2 = new JLabel("Ange andra tiden:");
 
-        // Skapa textfälten med större bredd
         JTextField textField1 = new JTextField();
-        textField1.setColumns(10); // Sätt antalet synliga tecken till 10
+        textField1.setColumns(10);
         JTextField textField2 = new JTextField();
-        textField2.setColumns(10); // Sätt antalet synliga tecken till 10
+        textField2.setColumns(10);
 
-        // Skapa submit-knappen
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(new ActionListener() {
             @Override

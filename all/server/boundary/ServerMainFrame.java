@@ -5,7 +5,6 @@ import javax.swing.*;
 public class ServerMainFrame extends JFrame {
     private ServerMainPanel mainPanel;
     private ServerLeftPanel leftPanel;
-    private ServerRightPanel rightPanel;
 
     public ServerMainFrame(int width, int height) {
         super("Server");

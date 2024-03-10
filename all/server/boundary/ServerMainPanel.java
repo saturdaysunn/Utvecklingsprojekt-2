@@ -17,14 +17,6 @@ public class ServerMainPanel extends JPanel {
         this.add(lPanel, BorderLayout.CENTER);
     }
 
-    public ServerRightPanel getrPanel(){
-        return rPanel;
-    }
-
-    public void setrPanel(ServerRightPanel rPanel){
-        this.rPanel = rPanel;
-    }
-
     public ServerLeftPanel getlPanel(){
         return lPanel;
     }

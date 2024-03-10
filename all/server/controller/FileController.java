@@ -257,13 +257,13 @@ public class FileController {
     }
 
     /**
-     *
-     * @param message
-     * @param timestamp
-     * @param filePath
+     * saved logs reported by serverController to a text file for later retrieval.
+     * @param message log message
+     * @param timestamp when the log message was reported
+     * @param filePath file to write to
      */
 
-    public void saveLogToFile(String message, Date timestamp, String filePath) {
+    public synchronized void saveLogToFile(String message, Date timestamp, String filePath) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         String formattedTimestamp = dateFormat.format(timestamp);
         try (FileWriter fw = new FileWriter(filePath, true);
@@ -285,7 +285,7 @@ public class FileController {
      *         If no messages are found or an error occurs during file reading or parsing, an empty list is returned.
      */
 
-    public List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
+    public synchronized List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         List<String> messages = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(logFilePath))) {
