@@ -85,3 +85,30 @@
 2024/03/10 01:10:16 - Online list updated
 2024/03/10 01:10:16 - Online list updated
 2024/03/10 01:10:16 - Contacts sent to: null
+2024/03/10 15:07:44 - Server started
+2024/03/10 15:07:56 - New client connected: 127.0.0.1
+2024/03/10 15:07:56 - bruna has logged in
+2024/03/10 15:07:56 - Online list updated
+2024/03/10 15:07:56 - Contacts sent to: null
+2024/03/10 15:08:01 - New client connected: 127.0.0.1
+2024/03/10 15:08:01 - tiffany has logged in
+2024/03/10 15:08:01 - Online list updated
+2024/03/10 15:08:01 - Online list updated
+2024/03/10 15:08:01 - Contacts sent to: null
+2024/03/10 15:08:05 - Message forwarded to: [bruna]
+2024/03/10 15:08:05 - Message from: tiffany, To: [bruna], Content: hej, Received Time : Sun Mar 10 15:08:05 CET 2024, Delivered Time : null
+2024/03/10 15:12:10 - New client connected: 127.0.0.1
+2024/03/10 15:12:10 - mihail has logged in
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Online list updated
+2024/03/10 15:12:10 - Contacts sent to: null
+2024/03/10 15:12:16 - Contacts updated for: tiffany
+2024/03/10 15:12:16 - tiffany has logged out
+2024/03/10 15:12:16 - Online list updated
+2024/03/10 15:12:16 - Online list updated
+2024/03/10 15:12:19 - Contacts updated for: mihail
+2024/03/10 15:12:19 - mihail has logged out
+2024/03/10 15:12:19 - Online list updated
+2024/03/10 15:12:20 - Contacts updated for: bruna
+2024/03/10 15:12:20 - bruna has logged out

@@ -17,13 +17,12 @@ public class ServerController {
     private HashMap<User, ClientHandler> onlineClients = new HashMap<>(); //stores clients and their connections
     private HashMap<String, ArrayList<Message>> unsentMessagesMap = new HashMap<>(); //receiver, unsent messages
     private FileController fileController;
-
     private ServerMainFrame mainFrame;
     
     public ServerController(int port){
         this.fileController = new FileController();
         connection = new Connection(port);
-       mainFrame= new ServerMainFrame(800, 600);
+        mainFrame=  new ServerMainFrame(800, 600);
         connection.start();
     }
 
