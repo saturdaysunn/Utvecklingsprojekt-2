@@ -8,7 +8,6 @@ import java.util.List;
 public class ServerLeftPanel extends JPanel {
     private int width;
     private int height;
-
     private ServerMainFrame mainFrame;
 
     public ServerLeftPanel(int width, int height, ServerMainFrame mainFrame) {

@@ -4,9 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ServerMainPanel extends JPanel {
-
     private ServerRightPanel rPanel;
-
     private ServerLeftPanel lPanel;
 
     public ServerMainPanel(int width, int height, ServerMainFrame mainFrame){
@@ -19,10 +17,6 @@ public class ServerMainPanel extends JPanel {
         this.add(lPanel, BorderLayout.CENTER);
     }
 
-
-
-
-
     public ServerRightPanel getrPanel(){
         return rPanel;
     }
@@ -34,11 +28,6 @@ public class ServerMainPanel extends JPanel {
     public ServerLeftPanel getlPanel(){
         return lPanel;
     }
-
-
-
-
-
 
 }
 
