@@ -85,12 +85,12 @@
                         String startTime = textField1.getText();
                         String endTime = textField2.getText();
 
-                        // Kontrollera om tiden övergår över midnatt, justera slutet i så fall
+
                         if (startTime.compareTo(endTime) > 0) {
-                            endTime = "23:59:59"; // Sätt slutet till sista möjliga tidpunkt på dagen
+                            endTime = "23:59:59"; //
                         }
 
-                        // Hämta meddelandena mellan de angivna tiderna
+
                         List<String> messages = fileController.getLogMessagesBetweenTimes(startTime, endTime, "all/files/log.txt");
 
                         if (messages.isEmpty()) {
@@ -102,10 +102,8 @@
                             }
                         }
 
-                        // Visa upp meddelandena i leftpanelen
-                        for (String message : messages) {
-                            mainFrame.getMainPanel().getlPanel().logMessage(message);
-                        }
+
+                        mainFrame.getMainPanel().getlPanel().updateLogMessages(messages);
                     }
                 });
 

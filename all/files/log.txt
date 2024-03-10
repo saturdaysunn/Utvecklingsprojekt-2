@@ -75,3 +75,13 @@
 2024/03/10 00:52:19 - Server started
 2024/03/10 00:52:29 - Server started
 2024/03/10 00:53:09 - Server started
+2024/03/10 01:09:53 - Server started
+2024/03/10 01:10:06 - New client connected: 127.0.0.1
+2024/03/10 01:10:07 - oliver has logged in
+2024/03/10 01:10:07 - Online list updated
+2024/03/10 01:10:07 - Contacts sent to: null
+2024/03/10 01:10:16 - New client connected: 127.0.0.1
+2024/03/10 01:10:16 - mihail has logged in
+2024/03/10 01:10:16 - Online list updated
+2024/03/10 01:10:16 - Online list updated
+2024/03/10 01:10:16 - Contacts sent to: null

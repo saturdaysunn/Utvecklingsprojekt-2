@@ -3,6 +3,7 @@ package all.server.boundary;
 import javax.swing.*;
 import java.awt.*;
 import java.io.StringWriter;
+import java.util.List;
 
 public class ServerLeftPanel extends JPanel {
     private int width;
@@ -29,15 +30,17 @@ public class ServerLeftPanel extends JPanel {
 
         this.add(scrollPane, BorderLayout.CENTER);
     }
-
-    //  lägga till meddelanden till textområdet
+    
     public void logMessage(String message) {
         JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
         textArea.append(message + "\n");
     }
 
-    public void clearLog() {
+    public void updateLogMessages(List<String> messages) {
         JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
-        textArea.setText("");
+        textArea.setText(""); // Rensa befintlig text för att ersätta den med nya meddelanden
+        for (String message : messages) {
+            textArea.append(message + "\n");
+        }
     }
 }
