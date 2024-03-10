@@ -73,6 +73,7 @@ public class MessageClient extends Thread {
             ArrayList<Message> unsentMessages = ((UnsentMessages) receivedObject).getUnsentList();
             for (Message message : unsentMessages) {
                 message.setDeliveredTime(new Date());
+                sendNotification(message.getSender().getUsername());
                 mainFrame.tempStoreMessage(message, false);
             }
         }
