@@ -67,7 +67,11 @@ public class LPanel extends JPanel{
 
                 if (selectedUser != null) {
                     selectedUser = selectedUser.replaceAll("\\<.*?\\>", "");
-                    mainFrame.addToContacts(selectedUser); //call mainframe to call messageclient to add to contacts var in User obj
+                    if (selectedUser.equals("GroupChat")) {
+                        JOptionPane.showMessageDialog(null, "GroupChat cannot be added to contacts.");
+                    } else {
+                        mainFrame.addToContacts(selectedUser); //call to update contacts in MessageClient through MainFrame
+                    }
                 } else {
                     JOptionPane.showMessageDialog(LPanel.this, "Please select one user.");
                 }
@@ -86,7 +90,7 @@ public class LPanel extends JPanel{
                         mainFrame.getMainPanel().getcPanel().viewChat(plainName);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(buttonPanel, "Please select only one user to view chat.", "Selection Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(buttonPanel, "Please select one user to view chat.", "Selection Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -109,7 +113,7 @@ public class LPanel extends JPanel{
 
 
     /**
-     * populates left panel with users that are online
+     * updates the list of online users and calls to populate.
      * @param onlineUsers list of online users
      */
     public void updateOnlineList(ArrayList<String> onlineUsers){
@@ -117,18 +121,25 @@ public class LPanel extends JPanel{
         populateLPanel();
     }
 
-    //TODO: use this and the online list together to show all in LPanel, online users in green text.
+    /**
+     * updates the list of contacts and calls to populate.
+     * @param contactsList list of contacts
+     */
     public void updateContactsList(ArrayList<String> contactsList) {
         this.contactsList = contactsList;
         populateLPanel();
     }
 
+    /**
+     * populates left panel with online users and offline contacts by comparing
+     * the contents of onlineUsersList and contactsList.
+     */
     public void populateLPanel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         listModel.clear();
 
-        // Add online users
-        if (onlineUsersList != null) {
+        //add online users
+        if (!onlineUsersList.isEmpty()) {
             if (onlineUsersList.size() >= 2) {
                 listModel.addElement("<html><font color='green'>GroupChat</font></html>"); //if more than two users online
             }
@@ -137,16 +148,16 @@ public class LPanel extends JPanel{
             }
         }
 
-        // Add offline users
-        if (contactsList != null) {
+        //add offline contacts
+        if (!contactsList.isEmpty()) {
             for (String user : contactsList) {
-                if (!onlineUsersList.contains(user)) {
+                if (!onlineUsersList.contains(user)) { //if not already online
                     listModel.addElement(user);
                 }
             }
         }
 
-        leftPanelList.setModel(listModel);
+        leftPanelList.setModel(listModel); //show on panel
     }
 
     private class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer<String> {

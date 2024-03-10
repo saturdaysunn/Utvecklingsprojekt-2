@@ -17,13 +17,12 @@ public class ServerLeftPanel extends JPanel {
         this.mainFrame = mainFrame;
 
         JTextArea textArea = new JTextArea();
-        textArea.setEditable(false); // Making the text area non-editable
-        textArea.setLineWrap(true); // Enabling line wrap to prevent horizontal scrolling
-        textArea.setWrapStyleWord(true); // Ensuring words won't be broken at line breaks
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
 
         textArea.setPreferredSize(new Dimension(400, height));
-        // Setting preferred size to make the text area wider
         scrollPane.setPreferredSize(new Dimension(300, height));
 
         this.add(scrollPane, BorderLayout.CENTER);
@@ -36,7 +35,7 @@ public class ServerLeftPanel extends JPanel {
 
     public void updateLogMessages(List<String> messages) {
         JTextArea textArea = (JTextArea) ((JScrollPane) this.getComponent(0)).getViewport().getView();
-        textArea.setText(""); // Rensa befintlig text för att ersätta den med nya meddelanden
+        textArea.setText(""); //remove existing text to replace with new log messages
         for (String message : messages) {
             textArea.append(message + "\n");
         }

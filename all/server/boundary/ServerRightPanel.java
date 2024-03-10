@@ -35,14 +35,6 @@ public class ServerRightPanel extends JPanel {
         textField2.setColumns(10);
 
         JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String text1 = textField1.getText();
-                String text2 = textField2.getText();
-
-            }
-        });
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -93,7 +85,7 @@ public class ServerRightPanel extends JPanel {
                     }
                 }
 
-                mainFrame.getMainPanel().getlPanel().updateLogMessages(messages);
+                mainFrame.getMainPanel().getlPanel().updateLogMessages(messages); //populate lPanel
             }
         });
 

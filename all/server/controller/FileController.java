@@ -284,7 +284,6 @@ public class FileController {
      * @return A list of log messages that were logged between the specified start and end times.
      *         If no messages are found or an error occurs during file reading or parsing, an empty list is returned.
      */
-
     public synchronized List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         List<String> messages = new ArrayList<>();

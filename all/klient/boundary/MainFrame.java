@@ -25,8 +25,8 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * sends message info to messageClient
-     * @param message message in string format
+     * controls so receivers have been selected and sends message input to MessageClient if yes.
+     * @param message message input through GUI.
      */
     public void sendMessage(String message) {
         ArrayList<String> receivers = panel.getlPanel().getReceivers(); //retrieve selected user to send message to
@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * calls to update contacts list of user instance
+     * calls to update contacts list for user that is logged in.
      */
     public void addToContacts(String userToAdd) {
         messageClient.addToContacts(userToAdd);
@@ -72,20 +72,31 @@ public class MainFrame extends JFrame {
 
     /**
      * sends message further to center panel.
-     * @param receivedMessage message received from client.
+     * @param receivedMessage message received from another user.
      */
     public void tempStoreMessage(Message receivedMessage, boolean groupChat) {
         panel.getcPanel().tempStoreMessage(receivedMessage, groupChat);
     }
 
+    /**
+     * sends message further to center panel.
+     * @param sendingMessage message sent by current user.
+     */
     public void tempStoreOwnMessage(Message sendingMessage) {
         panel.getcPanel().tempStoreOwnMessage(sendingMessage);
     }
 
+    /**
+     * calls to log out user in MessageClient.
+     */
     public void logOut() {
         messageClient.logOut();
     }
 
+    /**
+     * sets notification when user receives a message.
+     * @param notification message to be shown as notification.
+     */
     public void sendNotification(String notification) {
         setTitle(notification);
     }

@@ -61,7 +61,7 @@ public class CenterPanel extends JPanel{
         messageInputPanel.setLayout(new BoxLayout(messageInputPanel, BoxLayout.X_AXIS));
         messageInputField = new JTextField(25);
 
-        JScrollPane scrollableInputField = new JScrollPane(messageInputField); //TODO: scroll doesn't work right now. FIX
+        JScrollPane scrollableInputField = new JScrollPane(messageInputField); //scroll bar for long messages
         messageInputPanel.add(scrollableInputField);
 
         sendButton = new JButton("Send"); //button to send message

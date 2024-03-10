@@ -94,6 +94,8 @@ tiffany
 mihail
 bruna
 .
+juju
+mumu
 huhu
 .
 huhu
@@ -102,10 +104,4 @@ mumu
 .
 mumu
 juju
-huhu
-.
-juju
-.
-juju
-mumu
 huhu
