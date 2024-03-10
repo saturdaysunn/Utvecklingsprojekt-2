@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * allows unsent messages to be sent as object
  */
 public class UnsentMessages implements Serializable {
-
     private ArrayList<Message> unsentList;
 
     public UnsentMessages (ArrayList<Message> unsentList) {

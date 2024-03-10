@@ -95,18 +95,16 @@ public class LoginPanel extends JFrame {
         });
     }
 
-
-    //TODO: here it would be beneficial to use the online message Johan was talking about.
     /**
      * in charge of forwarding message to client to inform sender a user has logged in
      */
-    public void loginUser(String username, ImageIcon userPicture) { //TODO: unsure about parameters
+    public void loginUser(String username, ImageIcon userPicture) {
         messageClient = new MessageClient("127.0.0.1", 724);
         mainFrame = messageClient.getMainFrame(); //get main client's mainFrame instance
 
         //display user's name and icon on GUI
         mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
-        mainFrame.getMainPanel().getrPanel().setUserIcon(new ImageIcon("all/user_images/" + usernameField.getText() + ".png"));
+        mainFrame.getMainPanel().getrPanel().setUserIcon(new ImageIcon("all/files/user_images/" + usernameField.getText() + ".png"));
         messageClient.sendLoginMessage(username, userPicture); //send login message
     }
 
@@ -125,7 +123,7 @@ public class LoginPanel extends JFrame {
      */
     private void saveImageToFile(BufferedImage image) {
         try {
-            String path = "all/user_images/" + usernameField.getText() + ".png";
+            String path = "all/files/user_images/" + usernameField.getText() + ".png";
             File outputfile = new File(path);
             ImageIO.write(image, "png", outputfile);
         } catch (IOException e) {

@@ -46,15 +46,14 @@ public class MessageClient extends Thread {
             for (String receiver : designatedReceivers) {
                 System.out.println("receiver is: " + receiver);
                 if (receiver.equals(user.getUsername())) { //if to me
-                    System.out.println("to me");
-                    receivedMessage.setDeliveredTime(new Date()); //add time delivered to receiver
                     mainFrame.tempStoreMessage(receivedMessage, false);
+                    sendNotification(receivedMessage.getSender().getUsername());
                 } else if (receiver.equals("GroupChat")) { //if to group
                     System.out.println("to group");
                     receivedMessage.setDeliveredTime(new Date());
                     mainFrame.tempStoreMessage(receivedMessage, true);
+                    sendNotification("GroupChat");
                 }
-                sendNotification(receivedMessage.getSender().getUsername());
             }
 
         } else if (receivedObject instanceof ContactsMessage) {
@@ -80,12 +79,16 @@ public class MessageClient extends Thread {
     }
 
 
+    /**
+     * sends notification to mainFrame.
+     * @param sender name of sender of message.
+     */
     public synchronized void sendNotification(String sender) {
         mainFrame.sendNotification("New message from " + sender + "!");
     }
 
     /**
-     * creates instance of User and informs server that user has logged in
+     * creates instance of User and informs server that user has logged in.
      */
     public void sendLoginMessage(String username, ImageIcon userPicture) {
         this.user = new User(username, userPicture);
@@ -152,7 +155,7 @@ public class MessageClient extends Thread {
     }
 
     /**
-     * adds new contact to user's contact list if not already there
+     * adds new contact to user's contact list if not already there.
      * @param userToAdd name of user
      */
     public synchronized void addToContacts(String userToAdd) {
@@ -174,7 +177,7 @@ public class MessageClient extends Thread {
                 mainFrame.updateContactsList(contacts); //update on GUI
             }
         }else{
-            contacts = new ArrayList<>(); //create new one
+            contacts = new ArrayList<>(); //create new contacts list
             contacts.add(userToAdd); //add to user's contacts list
             mainFrame.updateContactsList(contacts);
         }
@@ -189,18 +192,11 @@ public class MessageClient extends Thread {
     }
 
     /**
-     * sends message containing name of user that logged out
-     * and their updated list of contacts.
+     * logs out user by sending name of user and updated contacts to server.
      */
-
     public synchronized void logOut() {
         ContactsMessage updatedContacts = new ContactsMessage(contacts);
         updatedContacts.setOwner(user.getUsername());
-        if (updatedContacts.getContactsList() != null) {
-
-            for (String contact : updatedContacts.getContactsList()) {
-            }
-        }
         this.listener.sendUpdatedContacts(updatedContacts);
     }
 

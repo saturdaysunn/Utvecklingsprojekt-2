@@ -54,12 +54,12 @@ public class RPanel extends JPanel {
         currentUserPanel.add(currentUserLabel, BorderLayout.WEST);
         currentUserPanel.add(currentUserPictureLabel, BorderLayout.EAST);
 
-        //Add logout button
+        //add logout button
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.logOut();
+                mainFrame.logOut(); //call to log out.
                 mainFrame.dispose(); //close window.
             }
         });
@@ -81,12 +81,12 @@ public class RPanel extends JPanel {
     }
 
     public ImageIcon getUserIcon() {
-        return (ImageIcon) currentUserPictureLabel.getIcon(); //TODO: correct?
+        return (ImageIcon) currentUserPictureLabel.getIcon();
     }
 
 
     /**
-     * populates right panel with contacts
+     * populates right panel with contacts.
      * @param contactsList list of contacts
      */
     public void populateRPanel(List<String> contactsList){
@@ -95,6 +95,11 @@ public class RPanel extends JPanel {
         rightPanelList.setListData(contactsArray);
     }
 
+    /**
+     * resizes image to fit in label.
+     * @param originalIcon original image
+     * @return resized image
+     */
     public static ImageIcon resizeImage(ImageIcon originalIcon) {
         Image originalImage = originalIcon.getImage();
         int width = 40; // specify the desired width and height

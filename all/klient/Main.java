@@ -1,4 +1,4 @@
-package all;
+package all.klient;
 
 import all.klient.boundary.LoginPanel;
 

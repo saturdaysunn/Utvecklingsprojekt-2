@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ImageMessage extends Message {
 
+public class ImageMessage extends Message {
     private ImageIcon image;
 
     public ImageMessage(User sender, ArrayList<String> receiverList,
@@ -13,7 +13,6 @@ public class ImageMessage extends Message {
 
         super(sender, receiverList, text, receivedTime, deliveredTime);
         this.image = image;
-
     }
 
     public ImageIcon getImage() {

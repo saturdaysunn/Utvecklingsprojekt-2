@@ -19,7 +19,6 @@ public class Message implements Serializable {
         this.text = text;
         this.receivedTime = receivedTime;
         this.deliveredTime = deliveredTime;
-
     }
 
     public User getSender() {
