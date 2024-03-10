@@ -2,7 +2,6 @@ package all.server.boundary;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.StringWriter;
 import java.util.List;
 
 public class ServerLeftPanel extends JPanel {

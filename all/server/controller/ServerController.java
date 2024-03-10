@@ -1,7 +1,7 @@
-package all.server;
+package all.server.controller;
 
 import all.jointEntity.*;
-import all.server.controller.FileController;
+import all.server.boundary.ServerMainFrame;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -16,12 +16,14 @@ public class ServerController {
     private HashMap<User, ClientHandler> onlineClients; //stores clients and their connections
     private HashMap<String, ArrayList<Message>> unsentMessagesMap;
     private FileController fileController;
-    
+    private ServerMainFrame mainFrame;
+
     public ServerController(int port){
         this.fileController = new FileController();
         unsentMessagesMap = fileController.retrieveUnsentMessages();
         onlineClients = new HashMap<>();
         connection = new Connection(port);
+        mainFrame = new ServerMainFrame(800, 600);
         connection.start();
     }
 
@@ -89,10 +91,12 @@ public class ServerController {
             ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver); //retrieve arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //update hashmap
+            fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         } else {
             ArrayList<Message> unsentMessages = new ArrayList<>(); //create new arraylist
             unsentMessages.add(message); //add new message to list
             unsentMessagesMap.put(receiver, unsentMessages); //add new key-value index
+            fileController.saveLogToFile("Message to: " + receiver + " has been stored as unsent", new Date(), "all/files/log.txt");
         }
     }
 
@@ -109,12 +113,13 @@ public class ServerController {
             message.setReceivedTime(new Date()); //set time received by server
             boolean groupChat = checkIfGroupChat(message.getReceiverList());
             checkIfOnline(message, groupChat);
-
+            fileController.saveLogToFile("Message from: " + message.getSender().getUsername() + ", To: " + message.getReceiverList() + ", Content: " + message.getText() + ", Received Time : " + message.getReceivedTime() +", Delivered Time : " + message.getDeliveredTime(), new Date(),"all/files/log.txt");
         } else if(receivedObj instanceof User){ //logged in
             User loggedInUser = (User) receivedObj;
             String username = loggedInUser.getUsername();
             System.out.println("User logged in: " + username);
             onlineClients.put(loggedInUser, clientHandler);
+            fileController.saveLogToFile(loggedInUser.getUsername() + " has logged in", new Date(), "all/files/log.txt");
 
             //retrieve online users
             for(User onlineUser : onlineClients.keySet()){ //for each currently online user
@@ -141,6 +146,7 @@ public class ServerController {
             if(contacts != null) {
                 fileController.rewriteContactsTextFileWithNewContacts(updatedContacts.getOwner(), contacts);
             }
+            fileController.saveLogToFile("Contacts updated for: " + updatedContacts.getOwner(), new Date(), "all/files/log.txt");
             //register that user has logged out.
             String loggedOutUser = updatedContacts.getOwner();
             logOutUser(loggedOutUser); //update online clients
@@ -187,6 +193,7 @@ public class ServerController {
      */
     public synchronized void logOutUser(String username){
         Iterator<User> iterator = onlineClients.keySet().iterator();
+        fileController.saveLogToFile(username + " has logged out",new Date(),"all/files/log.txt");
         while (iterator.hasNext()) {
             User user = iterator.next();
             if (user.getUsername().equals(username)) {
@@ -218,6 +225,7 @@ public class ServerController {
                     try {
                         socket = serverSocket.accept();
                         System.out.println("New client connected: " + socket.getInetAddress().getHostAddress());
+                        fileController.saveLogToFile("New client connected: " + socket.getInetAddress().getHostAddress(), new Date() ,"all/files/log.txt");
                         clientHandler = new ClientHandler(socket); //create clientHandler for individual client
                     } catch (IOException e) {
                         System.err.println(e);
@@ -269,6 +277,7 @@ public class ServerController {
         public void updateOnlineList(ArrayList<String> userList){
             try {
                 oos.writeObject(userList);
+                fileController.saveLogToFile("Online list updated", new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -281,6 +290,7 @@ public class ServerController {
         public void forwardMessage (Message message){
             try {
                 oos.writeObject(message);
+                fileController.saveLogToFile("Message forwarded to: " + message.getReceiverList(), new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -295,6 +305,7 @@ public class ServerController {
 
             try {
                 oos.writeObject(contactsMessage);
+                fileController.saveLogToFile("Contacts sent to: " + contactsMessage.getOwner(), new Date(), "all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -308,6 +319,7 @@ public class ServerController {
         public void sendUnsent(UnsentMessages unsent) {
             try {
                 oos.writeObject(unsent);
+                fileController.saveLogToFile("Unsent messages sent to: " + unsent.getUnsentList().get(0).getReceiverList(), new Date(),"all/files/log.txt");
                 oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,7 +1,6 @@
 package all.server.boundary;
 
 import javax.swing.*;
-import java.awt.event.InputMethodEvent;
 
 public class ServerMainFrame extends JFrame {
     private ServerMainPanel mainPanel;

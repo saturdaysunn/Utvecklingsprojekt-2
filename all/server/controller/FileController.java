@@ -1,12 +1,18 @@
 package all.server.controller;
 
+import all.jointEntity.ContactsMessage;
 import all.jointEntity.Message;
+import all.jointEntity.UnsentMessages;
+import all.jointEntity.User;
+import all.server.boundary.ServerMainFrame;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -250,5 +256,61 @@ public class FileController {
         }
     }
 
+    /**
+     *
+     * @param message
+     * @param timestamp
+     * @param filePath
+     */
+
+    public void saveLogToFile(String message, Date timestamp, String filePath) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        String formattedTimestamp = dateFormat.format(timestamp);
+        try (FileWriter fw = new FileWriter(filePath, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+            bw.write(formattedTimestamp + " - " + message);
+            bw.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieves log messages from a log file that fall within the specified time range.
+     *
+     * @param startTime   The start time in the format "yyyy/MM/dd HH:mm:ss".
+     * @param endTime     The end time in the format "yyyy/MM/dd HH:mm:ss".
+     * @param logFilePath The path to the log file from which messages will be retrieved.
+     * @return A list of log messages that were logged between the specified start and end times.
+     *         If no messages are found or an error occurs during file reading or parsing, an empty list is returned.
+     */
+
+    public List<String> getLogMessagesBetweenTimes(String startTime, String endTime, String logFilePath) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        List<String> messages = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(logFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" - ", 2);
+                if (parts.length >= 2) {
+                    String timestampString = parts[0];
+                    String message = parts[1];
+                    try {
+                        Date timestamp = dateFormat.parse(timestampString);
+                        Date start = dateFormat.parse(startTime);
+                        Date end = dateFormat.parse(endTime);
+                        if (timestamp.after(start) && timestamp.before(end)) {
+                            messages.add(message);
+                        }
+                    } catch (ParseException e) {
+                        System.err.println("Error parsing timestamp: " + e.getMessage());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading log file: " + e.getMessage());
+        }
+        return messages;
+    }
 
 }
