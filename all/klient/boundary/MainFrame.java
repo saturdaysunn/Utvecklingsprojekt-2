@@ -86,7 +86,7 @@ public class MainFrame extends JFrame {
         messageClient.logOut();
     }
 
-    public void sendNotification(String notificaiton) {
-        setTitle(notificaiton);
+    public void sendNotification(String notification) {
+        setTitle(notification);
     }
 }
