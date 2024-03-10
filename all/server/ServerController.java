@@ -111,16 +111,16 @@ public class ServerController {
             checkIfOnline(message, groupChat);
 
         } else if(receivedObj instanceof User){ //logged in
-            User onlineUser = (User) receivedObj;
-            String username = onlineUser.getUsername();
+            User loggedInUser = (User) receivedObj;
+            String username = loggedInUser.getUsername();
             System.out.println("User logged in: " + username);
-            onlineClients.put(onlineUser, clientHandler);
+            onlineClients.put(loggedInUser, clientHandler);
 
             //retrieve online users
-            for(User user : onlineClients.keySet()){ //for each currently online user
-                String currUsername = user.getUsername();
+            for(User onlineUser : onlineClients.keySet()){ //for each currently online user
+                String currUsername = onlineUser.getUsername();
                 ArrayList<String> userList = updateOnlineStatus(currUsername); //retrieve list of other online users
-                onlineClients.get(user).updateOnlineList(userList); //send updated onlineList to their clientHandler
+                onlineClients.get(onlineUser).updateOnlineList(userList); //send updated onlineList to their clientHandler
             }
 
             //check if new or old user.
@@ -132,7 +132,7 @@ public class ServerController {
                 ArrayList<String> contacts = fileController.getContactsOfUser("all/files/contacts.txt", username); //retrieve contacts for user
                 ContactsMessage contactsMessage = new ContactsMessage(contacts);
                 clientHandler.sendContacts(contactsMessage); //send contacts to user
-                sendUnsentMessages(onlineUser); //send unsent messages to now online user
+                sendUnsentMessages(loggedInUser); //send unsent messages to now online user
             }
         } else if (receivedObj instanceof ContactsMessage) { //user logs out
             ContactsMessage updatedContacts = (ContactsMessage) receivedObj;

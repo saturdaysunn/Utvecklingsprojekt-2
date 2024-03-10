@@ -54,6 +54,7 @@ public class MessageClient extends Thread {
                     receivedMessage.setDeliveredTime(new Date());
                     mainFrame.tempStoreMessage(receivedMessage, true);
                 }
+                sendNotification(receivedMessage.getSender().getUsername());
             }
 
         } else if (receivedObject instanceof ContactsMessage) {
@@ -72,9 +73,15 @@ public class MessageClient extends Thread {
             ArrayList<Message> unsentMessages = ((UnsentMessages) receivedObject).getUnsentList();
             for (Message message : unsentMessages) {
                 message.setDeliveredTime(new Date());
+                sendNotification(message.getSender().getUsername());
                 mainFrame.tempStoreMessage(message, false);
             }
         }
+    }
+
+
+    public synchronized void sendNotification(String sender) {
+        mainFrame.sendNotification("New message from " + sender + "!");
     }
 
     /**
