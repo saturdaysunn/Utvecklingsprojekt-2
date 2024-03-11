@@ -68,8 +68,6 @@ public class LoginPanel extends JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     ImageIcon icon = new ImageIcon(selectedFile.getPath());
-
-                    loadImage(selectedFile);
                     userPicture.setIcon(resizePreviewImage(icon));
                 }
             }
@@ -102,31 +100,8 @@ public class LoginPanel extends JFrame {
 
         //display user's name and icon on GUI
         mainFrame.getMainPanel().getrPanel().setCurrentUsername(username);
-        mainFrame.getMainPanel().getrPanel().setUserIcon(new ImageIcon("all/files/user_images/" + usernameField.getText() + ".png"));
+        mainFrame.getMainPanel().getrPanel().setUserIcon(userPicture);
         messageClient.sendLoginMessage(username, userPicture); //send login message
-    }
-
-    private void loadImage(File file) {
-        try {
-            BufferedImage image = ImageIO.read(file);
-            saveImageToFile(image);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * saves user's image to file for later retrieval
-     * @param image
-     */
-    private void saveImageToFile(BufferedImage image) {
-        try {
-            String path = "all/files/user_images/" + usernameField.getText() + ".png";
-            File outputfile = new File(path);
-            ImageIO.write(image, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

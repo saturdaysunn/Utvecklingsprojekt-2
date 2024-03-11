@@ -311,3 +311,24 @@
 2024/03/11 11:19:42 - [mumu] has logged out
 2024/03/11 11:19:43 - Contacts updated for: [tiffany] 
 2024/03/11 11:19:43 - [tiffany] has logged out
+2024/03/11 11:25:03 - New client connected: 127.0.0.1
+2024/03/11 11:25:03 - [tiffany] has logged in
+2024/03/11 11:25:17 - New client connected: 127.0.0.1
+2024/03/11 11:25:17 - [mumu] has logged in
+2024/03/11 11:25:44 - New client connected: 127.0.0.1
+2024/03/11 11:25:44 - [spiderman] has logged in
+2024/03/11 11:25:50 - Contacts updated for: [tiffany] 
+2024/03/11 11:25:50 - [tiffany] has logged out
+2024/03/11 11:25:52 - Contacts updated for: [spiderman] 
+2024/03/11 11:25:52 - [spiderman] has logged out
+2024/03/11 11:25:54 - Contacts updated for: [mumu] 
+2024/03/11 11:25:54 - [mumu] has logged out
+2024/03/11 11:27:34 - New client connected: 127.0.0.1
+2024/03/11 11:27:35 - [mumu] has logged in
+2024/03/11 11:27:45 - New client connected: 127.0.0.1
+2024/03/11 11:27:45 - [tiffany] has logged in
+2024/03/11 11:27:55 - Message from: [tiffany], To: [mumu], Content: egg.png, Received Time: Mon Mar 11 11:27:55 CET 2024, Delivered Time: Mon Mar 11 11:27:55 CET 2024
+2024/03/11 11:27:59 - Contacts updated for: [mumu] 
+2024/03/11 11:27:59 - [mumu] has logged out
+2024/03/11 11:28:00 - Contacts updated for: [tiffany] 
+2024/03/11 11:28:00 - [tiffany] has logged out
