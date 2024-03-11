@@ -88,6 +88,8 @@ public class LoginPanel extends JFrame {
                     usernameField.setText("");
                 } else if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No username provided. Please try again.");
+                } else if (userPicture.getIcon() == null) {
+                    JOptionPane.showMessageDialog(null, "No picture provided. Please try again.");
                 }
             }
         });
