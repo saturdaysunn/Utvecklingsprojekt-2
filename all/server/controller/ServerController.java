@@ -32,7 +32,6 @@ public class ServerController {
      * @param receiver user to send unsent messages to (the user that just went online).
      */
     public synchronized void sendUnsentMessages(User receiver){
-        System.out.println("going to send unsent to " + receiver.getUsername());
         try{
             if (unsentMessagesMap.containsKey(receiver.getUsername())) {
                 ArrayList<Message> unsentMessages = unsentMessagesMap.get(receiver.getUsername()); //create arraylist of unsent messages with correct receiver
@@ -70,7 +69,6 @@ public class ServerController {
                 boolean isOnline = false;
                 for (User onlineUser : onlineClients.keySet()) {
                     if (onlineUser.getUsername().equals(receiver)) {
-                        System.out.println(receiver + " is online, sending message now");
                         message.setDeliveredTime(new Date());
                         onlineClients.get(onlineUser).forwardMessage(message);
                         isOnline = true;
@@ -79,7 +77,6 @@ public class ServerController {
                 }
 
                 if (!isOnline) {
-                    System.out.println(receiver + " is offline, storing message now");
                     storeUnsentMessage(message, receiver);
                 }
             }
@@ -121,7 +118,6 @@ public class ServerController {
         } else if(receivedObj instanceof User){ //logged in
             User loggedInUser = (User) receivedObj;
             String username = loggedInUser.getUsername();
-            System.out.println("User logged in: " + username);
             onlineClients.put(loggedInUser, clientHandler);
             fileController.saveLogToFile("[" + loggedInUser.getUsername() + "] has logged in", new Date(), "all/files/log.txt");
 

@@ -270,3 +270,32 @@
 2024/03/10 20:59:20 - [huhu] has logged in
 2024/03/10 20:59:25 - New client connected: 127.0.0.1
 2024/03/10 20:59:25 - [juju] has logged in
+2024/03/11 09:26:48 - New client connected: 127.0.0.1
+2024/03/11 09:26:48 - [mumu] has logged in
+2024/03/11 09:26:53 - New client connected: 127.0.0.1
+2024/03/11 09:26:53 - [huhu] has logged in
+2024/03/11 09:27:01 - New client connected: 127.0.0.1
+2024/03/11 09:27:01 - [susu] has logged in
+2024/03/11 09:27:16 - Message from: [susu], To: [huhu], Content: egg.png, Received Time: Mon Mar 11 09:27:16 CET 2024, Delivered Time: Mon Mar 11 09:27:16 CET 2024
+2024/03/11 09:27:22 - Message from: [susu], To: [huhu], Content: hi, Received Time: Mon Mar 11 09:27:22 CET 2024, Delivered Time: Mon Mar 11 09:27:22 CET 2024
+2024/03/11 09:27:34 - Contacts updated for: [susu] 
+2024/03/11 09:27:34 - [susu] has logged out
+2024/03/11 09:27:41 - Message from: [huhu], To: [susu] has been stored as unsent
+2024/03/11 09:27:41 - Message from: [huhu], To: [susu], Content: i like it!, Received Time: Mon Mar 11 09:27:41 CET 2024, Delivered Time: null
+2024/03/11 09:27:46 - Message from: [huhu], To: [susu] has been stored as unsent
+2024/03/11 09:27:46 - Message from: [huhu], To: [susu], Content: very much, Received Time: Mon Mar 11 09:27:46 CET 2024, Delivered Time: null
+2024/03/11 09:27:51 - New client connected: 127.0.0.1
+2024/03/11 09:27:51 - [susu] has logged in
+2024/03/11 09:27:51 - Unsent message from: [huhu], To: [susu] has been sent, Content: i like it!, Received Time: Mon Mar 11 09:27:41 CET 2024, Delivered Time: Mon Mar 11 09:27:51 CET 2024
+2024/03/11 09:27:51 - Unsent message from: [huhu], To: [susu] has been sent, Content: very much, Received Time: Mon Mar 11 09:27:46 CET 2024, Delivered Time: Mon Mar 11 09:27:51 CET 2024
+2024/03/11 09:28:28 - Message from: [susu], To: [huhu], Content: im glad, Received Time: Mon Mar 11 09:28:28 CET 2024, Delivered Time: Mon Mar 11 09:28:28 CET 2024
+2024/03/11 09:28:31 - Message from: [susu], To: [huhu], Content: very, Received Time: Mon Mar 11 09:28:31 CET 2024, Delivered Time: Mon Mar 11 09:28:31 CET 2024
+2024/03/11 09:28:41 - Message from: [huhu], To: [GroupChat], Content: hi yall, Received Time: Mon Mar 11 09:28:41 CET 2024, Delivered Time: Mon Mar 11 09:28:41 CET 2024
+2024/03/11 09:28:50 - Message from: [mumu], To: [GroupChat], Content: hiiii, Received Time: Mon Mar 11 09:28:50 CET 2024, Delivered Time: Mon Mar 11 09:28:50 CET 2024
+2024/03/11 09:29:06 - Message from: [mumu], To: [GroupChat, susu], Content: hi group and susu, Received Time: Mon Mar 11 09:29:06 CET 2024, Delivered Time: Mon Mar 11 09:29:06 CET 2024
+2024/03/11 09:29:16 - Contacts updated for: [susu] 
+2024/03/11 09:29:16 - [susu] has logged out
+2024/03/11 09:29:17 - Contacts updated for: [mumu] 
+2024/03/11 09:29:17 - [mumu] has logged out
+2024/03/11 09:29:19 - Contacts updated for: [huhu] 
+2024/03/11 09:29:19 - [huhu] has logged out
